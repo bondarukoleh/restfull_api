@@ -1,0 +1,25 @@
+Node is about scale and speed of development.
+To build highly-scalable, data-intensive, and real-time apps.
+Node uses Javascript - a lot of programmers know it.
+Open-source libraries, you don't have to rebuild a lot of things.
+
+Theory.
+Every Browser has JS Engine, it takes JS Code and compiling a machine code from it, so computer can run it.
+Edge has chakra (chromium for now), FireFox - SpiderMonkey (Gecko), Chrome V8 (Blink as rendering engine),
+Safari - WebKit, Opera - Presto (chromium for now)
+
+Wait what’s Blink? It’s a bit confusing, as Blink is Google Chrome’s rendering engine, V8 is the JavaScript Engine used
+within Blink, and Chromium is the browser project that holds them all together. Add a bit of Google product integration
+and Chromium becomes Google Chrome.
+V8 knows nothing about the DOM, the Document Object Model, as it is meant to just process the JavaScript. Blink
+contains the layout engine that decides how to display a site. It makes sense that Node.js would only need V8 and not
+Blink, because Node doesn’t need to know anything about the DOM.
+Since V8 is written in C++ it compiles JavaScript directly to native, optimized, machine code before executing it,
+instead of interpreting it in real time, which is what allows the Node.js to be so speedy and competitive in the server
+marketplace.
+
+Because of various engines - JS code can behave differently in browsers.
+
+In 2009 Ryan Dahl, created a Node.js
+Node is not a programming language, so it's wrong to say "I prefer C# TO Node", and it's not a framework, so we cannot
+say "I prefer ASP.NET to Node", Node is a runtime environment for executing javascript code.
