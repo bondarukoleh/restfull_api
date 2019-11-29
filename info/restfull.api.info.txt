@@ -1,5 +1,5 @@
 Node is about scale and speed of development.
-To build highly-scalable, data-intensive, and real-time apps.
+To build highly-scalable (non blocking, async nature), data-intensive, and real-time apps.
 Node uses Javascript - a lot of programmers know it.
 Open-source libraries, you don't have to rebuild a lot of things.
 
@@ -23,3 +23,4 @@ Because of various engines - JS code can behave differently in browsers.
 In 2009 Ryan Dahl, created a Node.js
 Node is not a programming language, so it's wrong to say "I prefer C# TO Node", and it's not a framework, so we cannot
 say "I prefer ASP.NET to Node", Node is a runtime environment for executing javascript code.
+Runtime environment - it's a environment where code is running.
