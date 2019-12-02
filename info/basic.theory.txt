@@ -24,3 +24,13 @@ In 2009 Ryan Dahl, created a Node.js
 Node is not a programming language, so it's wrong to say "I prefer C# TO Node", and it's not a framework, so we cannot
 say "I prefer ASP.NET to Node", Node is a runtime environment for executing javascript code.
 Runtime environment - it's a environment where code is running.
+
+The main idea of single-thread non-blocking work - is thread can working with multiple requests, depending their
+ready to be worked with or not.
+e.g. Main thread get's a request to DB, it passes the request to DB, and work with next request, while first is
+calculating. When DB calculates the data and return response - it's stored in event (callback) queue, thread when it
+has no other work to do - picks a nearest to the queue exit callback (with DB data), and put's it in main thread.
+
+Since Node is single threaded, it should not be used for application that needs to calculate some big CPU intensive
+operations, because while processor calculates this operation for some request - other should wait for it. So the main
+aim is data intensive and real-time applications.
