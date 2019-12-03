@@ -34,3 +34,9 @@ has no other work to do - picks a nearest to the queue exit callback (with DB da
 Since Node is single threaded, it should not be used for application that needs to calculate some big CPU intensive
 operations, because while processor calculates this operation for some request - other should wait for it. So the main
 aim is data intensive and real-time applications.
+
+One of the key concept in Node - is events.
+e.g. We have a HTTP class, and saying we server listening some port, as soon as machine has new connection to that
+port - HTTP class raises the event - "New Request", and we can catch it with handlers.
+
+Express framework is build on top of Http module in node.

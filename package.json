@@ -4,6 +4,7 @@
   "description": "Building restfull api.",
   "main": "index.js",
   "scripts": {
+		"start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/bondarukoleh/restfull_api/issues"
   },
-  "homepage": "https://github.com/bondarukoleh/restfull_api#readme"
+  "homepage": "https://github.com/bondarukoleh/restfull_api#readme",
+  "dependencies": {
+    "express": "4.17.1",
+    "mongoose": "5.7.13",
+    "underscore": "1.4.0"
+  },
+  "devDependencies": {
+    "jshint": "~2.10.3"
+  }
 }
