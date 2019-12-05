@@ -4,7 +4,7 @@
   "description": "Building restfull api.",
   "main": "index.js",
   "scripts": {
-		"start": "node app.js",
+    "start": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,6 +23,11 @@
     "underscore": "1.4.0"
   },
   "devDependencies": {
-    "jshint": "~2.10.3"
-  }
+    "jshint": "~2.10.3",
+    "nodemon": "2.0.1"
+  },
+	"nodemonConfig": {
+		"ignore": [".git","node_modules"],
+		"exec": "node app.js"
+	}
 }

@@ -40,3 +40,9 @@ e.g. We have a HTTP class, and saying we server listening some port, as soon as 
 port - HTTP class raises the event - "New Request", and we can catch it with handlers.
 
 Express framework is build on top of Http module in node.
+
+In server route /resources/id, we can have a multiple parameters /resources/id/subId they are for essential or
+required values, and we have a query parameters /resources/id?sortBy=name - for optional things, that passing some
+extra data to server.
+
+With out express.json(), or body-parser - express doesn't see JSON objects that we are sending to it.
