@@ -1,0 +1,3 @@
+--recursive ./test/specs/**/*.js
+--timeout 5000
+-R spec

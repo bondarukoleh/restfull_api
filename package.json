@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --opts ./mocha.opts"
   },
   "repository": {
     "type": "git",
@@ -23,11 +23,17 @@
     "underscore": "1.4.0"
   },
   "devDependencies": {
+    "chai": "4.2.0",
     "jshint": "~2.10.3",
+    "mocha": "6.2.2",
+    "node-fetch": "2.6.0",
     "nodemon": "2.0.1"
   },
-	"nodemonConfig": {
-		"ignore": [".git","node_modules"],
-		"exec": "node app.js"
-	}
+  "nodemonConfig": {
+    "ignore": [
+      ".git",
+      "node_modules"
+    ],
+    "exec": "node ./src/app.js"
+  }
 }

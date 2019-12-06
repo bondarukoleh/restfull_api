@@ -15,11 +15,9 @@ app.get('/', (req, res) => {
 
 app.get('/api/courses', (req, res) => {
 	const {query: {sortBy = null}} = req;
-	res.write(`Query parameters is "${JSON.stringify(req.query)}" \n`); // stored as object, key=value, {sortBy:"name"}
 	const coursesCopy = [...courses];
 	sortBy && coursesCopy.sort((first, second) => Number(first[sortBy] > second[sortBy]));
-	res.write(`Courses ${JSON.stringify(coursesCopy, null, '  ')}`);
-	return res.send()
+	return res.send(coursesCopy)
 });
 
 app.get('/api/courses/:id', (req, res) => {
@@ -46,8 +44,6 @@ app.get('/api/multiPrams/:id/:id2', (req, res) => {
 });
 
 app.post('/api/courses', (req, res) => {
-	console.log('Got data'); // TODO: remove it
-	console.log(JSON.stringify(req.body)); // TODO: remove it
 	const response = {};
 	const {name} = req.body;
 	if (name && name.length) {
