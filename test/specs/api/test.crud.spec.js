@@ -3,13 +3,13 @@ const {api} = require('../../test_objects');
 
 describe('Basic CRUD Suite', function () {
 	describe('Courses suite', function () {
-		it('Check GET courses array', async function () {
+		it('GET courses array', async function () {
 			const {status, body} = await api.coursesApi.getCourses();
 			expect(status).to.eq(200, `Status should be 200`);
 			expect(!!body.length).to.eq(true, `Courses array didn't returned. Return: ${JSON.stringify(body)}`);
 		});
 
-		it('Check GET course by id', async function () {
+		it('GET course by id', async function () {
 			const courseName = 'Course to check';
 			let courseId = null;
 			{
@@ -25,7 +25,7 @@ describe('Basic CRUD Suite', function () {
 			}
 		});
 
-		it('Check POST course', async function () {
+		it('POST course', async function () {
 			const courseName = 'New course';
 			const {status, body} = await api.coursesApi.postCourse({name: courseName});
 			expect(status).to.eq(201, `Status should be 200`);

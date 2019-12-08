@@ -1,6 +1,6 @@
 const express = require('express');
-const Joi = require('joi');
-const Schemas = require('./routes.schema');
+const Schemas = require('./routes_schema');
+const {routes} = require('./data');
 const {PORT} = process.env;
 
 const app = express();
@@ -15,20 +15,24 @@ app.get('/', (req, res) => {
 	return res.send();
 });
 
-app.get('/api/courses', (req, res) => {
+app.get(routes.courses, (req, res) => {
 	const {query: {sortBy = null}} = req;
 	const coursesCopy = [...courses];
 	sortBy && coursesCopy.sort((first, second) => Number(first[sortBy] > second[sortBy]));
 	return res.send(coursesCopy);
 });
 
-app.get('/api/courses/:id', (req, res) => {
+app.get(routes.course, (req, res) => {
+	const {error, value} = Schemas.getCourse.validate(req.params);
 	let response = null;
 	let reqId = null;
 	let course = null;
-	if (req.params && req.params.id) {
+	if(error) {
+		res.status(400);
+		return res.send(error.message)
+	}
+	if (value) {
 		reqId = parseInt(req.params.id);
-		console.log('WE HAVE COURSES:', courses);
 		course = courses.find(({id}) => id === reqId);
 	}
 	if (course) {
@@ -40,13 +44,13 @@ app.get('/api/courses/:id', (req, res) => {
 	res.send(response);
 });
 
-app.get('/api/multiPrams/:id/:id2', (req, res) => {
+app.get(routes.multiple, (req, res) => {
 	res.write(JSON.stringify(req.params));
 	return res.send();
 });
 
-app.post('/api/courses', (req, res) => {
-	const {error, value} = Joi.validate(req.body, Schemas.postCourse);
+app.post(routes.courses, (req, res) => {
+	const {error, value} = Schemas.postCourse.validate(req.body);
 	let response = null;
 	if (error) {
 		response = {error: error.message};
