@@ -1,4 +1,6 @@
 const express = require('express');
+const Joi = require('joi');
+const Schemas = require('./routes.schema');
 const {PORT} = process.env;
 
 const app = express();
@@ -10,14 +12,14 @@ const courses = [{id: 0, name: 'C'}, {id: 1, name: 'B'}, {id: 2, name: 'A'}];
 app.get('/', (req, res) => {
 	console.log(`We have a 'GET' request: ${req.url}`);
 	res.write('Hi man!');
-	return res.send()
+	return res.send();
 });
 
 app.get('/api/courses', (req, res) => {
 	const {query: {sortBy = null}} = req;
 	const coursesCopy = [...courses];
 	sortBy && coursesCopy.sort((first, second) => Number(first[sortBy] > second[sortBy]));
-	return res.send(coursesCopy)
+	return res.send(coursesCopy);
 });
 
 app.get('/api/courses/:id', (req, res) => {
@@ -33,34 +35,34 @@ app.get('/api/courses/:id', (req, res) => {
 		response = course;
 	} else {
 		res.status(404);
-		response = {error: `Course with id: "${reqId}" is not found.`}
+		response = {error: `Course with id: "${reqId}" is not found.`};
 	}
 	res.send(response);
 });
 
 app.get('/api/multiPrams/:id/:id2', (req, res) => {
 	res.write(JSON.stringify(req.params));
-	return res.send()
+	return res.send();
 });
 
 app.post('/api/courses', (req, res) => {
+	const {error, value} = Joi.validate(req.body, Schemas.postCourse);
 	let response = null;
-	const {name} = req.body;
-	if(!name || name.length < 3){
-		response = {error: `Name either less then 3 characters or not provided`};
+	if (error) {
+		response = {error: error.message};
 		res.status(400);
-		return res.send(response)
+		return res.send(response);
 	}
 
-	if (name && name.length) {
+	if (value) {
 		const course = {
 			id: courses.length,
-			name: name
+			name: value.name
 		};
 		courses.push(course);
 		response = courses[course.id];
 		res.status(201);
-		return res.send(response)
+		return res.send(response);
 	}
 });
 

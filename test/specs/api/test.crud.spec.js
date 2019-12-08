@@ -3,8 +3,6 @@ const {api} = require('../../test_objects');
 
 describe('Basic CRUD Suite', function () {
 	describe('Courses suite', function () {
-		const errorMessage = 'Name either less then 3 characters or not provided';
-
 		it('Check GET courses array', async function () {
 			const {status, body} = await api.coursesApi.getCourses();
 			expect(status).to.eq(200, `Status should be 200`);
@@ -35,6 +33,7 @@ describe('Basic CRUD Suite', function () {
 		});
 
 		it('POST course name less that 3 characters', async function () {
+			const errorMessage = `"name" length must be at least 3 characters long`;
 			const courseName = 'AB';
 			const {status, body} = await api.coursesApi.postCourse({name: courseName});
 			expect(status).to.eq(400, `Status should be 400`);
@@ -42,6 +41,7 @@ describe('Basic CRUD Suite', function () {
 		});
 
 		it('POST course without name', async function () {
+			const errorMessage = `"name" is required`;
 			const {status, body} = await api.coursesApi.postCourse({name: undefined});
 			expect(status).to.eq(400, `Status should be 400`);
 			expect(body.error).to.include(errorMessage, `Error should include ${errorMessage}`);
