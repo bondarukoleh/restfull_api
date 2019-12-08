@@ -46,3 +46,5 @@ required values, and we have a query parameters /resources/id?sortBy=name - for 
 extra data to server.
 
 With out express.json(), or body-parser - express doesn't see JSON objects that we are sending to it.
+
+TIP: kill process on windows: netstat -ano | findstr :yourPortNumber && taskkill /PID typeyourPIDhere /F

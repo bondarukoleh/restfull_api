@@ -3,8 +3,10 @@ const URL = require('url');
 const querystring = require('querystring');
 const {apiData: {commonHeaders}} = require('../test_data');
 
+
 async function sendRequest(host, method, {path, headers = commonHeaders, body, queries}) {
 	const url = formReqUrl(host, path, queries);
+	body = headers["Content-Type"] === 'application/json' ? JSON.stringify(body) : body;
 	const response = await fetch(url, {method, body, headers});
 	let responseHeaders = Array.from(response.headers.entries()).reduce((acc, [key, value]) => (acc[key] = value) && acc, {});
 	const responseObject = {status: response.status, url, method, headers: responseHeaders};

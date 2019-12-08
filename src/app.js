@@ -21,19 +21,19 @@ app.get('/api/courses', (req, res) => {
 });
 
 app.get('/api/courses/:id', (req, res) => {
-	let response = {};
+	let response = null;
 	let reqId = null;
 	let course = null;
 	if (req.params && req.params.id) {
 		reqId = parseInt(req.params.id);
+		console.log('WE HAVE COURSES:', courses);
 		course = courses.find(({id}) => id === reqId);
 	}
 	if (course) {
-		response.requestData = `Parameters is "${JSON.stringify(req.params)}"`;
-		response.message = `Found course: "${JSON.stringify(course)}"`
+		response = course;
 	} else {
 		res.status(404);
-		response.message = `Course with id: "${reqId}" is not found.`
+		response = {error: `Course with id: "${reqId}" is not found.`}
 	}
 	res.send(response);
 });
@@ -44,21 +44,24 @@ app.get('/api/multiPrams/:id/:id2', (req, res) => {
 });
 
 app.post('/api/courses', (req, res) => {
-	const response = {};
+	let response = null;
 	const {name} = req.body;
+	if(!name || name.length < 3){
+		response = {error: `Name either less then 3 characters or not provided`};
+		res.status(400);
+		return res.send(response)
+	}
+
 	if (name && name.length) {
 		const course = {
-			id: ++courses.length,
+			id: courses.length,
 			name: name
 		};
 		courses.push(course);
-		response.message = `Course ${JSON.stringify(courses[course.id])} created`;
+		response = courses[course.id];
 		res.status(201);
-	} else {
-		response.message = `Course with name: "${name}" not created`;
-		res.status(404);
+		return res.send(response)
 	}
-	res.send(response)
 });
 
 app.listen(port, () => console.log(`App listening on port ${port}.`));
