@@ -69,7 +69,7 @@ describe('Basic CRUD Suite', function () {
 			}
 		});
 
-		it.only('PUT course with invalid id and data', async function () {
+		it('PUT course with invalid id and data', async function () {
 			const creationName = 'Course Name To check';
 			const errorMessage = '"name" is not allowed to be empty';
 			let courseId = null;
