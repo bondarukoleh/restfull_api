@@ -17,6 +17,10 @@ class CoursesApi {
 	async postCourse({name}){
 		return this._apiClient.post({path: Urls.courses, body: {name}})
 	}
+
+	async putCourse({name, info, id}){
+		return this._apiClient.put({path: `${Urls.courses}/${id}`, body: {name, info}})
+	}
 }
 
 module.exports = {CoursesApi};

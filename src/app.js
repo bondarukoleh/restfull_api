@@ -70,4 +70,32 @@ app.post(routes.courses, (req, res) => {
 	}
 });
 
+app.put(routes.course, (req, res) => {
+	const {error: idError, value: idValue} = Schemas.getCourse.validate(req.params);
+	const {error: bodyError, value: bodyValue} = Schemas.putCourse.validate(req.body);
+	let response;
+	let reqId = null;
+	let course = null;
+	if(!idError && idValue) {
+		reqId = parseInt(idValue.id);
+		course = courses.find(({id}) => id === reqId);
+	}
+	if(!course){
+		res.status(404);
+		response = {error: `Course with id: "${reqId}" is not found.`};
+		return res.send(response)
+	}
+	if(bodyError) {
+		res.status(400);
+		return res.send(bodyError.message)
+	}
+	if (course) {
+		for (const [key, value] of Object.entries(bodyValue)) {
+			course[key] = value;
+		}
+		res.status(204);
+	}
+	return res.send(response);
+});
+
 app.listen(port, () => console.log(`App listening on port ${port}.`));
