@@ -1,13 +1,23 @@
+require('./helpers').common.setEnvironmentVariables();
 const express = require('express');
-const Schemas = require('./routes_schema');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const config = require('config');
+
 const {authentication, logger} = require('./middleware');
 const {routes, genres} = require('./data');
-const {PORT} = process.env;
+const Schemas = require('./routes_schema');
+const {PORT, DEBUG = true} = process.env;
 
 const app = express();
 const port = PORT || 3000;
 app.use(express.json()); // for application/json
 app.use(express.urlencoded({extended: true})); // for application/x-www-form-urlencoded
+app.use(helmet()); // increases security
+DEBUG && app.use(morgan(`Got ":method" to ":url". Returning ":status"  in ":response-time ms"`)); // logger, writes to terminal but could be setup to file
+console.log(`app is in: ${app.get('env')}`); //if NODE_ENV isn't set - development, otherwise - it's value. Needs to be set before app
+console.log(`App name: ${config.name}`);
+
 app.use(express.static('./src/public')); // static serving from public folder
 app.use(logger);
 app.use(authentication);

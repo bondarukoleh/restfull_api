@@ -1,0 +1,6 @@
+{
+	"name": "Development of videos application",
+	"db": {
+		"host": "dev-db-server"
+	}
+}

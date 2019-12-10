@@ -1,0 +1,6 @@
+{
+	"name": "Videos application PRODUCTION",
+	"db": {
+		"host": "prod-db-server"
+	}
+}

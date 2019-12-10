@@ -1,0 +1,6 @@
+{
+	"db": {
+		"user": "DB_USER_NAME",
+		"password": "DB_USER_PASS"
+	}
+}
