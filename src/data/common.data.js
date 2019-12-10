@@ -1,0 +1,27 @@
+const genres = [
+	{id: 1, name: 'Action'},
+	{id: 2, name: 'Adventure'},
+	{id: 3, name: 'Comedy'},
+	{id: 4, name: 'Crime'},
+	{id: 5, name: 'Drama'},
+	{id: 6, name: 'Fantasy'},
+	{id: 7, name: 'Historical'},
+	{id: 8, name: 'Historical fiction'},
+	{id: 9, name: 'Horror'},
+	{id: 10, name: 'Magical realism'},
+	{id: 11, name: 'Mystery'},
+	{id: 12, name: 'Paranoid fiction'},
+	{id: 13, name: 'Philosophical'},
+	{id: 14, name: 'Political'},
+	{id: 15, name: 'Romance'},
+	{id: 16, name: 'Saga'},
+	{id: 17, name: 'Satire'},
+	{id: 18, name: 'Science fiction'},
+	{id: 19, name: 'Social'},
+	{id: 20, name: 'Speculative'},
+	{id: 21, name: 'Thriller'},
+	{id: 22, name: 'Urban'},
+	{id: 23, name: 'Western'},
+];
+
+module.exports = {genres};

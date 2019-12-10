@@ -1,6 +1,6 @@
 const routes = {
-	courses: '/api/courses',
-	course: '/api/courses/:id',
+	genres: '/api/genres',
+	genre: '/api/genres/:id',
 	multiple: '/api/multiPrams/:id/:id2'
 };
 

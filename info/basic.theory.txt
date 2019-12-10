@@ -48,3 +48,9 @@ extra data to server.
 With out express.json(), or body-parser - express doesn't see JSON objects that we are sending to it.
 
 TIP: kill process on windows: netstat -ano | findstr :yourPortNumber && taskkill /PID typeyourPIDhere /F
+
+Middleware.
+The main idea of middleware, or middleware function that it takes a client request and return an response, or passes
+it to the next middleware function. app.get('/', (req, res) => {}) - route handler - is a middleware function, or
+app.use(express.json()) - express.json returns a middleware function, that takes a request and if request body is
+a json string - it parses it to json object - and add a "body" property with this object to request, and returns it.

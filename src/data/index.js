@@ -1,7 +1,9 @@
 const routes = require('./routes');
+const {genres} = require('./common.data');
 
 const data = {
-	routes
+	routes,
+	genres
 };
 
 module.exports = data;

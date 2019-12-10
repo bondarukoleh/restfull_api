@@ -1,8 +1,8 @@
 const {apiData: {host}} = require('../../test_data');
-const {CoursesApi} = require('./courses.api');
+const {GenresApi} = require('./genresApi');
 
 const apiObjects = {
-	coursesApi: new CoursesApi(host)
+	genresApi: new GenresApi(host)
 };
 
 module.exports = apiObjects;
