@@ -7,10 +7,9 @@ const config = require('config');
 const {authentication, logger} = require('./middleware');
 const {routes, genres} = require('./data');
 const Schemas = require('./routes_schema');
-const {PORT, DEBUG = true} = process.env;
+const {PORT = 3000, DEBUG = true} = process.env;
 
 const app = express();
-const port = PORT || 3000;
 app.use(express.json()); // for application/json
 app.use(express.urlencoded({extended: true})); // for application/x-www-form-urlencoded
 app.use(helmet()); // increases security
@@ -83,4 +82,4 @@ app.delete(routes.genre, (req, res) => {
 	return res.status(200).send(genre);
 });
 
-app.listen(port, () => console.log(`App listening on port ${port}.`));
+app.listen(PORT, () => console.log(`App listening on port ${PORT}.`));
