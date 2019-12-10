@@ -10,4 +10,12 @@ const Urls = {
 
 const host = `http://${HOST}:${PORT}`;
 
-module.exports = {commonHeaders, Urls, host};
+const Statuses = {
+	200: 200,
+	201: 201,
+	204: 204,
+	400: 400,
+	404: 404
+};
+
+module.exports = {commonHeaders, Urls, host, Statuses};

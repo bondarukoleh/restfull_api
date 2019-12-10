@@ -41,8 +41,8 @@ class BuildRequest {
 	async post({path, headers, body, queries}){
 		return sendRequest(this.host, 'POST', {path, headers, body, queries})
 	}
-	async delete({path, headers, queries}){
-		return sendRequest(this.host, 'DELETE', {path, headers, queries})
+	async delete({path, headers}){
+		return sendRequest(this.host, 'DELETE', {path, headers})
 	}
 	async patch({path, headers, body, queries}){
 		return sendRequest(this.host, 'PATCH', {path, headers, body, queries})

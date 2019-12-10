@@ -21,6 +21,10 @@ class CoursesApi {
 	async putCourse({name, info, id}){
 		return this._apiClient.put({path: `${Urls.courses}/${id}`, body: {name, info}})
 	}
+
+	async deleteCourse({id}){
+		return this._apiClient.delete({path: `${Urls.courses}/${id}`})
+	}
 }
 
 module.exports = {CoursesApi};

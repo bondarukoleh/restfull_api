@@ -1,10 +1,11 @@
-const {host, commonHeaders, Urls} = require('./api.data');
+const {host, commonHeaders, Urls, Statuses} = require('./api.data');
 
 const testData = {
 	apiData: {
 		host,
 		commonHeaders,
-		Urls
+		Urls,
+		Statuses
 	}
 };
 
