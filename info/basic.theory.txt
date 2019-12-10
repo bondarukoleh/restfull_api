@@ -54,3 +54,11 @@ The main idea of middleware, or middleware function that it takes a client reque
 it to the next middleware function. app.get('/', (req, res) => {}) - route handler - is a middleware function, or
 app.use(express.json()) - express.json returns a middleware function, that takes a request and if request body is
 a json string - it parses it to json object - and add a "body" property with this object to request, and returns it.
+When request goes to the server - it's get invoked in request processing pipeline, in this pipeline we have one or more
+middlewares, that either terminates pipeline by returning response, or passes request to another middleware.
+
+
+Note about curl
+curl --data '{"name":"Forth Course"}' --header "Content-Type: application/json" --request POST http://localhost:3000/api
+curl -d "param1=value1&param2=value2" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:3000/blahblah
+

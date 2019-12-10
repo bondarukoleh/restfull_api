@@ -1,15 +1,22 @@
 const express = require('express');
 const Schemas = require('./routes_schema');
+const {authentication, logger} = require('./middleware');
 const {routes, genres} = require('./data');
 const {PORT} = process.env;
 
 const app = express();
-app.use(express.json()); //adding a middleware to parse json to objects
-
 const port = PORT || 3000;
+app.use(express.json()); // for application/json
+app.use(express.urlencoded({extended: true})); // for application/x-www-form-urlencoded
+app.use(express.static('./src/public')); // static serving from public folder
+app.use(logger);
+app.use(authentication);
 
 app.get('/', (req, res) => {
-	return res.write('Hi man!').send();
+	console.log(`query`, req.query);
+	console.log(`params`, req.params);
+	console.log(`body`, req.body);
+	return res.send('Hi man!');
 });
 
 app.get(routes.genres, (req, res) => {
