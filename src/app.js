@@ -36,8 +36,7 @@ app.get(routes.genres, (req, res) => {
 });
 
 app.get(routes.genre, (req, res) => {
-	let reqId = null;
-	reqId = parseInt(req.params.id);
+	const reqId = parseInt(req.params.id);
 	const genre = genres.find(({id}) => id === reqId);
 	if (genre) return res.send(genre);
 	return res.status(404).send({error: `Course with id: "${reqId}" is not found.`});
@@ -62,7 +61,7 @@ app.post(routes.genres, (req, res) => {
 
 app.put(routes.genre, (req, res) => {
 	const {error, value} = Schemas.putCourse.validate(req.body);
-	let reqId = parseInt(req.params.id);
+	const reqId = parseInt(req.params.id);
 	const genre = genres.find(({id}) => id === reqId);
 	if(!genre) return res.status(404).send({error: `Course with id: "${reqId}" is not found.`});
 	if(error) return res.status(400).send({error: error.message});
@@ -75,7 +74,7 @@ app.put(routes.genre, (req, res) => {
 });
 
 app.delete(routes.genre, (req, res) => {
-	let reqId = parseInt(req.params.id);
+	const reqId = parseInt(req.params.id);
 	const genre = genres.find(({id}) => id === reqId);
 	if(!genre) return res.status(404).send({error: `Course with id: "${reqId}" is not found.`});
 	genres.splice(genres.indexOf(genre), 1);
