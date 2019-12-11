@@ -1,3 +1,5 @@
 {
-	"name": "Videos application"
+	"name": "Videos application",
+	"app_port": 3000,
+	"debug": true
 }

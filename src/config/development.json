@@ -2,5 +2,7 @@
 	"name": "Development of videos application",
 	"db": {
 		"host": "dev-db-server"
-	}
+	},
+	"app_port": 3000,
+	"debug": true
 }
