@@ -3,28 +3,28 @@ const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const config = require('config');
+const log = require('debug')('app:startup');
 
-const {authentication, logger} = require('./middleware');
+const {authentication} = require('./middleware');
 const {routes, genres} = require('./data');
 const Schemas = require('./routes_schema');
-const {app_port, debug} = config;
+const {app_port, debug_app} = config;
 
 const app = express();
 app.use(express.json()); // for application/json
 app.use(express.urlencoded({extended: true})); // for application/x-www-form-urlencoded
 app.use(helmet()); // increases security
-debug && app.use(morgan(`Got ":method" to ":url". Returning ":status"  in ":response-time ms"`)); // logger, writes to terminal but could be setup to file
-console.log(`app is in: ${app.get('env')}`); //if NODE_ENV isn't set - development, otherwise - it's value. Needs to be set before app
-console.log(`App name: ${config.name}`);
+debug_app && app.use(morgan(`Got ":method" to ":url". Returning ":status"  in ":response-time ms"`)); // logger, writes to terminal but could be setup to file
+log(`app is in: ${app.get('env')}`); //if NODE_ENV isn't set - development, otherwise - it's value. Needs to be set before app
+log(`App name: ${config.name}`);
 
 app.use(express.static('./src/public')); // static serving from public folder
-app.use(logger);
 app.use(authentication);
 
 app.get('/', (req, res) => {
-	console.log(`query`, req.query);
-	console.log(`params`, req.params);
-	console.log(`body`, req.body);
+	log(`query`, req.query);
+	log(`params`, req.params);
+	log(`body`, req.body);
 	return res.send('Hi man!');
 });
 

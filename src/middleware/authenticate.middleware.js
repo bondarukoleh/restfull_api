@@ -1,6 +1,8 @@
+const log = require('debug')('middleware:auth');
+
 function authentication(req, res, next) {
 	// TODO: Extend
-	console.log('Authenticating...');
+	log('Authenticating...');
 	next();
 }
 

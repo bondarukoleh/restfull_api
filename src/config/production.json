@@ -4,5 +4,5 @@
 		"host": "prod-db-server"
 	},
 	"app_port": 3000,
-	"debug": false
+	"debug_app": false
 }

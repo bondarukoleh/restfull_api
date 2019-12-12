@@ -4,5 +4,5 @@
 		"host": "dev-db-server"
 	},
 	"app_port": 3000,
-	"debug": true
+	"debug_app": true
 }

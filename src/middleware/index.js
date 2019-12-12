@@ -1,5 +1,4 @@
 const middleware = {
-	logger: require('./logger.middleware'),
 	authentication: require('./authenticate.middleware'),
 };
 
