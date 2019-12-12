@@ -1,8 +1,6 @@
 const path = require('path');
 
 function setEnvironmentVariables() {
-	console.log('Setting env vars...');
-	process.env.NODE_CONFIG_DIR = path.resolve(process.cwd(), 'src/config'); // for config package, maybe will change it with time
 	try {
 		require('dotenv-safe').config({allowEmptyValues: true, example: path.resolve(process.cwd(), '.env')});
 	} catch (e) {

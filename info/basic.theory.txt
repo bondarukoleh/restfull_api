@@ -57,6 +57,8 @@ a json string - it parses it to json object - and add a "body" property with thi
 When request goes to the server - it's get invoked in request processing pipeline, in this pipeline we have one or more
 middlewares, that either terminates pipeline by returning response, or passes request to another middleware.
 
+We can use express.Router - to simplify pathes.
+
 
 Note about curl
 curl --data '{"name":"Forth Course"}' --header "Content-Type: application/json" --request POST http://localhost:3000/api
