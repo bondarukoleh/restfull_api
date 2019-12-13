@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
-const baseDbUrl = 'mongodb://127.0.0.1:27017';
+const config = require('config');
+const {host, port} = config.db;
 const log = require('debug')('db:client');
 
 class Mongoose {
-	constructor({dbUrl = baseDbUrl, options = {useNewUrlParser: true, useUnifiedTopology: true}} = {}){
+	constructor({dbUrl = `${host}:${port}`, options = {useNewUrlParser: true, useUnifiedTopology: true}} = {}){
 		this.dbUrl = dbUrl;
 		this.options = options;
 	}
