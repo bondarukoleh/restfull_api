@@ -56,9 +56,20 @@ app.use(express.json()) - express.json returns a middleware function, that takes
 a json string - it parses it to json object - and add a "body" property with this object to request, and returns it.
 When request goes to the server - it's get invoked in request processing pipeline, in this pipeline we have one or more
 middlewares, that either terminates pipeline by returning response, or passes request to another middleware.
+We can use express.Router - to simplify paths.
 
-We can use express.Router - to simplify pathes.
+Install mongodb on mac:
+$> brew install mongodb
+$>sudo mkdir -p /data/db (We need to create storage for it)
+$> sudo chown -R `id -un` /data/db (Set wright permissions to this folder)
+$> mongod (Start daemon on mongodb, will start service on 27017)
 
+Go to mongodb.com to download the client for it, called compass.
+
+For Windows - download mongodb installer and client.
+Add C:\Program Files\MongoDB\Server\4.2\bin to "path" system variables.
+Create storage folder. oleh> md c:\data\db
+run from terminal oleh> mongod
 
 Note about curl
 curl --data '{"name":"Forth Course"}' --header "Content-Type: application/json" --request POST http://localhost:3000/api

@@ -17,7 +17,7 @@ async function deleteGenre(id) {
 
 describe('Basic Genres CRUD Suite', function () {
 	describe('GET Genres', function () {
-		it('GET genres array', async function () {
+		it.only('GET genres array', async function () {
 			const {status, body} = await genresApi.getGenres();
 			expect(status).to.eq(200, `Status should be ${Statuses['200']}`);
 			expect(!!body.length).to.eq(true, `Genres array didn't returned. Return: ${JSON.stringify(body)}`);
