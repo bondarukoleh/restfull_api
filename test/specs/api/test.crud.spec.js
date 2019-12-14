@@ -106,9 +106,9 @@ describe('Basic Genres CRUD Suite', function () {
 			const genreId = await postGenre(creationName);
 			await deleteGenre(genreId);
 			const {status, body} = await genresApi.getGenres();
-			const deletedPresent = body.some(genre => genre.id === genreId);
 
 			expect(status).to.eq(200, `Status should be 200`);
+			const deletedPresent = body.some(genre => genre.id === genreId);
 			expect(deletedPresent).to.eq(false, `Deleted item with id ${genreId} shouldn't be present in array`);
 		});
 

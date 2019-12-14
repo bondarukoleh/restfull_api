@@ -12,10 +12,12 @@ class Mongoose {
 	async connect(database = 'playground') {
 		let res = null;
 		try {
+			console.log('STAETTING CONN')
 			res = await mongoose.connect(`${this.dbUrl}/${database}`, this.options);
 			log(`BD connected: ${this.dbUrl}, with options: %j`, this.options)
 		} catch (e) {
-			throw new Error(`Error while connecting to DB: "${e.message}"`)
+			console.log('FAILED CON')
+			return new Error(`Error while connecting to DB: "${e.message}"`)
 		}
 		return res;
 	}

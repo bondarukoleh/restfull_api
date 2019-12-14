@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon",
     "test": "mocha --opts ./mocha.opts",
-		"lint": "./node_modules/.bin/eslint \"**/*.js\""
+    "lint": "./node_modules/.bin/eslint \"**/*.js\""
   },
   "repository": {
     "type": "git",
