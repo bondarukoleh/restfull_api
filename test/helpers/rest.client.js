@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const URL = require('url');
 const querystring = require('querystring');
-const {apiData: {commonHeaders}} = require('../test_data');
+const {apiData: {commonHeaders}} = require('../data');
 
 
 async function sendRequest(host, method, {path, headers = commonHeaders, body, queries}) {

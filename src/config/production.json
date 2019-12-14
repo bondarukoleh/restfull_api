@@ -1,7 +1,8 @@
 {
 	"name": "Videos application PRODUCTION",
 	"db": {
-		"host": "prod-db-server"
+		"host": "mongodb://127.0.0.1",
+		"port": 27017
 	},
 	"app_port": 3000,
 	"debug_app": false

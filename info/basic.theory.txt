@@ -58,6 +58,7 @@ When request goes to the server - it's get invoked in request processing pipelin
 middlewares, that either terminates pipeline by returning response, or passes request to another middleware.
 We can use express.Router - to simplify paths.
 
+MONGO
 Install mongodb on mac:
 $> brew install mongodb
 $>sudo mkdir -p /data/db (We need to create storage for it)
@@ -70,6 +71,14 @@ For Windows - download mongodb installer and client.
 Add C:\Program Files\MongoDB\Server\4.2\bin to "path" system variables.
 Create storage folder. oleh> md c:\data\db
 run from terminal oleh> mongod
+
+So Collection in mongo - same relation DB table
+Documents in Collection - same as relation DB rows in table
+
+In mongoose - a client to manage mongo - we have Schemas. In Scheme - we explain em... scheme of row we want to create
+in Collection.
+
+
 
 Note about curl
 curl --data '{"name":"Forth Course"}' --header "Content-Type: application/json" --request POST http://localhost:3000/api

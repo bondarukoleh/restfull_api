@@ -12,3 +12,4 @@ node_modules/
 
 # sencitive data
 .env
+start.test.sh

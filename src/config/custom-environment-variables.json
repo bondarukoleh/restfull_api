@@ -1,6 +1,8 @@
 {
 	"db": {
 		"user": "DB_USER_NAME",
-		"password": "DB_USER_PASS"
+		"password": "DB_USER_PASS",
+		"host": "DB_HOST",
+		"port": "DB_PORT"
 	}
 }

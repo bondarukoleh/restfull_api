@@ -11,7 +11,7 @@ const {genre, multiple, home} = require('./routes');
 
 const app = express();
 
-// middleware
+// Middleware
 app.use(express.json()); // for application/json
 app.use(express.urlencoded({extended: true})); // for application/x-www-form-urlencoded
 app.use(express.static('./src/public')); // static serving from public folder
@@ -25,7 +25,7 @@ debug_app && app.use(morgan(`Got ":method" to ":url". Returning ":status"  in ":
 log(`app is in: ${app.get('env')}`); //if NODE_ENV isn't set - development, otherwise - it's value. Needs to be set before app
 log(`App name: ${name}`);
 
-//Routers
+// Routers
 app.use(home.url, home.handler);
 app.use(genre.url, genre.handler);
 app.use(multiple.url, multiple.handler);

@@ -10,13 +10,12 @@ const postGenre = Joi.object({name: Joi.string().min(3).required()});
 const putGenre = Joi.object({name: Joi.string().min(3).required(), info: Joi.string().min(5)});
 
 router.get('/', async (req, res) => {
-	console.log('GET ing')
 	const connection = await db.client.connect();
-	console.log("onnected")
 	if(connection instanceof Error) return res.status(500).send(connection.message);
 	const {query: {sortBy = null}} = req;
 	const genresCopy = [...genres];
 	sortBy && genresCopy.sort((first, second) => Number(first[sortBy] > second[sortBy]));
+	await db.client.disconnect();
 	return res.send(genresCopy);
 });
 

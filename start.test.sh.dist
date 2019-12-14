@@ -1,0 +1,12 @@
+# To start testing create start.test.sh file and set environment variables properly
+
+# Application host
+export HOST=127.0.0.1
+# Application port
+export PORT=3000
+
+export DB_HOST=127.0.0.1
+export DB_PORT=27017
+
+echo Starting tests...;
+npm t;

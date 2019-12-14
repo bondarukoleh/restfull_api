@@ -1,6 +1,6 @@
 const {expect} = require('chai');
-const {api: {genresApi}} = require('../../test_objects');
-const {apiData: {Statuses}} = require('../../test_data');
+const {api: {genresApi}} = require('../../lib');
+const {apiData: {Statuses}} = require('../../data');
 
 async function postGenre(genreName) {
 	const {status, body} = await genresApi.postGenre({name: genreName});
@@ -16,6 +16,7 @@ async function deleteGenre(id) {
 }
 
 describe('Basic Genres CRUD Suite', function () {
+
 	describe('GET Genres', function () {
 		it('GET genres array', async function () {
 			const {status, body} = await genresApi.getGenres();
@@ -41,6 +42,7 @@ describe('Basic Genres CRUD Suite', function () {
 			await deleteGenre(genreId);
 		});
 	});
+
 	describe('POST Genres', function () {
 		it('POST genre', async function () {
 			const genreName = 'New genre';
@@ -63,6 +65,7 @@ describe('Basic Genres CRUD Suite', function () {
 			expect(body.error).to.include(errorMessage, `Error should include ${errorMessage}`);
 		});
 	});
+
 	describe('PUT Genres', function () {
 		it('PUT genre', async function () {
 			const creationName = 'Some Genre Name';

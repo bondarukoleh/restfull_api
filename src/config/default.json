@@ -1,5 +1,9 @@
 {
-	"name": "Videos application",
+	"name": "Videos application default",
+	"db": {
+		"host": "mongodb://127.0.0.1",
+		"port": 27017
+	},
 	"app_port": 3000,
 	"debug_app": true
 }

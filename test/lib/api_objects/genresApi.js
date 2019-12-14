@@ -1,5 +1,5 @@
 const {BuildRequest} = require('../../helpers/rest.client');
-const {apiData: {Urls}} = require('../../test_data');
+const {apiData: {Urls}} = require('../../data');
 
 class GenresApi {
 	constructor(host) {

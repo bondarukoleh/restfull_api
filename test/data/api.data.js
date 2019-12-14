@@ -1,4 +1,4 @@
-const {HOST = 'localhost', PORT = 3000} = process.env;
+const {HOST='localhost', PORT=3000} = process.env;
 
 const commonHeaders = {
 	'Content-Type': 'application/json'

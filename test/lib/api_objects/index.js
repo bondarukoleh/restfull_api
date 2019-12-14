@@ -1,4 +1,4 @@
-const {apiData: {host}} = require('../../test_data');
+const {apiData: {host}} = require('../../data');
 const {GenresApi} = require('./genresApi');
 
 const apiObjects = {
