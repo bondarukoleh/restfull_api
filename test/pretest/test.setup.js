@@ -28,8 +28,8 @@ async function createData() {
 	const Genre = client.mongoose.model('Genre', genresSchema);
 	const genre2 = new Genre(
 		{
-			name: 'Super Horror',
-			tags: ['With Friends', 'Murder', 'For evening', 'ALLS'],
+			name: 'Super Horror 2',
+			tags: ['With Friends', 'Murder', 'For evening', 'ALLSasdasda'],
 			isStock: true
 		}
 	);

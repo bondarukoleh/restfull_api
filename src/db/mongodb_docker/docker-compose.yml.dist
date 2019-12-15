@@ -1,12 +1,14 @@
-version: 2
+version: "2"
 services:
   database:
     image: mongo:latest
+    restart: always
     container_name: mongodb
-    entrypoint:
-      - MONGO_INITDB_DATABASE=playground
-      - MONGO_INITDB_ROOT_USERNAME=YOUR_USER
-      - MONGO_INITDB_ROOT_PASSWORD=YOUR_PASS
+    environment:
+    # db admin is mandatory, otherwise root user appears in test db
+      - MONGO_INITDB_DATABASE=admin
+      - MONGO_INITDB_ROOT_USERNAME=YOUR_ROOT_USER
+      - MONGO_INITDB_ROOT_PASSWORD=YOUR_ROOT_PASS
     volumes:
       - YOUR_PATH/mongoVolume:/data/db
       - YOUR_PATH/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
