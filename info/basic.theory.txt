@@ -93,6 +93,21 @@ Boolean
 ObjectID - uniq identifier
 Array
 
+Comparing operators in mongoose
+eq (equal)
+ne (not equal)
+gt (greater than)
+gte (greater than or equal)
+lt (less then)
+lte (less then or equal)
+in
+nin (no in)
+Genre.find({name: {$gt: 10}, someNumber: {$in: [10, 15, 20]}})
+
+Logical operators
+or
+and
+Genre.find().or([{name: 'This name'}, {isPublished: true}]).and([{name: 'This name'}, {isPublished: true}])
 
 Note about curl
 curl --data '{"name":"Forth Course"}' --header "Content-Type: application/json" --request POST http://localhost:3000/api
