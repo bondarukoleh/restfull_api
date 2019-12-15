@@ -1,4 +1,4 @@
 --recursive test/specs/**/*.js
 --timeout 60000
 -R spec
---file test/pretest/test.setup.js
+#--file test/pretest/test.setup.js

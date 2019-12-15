@@ -1,0 +1,8 @@
+use playground;
+db.createUser(
+	{
+		user: "YOUR_USER",
+		pwd: "YOUR_PASS",
+		roles: [ { role: "readWrite", db: "YOUR_DB" } ]
+	}
+);

@@ -4,10 +4,10 @@ const getLogger = require('../logger');
 const {DB_HOST, DB_PORT, DB_USER_NAME, DB_USER_PASS} = process.env;
 const log = getLogger({name: 'DBClient'});
 const defaultOptions = {useNewUrlParser: true, useUnifiedTopology: true};
+const defaultDBUrl = `mongodb://${DB_USER_NAME}:${DB_USER_PASS}@${DB_HOST}:${DB_PORT}`;
 
 class DBClient {
-	// constructor({dbUrl = `mongodb://${DB_USER_NAME}:${DB_USER_PASS}@${DB_HOST}:${DB_PORT}`, options = defaultOptions} = {}){
-	constructor({dbUrl = `mongodb://${DB_HOST}:${DB_PORT}`, options = defaultOptions} = {}){
+	constructor({dbUrl = defaultDBUrl, options = defaultOptions} = {}){
 		this.mongoose = mongoose;
 		this.dbUrl = dbUrl;
 		this.options = options;
@@ -15,10 +15,11 @@ class DBClient {
 	}
 
 	async connect(database = 'playground') {
+		const urlToConnect = `${this.dbUrl}/${database}?authSource=${database}`;
 		try {
-			log.info(`Connecting to: ${this.dbUrl}, with options: %j`, this.options);
-			this.connection = await mongoose.connect(`${this.dbUrl}/${database}`, this.options);
-			log.info(`BD connected: ${this.dbUrl}`);
+			log.info(`Connecting to: ${urlToConnect}, with options: %j`, this.options);
+			this.connection = await mongoose.connect(urlToConnect, this.options);
+			log.info(`BD connected: ${urlToConnect}`);
 		} catch (e) {
 			log.info(`Fail to connect to DB: ${e.message}`);
 			return new Error(`Error while connecting to DB: "${e.message}"`)

@@ -28,18 +28,18 @@ async function createData() {
 	const Genre = client.mongoose.model('Genre', genresSchema);
 	const genre2 = new Genre(
 		{
-			name: 'Horror',
-			tags: ['With Friends', 'Murder', 'For evening'],
-			isStock: false
+			name: 'Super Horror',
+			tags: ['With Friends', 'Murder', 'For evening', 'ALLS'],
+			isStock: true
 		}
 	);
 
-	// await genre2.save();
+	await genre2.save();
 	return Genre
-	.find({name: 'Action'}) // filtering
-	.limit(10) // limitation of result
-	.sort({name: 1}) // sorted by name, -1 - means descending (по убыванию), 1 - ascending (по возрастанию)
-	.select({name: 1, tags: 1}) // choose properties that we want to return from object.
+	.find() // filtering
+	// .limit(10) // limitation of result
+	// .sort({name: 1}) // sorted by name, -1 - means descending (по убыванию), 1 - ascending (по возрастанию)
+	// .select({name: 1, tags: 1}) // choose properties that we want to return from object.
 
 	// return Genre.find({name: {$gt: 10}, someNumber: {$in: [10, 15, 20]}})
 }
