@@ -5,6 +5,7 @@ const log = require('debug')('db:client');
 
 class Mongoose {
 	constructor({dbUrl = `mongodb://${host}:${port}`, options = {useNewUrlParser: true, useUnifiedTopology: true}} = {}){
+		this.mongoose = mongoose;
 		this.dbUrl = dbUrl;
 		this.options = options;
 		this.connection = null;

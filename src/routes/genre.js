@@ -4,18 +4,18 @@ const Joi = require('@hapi/joi');
 
 const routes = require('./routes');
 const {genres} = require('../data');
-const db = require('../db');
+const {client} = require('../db');
 
 const postGenre = Joi.object({name: Joi.string().min(3).required()});
 const putGenre = Joi.object({name: Joi.string().min(3).required(), info: Joi.string().min(5)});
 
 router.get('/', async (req, res) => {
-	const connection = await db.client.connect();
+	const connection = await client.connect();
 	if(connection instanceof Error) return res.status(500).send(connection.message);
 	const {query: {sortBy = null}} = req;
 	const genresCopy = [...genres];
 	sortBy && genresCopy.sort((first, second) => Number(first[sortBy] > second[sortBy]));
-	await db.client.disconnect();
+	await client.disconnect();
 	return res.send(genresCopy);
 });
 

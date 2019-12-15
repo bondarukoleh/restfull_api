@@ -75,9 +75,23 @@ run from terminal oleh> mongod
 So Collection in mongo - same relation DB table
 Documents in Collection - same as relation DB rows in table
 
-In mongoose - a client to manage mongo - we have Schemas. In Scheme - we explain em... scheme of row we want to create
-in Collection.
+In mongoose - a client to manage mongo - we have Schemas. In Scheme - we explain em... scheme of Document we want
+to create in Collection. From Schema we can create a model, like a class which can create a document objects
+in collection.
+const humanScheme = new mongoose.Schema({name: String, age: Number}); - created schema for collection
+const Human = mongoose.model('HumanCollection', humanScheme); - created model for collection
+const human1 = new Human({name: "John", age: 18}) - created object to store in collection
+await human1.save() - created document in 'HumanCollection'
 
+So Schema is like class for
+In Schema we can use types:
+String
+Number
+Date
+Buffer
+Boolean
+ObjectID - uniq identifier
+Array
 
 
 Note about curl

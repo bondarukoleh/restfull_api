@@ -7,6 +7,8 @@ export PORT=3000
 
 export DB_HOST=127.0.0.1
 export DB_PORT=27017
+export DB_USER_NAME=YOUR_USER
+export DB_USER_PASS=YOUR_PASS
 
 echo Starting tests...;
 npm t;

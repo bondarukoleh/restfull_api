@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
 const getLogger = require('../logger');
 
-const {DB_HOST, DB_PORT} = process.env;
+const {DB_HOST, DB_PORT, DB_USER_NAME, DB_USER_PASS} = process.env;
 const log = getLogger({name: 'DBClient'});
+const defaultOptions = {useNewUrlParser: true, useUnifiedTopology: true};
 
 class DBClient {
-	constructor({dbUrl = `mongodb://${DB_HOST}:${DB_PORT}`, options = {useNewUrlParser: true, useUnifiedTopology: true}} = {}){
+	// constructor({dbUrl = `mongodb://${DB_USER_NAME}:${DB_USER_PASS}@${DB_HOST}:${DB_PORT}`, options = defaultOptions} = {}){
+	constructor({dbUrl = `mongodb://${DB_HOST}:${DB_PORT}`, options = defaultOptions} = {}){
+		this.mongoose = mongoose;
 		this.dbUrl = dbUrl;
 		this.options = options;
 		this.connection = null;
