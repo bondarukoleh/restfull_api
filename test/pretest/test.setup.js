@@ -26,20 +26,15 @@ async function createData() {
 	});
 
 	const Genre = client.mongoose.model('Genre', genresSchema);
-	const genre2 = new Genre(
+	const genre = new Genre(
 		{
 			name: 'Super Horror 2',
 			tags: ['With Friends', 'Murder', 'For evening', 'ALLSasdasda'],
 			isStock: true
 		}
 	);
-
-	await genre2.save();
-	return Genre
-	.find() // filtering
-	// .limit(10) // limitation of result
-	// .sort({name: 1}) // sorted by name, -1 - means descending (по убыванию), 1 - ascending (по возрастанию)
-	// .select({name: 1, tags: 1}) // choose properties that we want to return from object.
-
-	// return Genre.find({name: {$gt: 10}, someNumber: {$in: [10, 15, 20]}})
+	// await Genre.updateMany(require('../data/db_fixtures/genres'));
+	// await genre.save();
+	return Genre.find()
 }
+

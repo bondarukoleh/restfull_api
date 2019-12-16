@@ -83,6 +83,14 @@ const Human = mongoose.model('HumanCollection', humanScheme); - created model fo
 const human1 = new Human({name: "John", age: 18}) - created object to store in collection
 await human1.save() - created document in 'HumanCollection'
 
+Human.find() // filtering
+	.limit(10) // limitation of result
+	.sort({name: 1}) // sorted by name, -1 - means descending (по убыванию), 1 - ascending (по возрастанию)
+	.select({name: 1, tags: 1}) // choose properties that we want to return from object.
+	.find({name: /^super/ig}) // using RegExp
+	.countDocuments() // to get number of found documents
+	.skip(2) // means skip first two documents. Useful if pagination needed, works with limit e.g. .skip(2).limit(10)
+
 So Schema is like class for
 In Schema we can use types:
 String
@@ -108,6 +116,8 @@ Logical operators
 or
 and
 Genre.find().or([{name: 'This name'}, {isPublished: true}]).and([{name: 'This name'}, {isPublished: true}])
+
+
 
 Note about curl
 curl --data '{"name":"Forth Course"}' --header "Content-Type: application/json" --request POST http://localhost:3000/api

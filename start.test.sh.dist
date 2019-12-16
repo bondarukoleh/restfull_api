@@ -9,6 +9,7 @@ export DB_HOST=127.0.0.1
 export DB_PORT=27017
 export DB_USER_NAME=YOUR_USER
 export DB_USER_PASS=YOUR_PASS
+export DB_NAME=YOUR_TEST_DB_NAME
 
 echo Starting tests...;
 npm t;
