@@ -6,7 +6,8 @@ const testData = {
 		commonHeaders,
 		Urls,
 		Statuses
-	}
+	},
+	dbData: require('./db')
 };
 
 module.exports = testData;

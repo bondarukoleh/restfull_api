@@ -1,40 +1,44 @@
 const {client} = require('../helpers/db');
 const log = require('../helpers/logger')({name: 'Pretest'});
+const {dbData: {genreFixtures, schemes}} = require('../../test/data');
+let GenreModel = null;
 
-before(async function () {
+// before(
+(async function () {
 	log.info(`Creating data for testing.`);
 	await client.connect();
+	GenreModel = getGenreModelModel(client);
 	try {
 		log.info(`Trying to create data`);
-		const result = await createData();
-		log.info(`Data created: ${result}`);
+		// const result = await GenreModel.insertMany(genreFixtures);
+
+		const result = await updateCourse('5a6900fff467be65019a9001', {price: 9000});
+		log.info(`Data created:`);
+		log.info(result);
 	}
 	catch(e){
+		if(e.message.includes('duplicate key error collection')){
+			const result = await GenreModel.updateMany(genreFixtures);
+			log.info(`Data updated:`);
+			return log.info(result)
+		}
 		log.error(`Couldn't create test data ${e.message}`)
 	}
 	finally {
 		await client.disconnect();
 	}
-});
+})();
 
-async function createData() {
-	const genresSchema = new client.mongoose.Schema({
-		name: String,
-		tags: [String],
-		date: {type: Date, default: Date.now}, // default - to not specify creation date explicitly
-		isStock: Boolean
-	});
-
-	const Genre = client.mongoose.model('Genre', genresSchema);
-	const genre = new Genre(
-		{
-			name: 'Super Horror 2',
-			tags: ['With Friends', 'Murder', 'For evening', 'ALLSasdasda'],
-			isStock: true
-		}
-	);
-	// await Genre.updateMany(require('../data/db_fixtures/genres'));
-	// await genre.save();
-	return Genre.find()
+function getGenreModelModel(mongoClient) {
+	const genresSchema = new mongoClient.mongoose.Schema(schemes.genreScheme);
+	return mongoClient.mongoose.model('Genre', genresSchema);
 }
 
+async function updateCourse(courseID, updateObject) {
+	const course = await GenreModel.findById(courseID);
+	if (!course) {
+		return 'No such course';
+	}
+	course.set(updateObject);
+	return course.save();
+}

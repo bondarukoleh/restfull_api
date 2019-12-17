@@ -117,7 +117,16 @@ or
 and
 Genre.find().or([{name: 'This name'}, {isPublished: true}]).and([{name: 'This name'}, {isPublished: true}])
 
+A few examples of queries
+GenreModel.find({isPublished: true, tags: 'backend'}).sort({name: 1}).select('name author');
+GenreModel.find({isPublished: true, tags: {$in: ['frontend', 'backend']}}).sort('-price').select('name author');
+GenreModel.find({isPublished: true}).or([{name: /.*by.*/ig}, {price: {$gte: 15}}]).select('name author price');
 
+Update document
+Two ways to do that.
+First - query first - means find the document, update it's fields, and save it. GenreModel.set({key: value}) - to update,
+	or you can update properties of object directly.
+Second - update directly in DB
 
 Note about curl
 curl --data '{"name":"Forth Course"}' --header "Content-Type: application/json" --request POST http://localhost:3000/api
