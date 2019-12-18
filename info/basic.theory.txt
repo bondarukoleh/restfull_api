@@ -124,9 +124,28 @@ GenreModel.find({isPublished: true}).or([{name: /.*by.*/ig}, {price: {$gte: 15}}
 
 Update document
 Two ways to do that.
-First - query first - means find the document, update it's fields, and save it. GenreModel.set({key: value}) - to update,
-	or you can update properties of object directly.
+First - query first - means find the document, update it's fields, and save it.
+ With this approach we can validate the data that we want to add to document, or check some stuff.
+ Good when we get something from client, and want to add this to DB
+ const course = await GenreModel.findById({_id: id});
+ course.set({key: value}) - to update, or you can update properties of object directly.
+ course.save()
 Second - update directly in DB
+ This approach good if we know what we are doing, and don't need no extra check before update.
+ We can do it directly in DB. We can use mongodb update operators "$".
+ const resultOfUpdate = await GenreModel.update({_id: id}, {$set: {name: 'New Name'}});
+ No need to save it.
+
+ To get a doc that was updated:
+ const course = await GenreModel.findByIdAndUpdate(genreId, {$set: {name: 'New Name'}}, {new: true});
+ this way - course will be updated object.
+
+Remove document
+ const result = await GenreModel.deleteOne({_id: id}); find first doc and delete
+ const result = await GenreModel.deleteMany({isPublished: false}); find by query docs and delete
+ To get a doc that was deleted:
+ const result = await GenreModel.findAndRemove(id);
+
 
 Note about curl
 curl --data '{"name":"Forth Course"}' --header "Content-Type: application/json" --request POST http://localhost:3000/api
