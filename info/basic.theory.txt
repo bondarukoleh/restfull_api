@@ -146,6 +146,70 @@ Remove document
  To get a doc that was deleted:
  const result = await GenreModel.findAndRemove(id);
 
+Validation in mongodb
+By default all data in schema is optional, so we cat crate a empty document, which is not good.
+We can make a validation for creation, PAY ATTENTION - this validation rules in mongoose level, mongodb directly doesn't
+give a ... about it.
+const Course = new mongoose.Schema({name: {type: String, required: true}})
+const course = new Course({});
+await course.validate() -> we'll get an error or
+await course.save() -> we'll get an error
+
+Condition validation
+const Course = new mongoose.Schema({inStock: Boolean, isPublished: {
+        type: Boolean,
+        required: function () { return this.inStock; } // if inStock - true, then isPublished - is a required field.
+    }
+  })
+
+Validators of types
+const Course = new mongoose.Schema({
+    someStringProp: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 255,
+        match: /^/b.*/d$/ig,
+        enum: ['thisOne', 'orThisOne', 'AndThat\'sIt']
+    },
+    someNumber: {
+            type: Number,
+            required: true,
+            min: 5,
+            max: 200
+        }
+  })
+
+Custom Validators
+const Course = new mongoose.Schema({
+    someArrProp: {
+        type: Array,
+        required: true,
+        validate: {
+            validator: function(v){
+                return v !== null && v.length > 0; // if you don't pass a someArrProp, mongodb will initiate
+            },                                     //  an empty array since this is described in scheme
+            message: 'someArrProp should be not empty array'
+        }
+    }
+  })
+
+Async validation
+const Course = new mongoose.Schema({
+    someArrProp: {
+        type: Array,
+        required: true,
+        validate: {
+            isAsync: true,
+            validator: function(v, cb){
+                checkValueInExternalService(v) // returns boolean
+                    .then(valid => cb(valid), (notValid) => cb(notValid))
+            },
+            message: 'someArrProp should be not empty array'
+        }
+    }
+  })
+
 
 Note about curl
 curl --data '{"name":"Forth Course"}' --header "Content-Type: application/json" --request POST http://localhost:3000/api

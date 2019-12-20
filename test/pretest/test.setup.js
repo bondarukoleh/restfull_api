@@ -11,8 +11,9 @@ let GenreModel = null;
 	try {
 		log.info(`Trying to create data`);
 		// const result = await GenreModel.insertMany(genreFixtures);
-
-		const result = await updateCourse('5a6900fff467be65019a9001', {price: 9000});
+		// const result = await updateCourse('5a6900fff467be65019a9001', {price: 9000});
+		// const course = new GenreModel({tags: ['someTag']});
+		// await course.validate();
 		log.info(`Data created:`);
 		log.info(result);
 	}
