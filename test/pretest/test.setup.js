@@ -12,18 +12,21 @@ let GenreModel = null;
 		log.info(`Trying to create data`);
 		// const result = await GenreModel.insertMany(genreFixtures);
 		// const result = await updateCourse('5a6900fff467be65019a9001', {price: 9000});
-		// const course = new GenreModel({tags: ['someTag']});
-		// await course.validate();
+		const course = new GenreModel({tags: ''});
+		await course.validate();
 		log.info(`Data created:`);
-		log.info(result);
+		log.info(course);
 	}
 	catch(e){
-		if(e.message.includes('duplicate key error collection')){
-			const result = await GenreModel.updateMany(genreFixtures);
-			log.info(`Data updated:`);
-			return log.info(result)
+		// if(e.message.includes('duplicate key error collection')){
+		// 	const result = await GenreModel.updateMany(genreFixtures);
+		// 	log.info(`Data updated:`);
+		// 	return log.info(result)
+		// }
+		log.error(`Couldn't create test data`);
+		for(const field in e.errors){
+			log.error(e.errors[field])
 		}
-		log.error(`Couldn't create test data ${e.message}`)
 	}
 	finally {
 		await client.disconnect();

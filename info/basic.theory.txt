@@ -170,13 +170,17 @@ const Course = new mongoose.Schema({
         minlength: 5,
         maxlength: 255,
         match: /^/b.*/d$/ig,
-        enum: ['thisOne', 'orThisOne', 'AndThat\'sIt']
+        enum: ['thisOne', 'orThisOne', 'AndThat\'sIt'],
+        lowercase: true // means convert passed value to lower case, uppercase? is also available
+				trim: true // you got it.
     },
     someNumber: {
             type: Number,
             required: true,
             min: 5,
-            max: 200
+            max: 200,
+            get: v => Math.round(v) // custom getter of value, when value is ejecting from DB - it will be round
+            set: v => Math.ceil(v) // custom setter of value, when value is putting to DB - it will be cailed
         }
   })
 
@@ -209,6 +213,9 @@ const Course = new mongoose.Schema({
         }
     }
   })
+
+We can iterate on erroneous fields in catch block. e.errors has all fields that was not correctly passed to DB.
+for(const field in e.errors){log.error(field)}
 
 
 Note about curl
