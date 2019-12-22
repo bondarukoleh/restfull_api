@@ -3,12 +3,11 @@ const router = express.Router();
 const Joi = require('@hapi/joi');
 
 const routes = require('./routes');
-const {genres} = require('../data');
 const {client, schemas} = require('../db');
 
 const postGenre = Joi.object({name: Joi.string().min(3).required()});
-const putGenre = Joi.object({name: Joi.string().min(3).required(), info: Joi.string().min(5)});
-const GenreModel = new client.mongoose.model('Genre', new client.mongoose.Schema(schemas.genre));
+const putGenre = Joi.object({name: Joi.string().min(3).required()});
+const GenreModel = client.mongoose.model('Genre', new client.mongoose.Schema(schemas.genre));
 
 router.get('/', async (req, res) => {
 	const genres = await GenreModel.find();
@@ -22,7 +21,6 @@ router.get('/:id', async (req, res) => {
 		return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
 	}
 	const genre = await GenreModel.findById(req.params.id);
-	console.log('GOT GENRE', genre);
 	if (genre) return res.send(genre);
 	return res.status(404).send({error: `Course with id: "${req.params.id}" is not found.`});
 });
@@ -42,14 +40,11 @@ router.put('/:id', async (req, res) => {
 	if(!idIsValid(req.params.id)) {
 		return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
 	}
+	if(error) return res.status(400).send({error: error.message});
 	const genre = await GenreModel.findById(req.params.id);
 	if(!genre) return res.status(404).send({error: `Course with id: "${req.params.id}" is not found.`});
-	if(error) return res.status(400).send({error: error.message});
-	if (genre) {
-		await genre.set(value);
-		await genre.save();
-		return res.status(204).send();
-	}
+	await genre.set(value).save();
+	return res.status(204).send();
 });
 
 router.delete('/:id', async (req, res) => {

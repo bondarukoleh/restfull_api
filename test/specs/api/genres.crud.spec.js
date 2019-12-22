@@ -91,7 +91,7 @@ describe('Basic Genres CRUD Suite', function () {
 			const errorMessage = '"name" is not allowed to be empty';
 			const genreId = await postGenre(creationName);
 			{
-				const {status, body} = await genresApi.putGenre({id: invalidID});
+				const {status, body} = await genresApi.putGenre({id: invalidID, name: 'new name'});
 				expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
 				expect(body.error).to.include('is not found', `Genre with invalid id shouldn't be found`);
 			}
