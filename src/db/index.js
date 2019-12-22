@@ -1,7 +1,8 @@
-const Mongoose = require('./mongoose');
+const Mongoose = require('./mongoose.client');
 
 const db = {
-	client: new Mongoose()
+	client: new Mongoose(),
+	schemas: require('./schemas'),
 };
 
 module.exports = db;

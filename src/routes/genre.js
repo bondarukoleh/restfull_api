@@ -4,61 +4,65 @@ const Joi = require('@hapi/joi');
 
 const routes = require('./routes');
 const {genres} = require('../data');
-const {client} = require('../db');
+const {client, schemas} = require('../db');
 
 const postGenre = Joi.object({name: Joi.string().min(3).required()});
 const putGenre = Joi.object({name: Joi.string().min(3).required(), info: Joi.string().min(5)});
+const GenreModel = new client.mongoose.model('Genre', new client.mongoose.Schema(schemas.genre));
 
 router.get('/', async (req, res) => {
-	const connection = await client.connect();
-	if(connection instanceof Error) return res.status(500).send(connection.message);
+	const genres = await GenreModel.find();
 	const {query: {sortBy = null}} = req;
-	const genresCopy = [...genres];
-	sortBy && genresCopy.sort((first, second) => Number(first[sortBy] > second[sortBy]));
-	await client.disconnect();
-	return res.send(genresCopy);
+	sortBy && genres.sort((first, second) => Number(first[sortBy] > second[sortBy]));
+	return res.send(genres);
 });
 
-router.get('/:id', (req, res) => {
-	const reqId = parseInt(req.params.id);
-	const genre = genres.find(({id}) => id === reqId);
+router.get('/:id', async (req, res) => {
+	if(!idIsValid(req.params.id)) {
+		return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
+	}
+	const genre = await GenreModel.findById(req.params.id);
+	console.log('GOT GENRE', genre);
 	if (genre) return res.send(genre);
-	return res.status(404).send({error: `Course with id: "${reqId}" is not found.`});
+	return res.status(404).send({error: `Course with id: "${req.params.id}" is not found.`});
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 	const {error, value} = postGenre.validate(req.body);
 	if (error) return res.status(400).send({error: error.message});
 	if (value) {
-		const genre = {
-			id: genres.length+1,
-			name: value.name
-		};
-		genres.push(genre);
-		return res.status(201).send(genre);
+		const newGenre = new GenreModel({name: value.name});
+		const createdGenre = await newGenre.save();
+		return res.status(201).send(createdGenre);
 	}
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
 	const {error, value} = putGenre.validate(req.body);
-	const reqId = parseInt(req.params.id);
-	const genre = genres.find(({id}) => id === reqId);
-	if(!genre) return res.status(404).send({error: `Course with id: "${reqId}" is not found.`});
+	if(!idIsValid(req.params.id)) {
+		return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
+	}
+	const genre = await GenreModel.findById(req.params.id);
+	if(!genre) return res.status(404).send({error: `Course with id: "${req.params.id}" is not found.`});
 	if(error) return res.status(400).send({error: error.message});
 	if (genre) {
-		for (const [key, _value] of Object.entries(value)) {
-			genre[key] = _value;
-		}
+		await genre.set(value);
+		await genre.save();
 		return res.status(204).send();
 	}
 });
 
-router.delete('/:id', (req, res) => {
-	const reqId = parseInt(req.params.id);
-	const genre = genres.find(({id}) => id === reqId);
-	if(!genre) return res.status(404).send({error: `Course with id: "${reqId}" is not found.`});
-	genres.splice(genres.indexOf(genre), 1);
+router.delete('/:id', async (req, res) => {
+	if(!idIsValid(req.params.id)) {
+		return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
+	}
+	const genre = await GenreModel.findByIdAndRemove(req.params.id);
+	if(!genre) return res.status(404).send({error: `Course with id: "${req.params.id}" is not found.`});
 	return res.status(200).send(genre);
 });
 
+
+function idIsValid(id){
+	return client.mongoose.Types.ObjectId.isValid(id);
+}
 module.exports = {handler: router, url: routes.genres};

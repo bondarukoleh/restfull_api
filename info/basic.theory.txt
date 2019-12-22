@@ -127,6 +127,7 @@ Two ways to do that.
 First - query first - means find the document, update it's fields, and save it.
  With this approach we can validate the data that we want to add to document, or check some stuff.
  Good when we get something from client, and want to add this to DB
+ client.mongoose.Types.ObjectId.isValid(req.params.id) -> useful check
  const course = await GenreModel.findById({_id: id});
  course.set({key: value}) - to update, or you can update properties of object directly.
  course.save()

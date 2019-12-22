@@ -18,8 +18,8 @@ class GenresApi {
 		return this._apiClient.post({path: Urls.genres, body: {name}})
 	}
 
-	async putGenre({name, info, id}){
-		return this._apiClient.put({path: `${Urls.genres}/${id}`, body: {name, info}})
+	async putGenre({name, id}){
+		return this._apiClient.put({path: `${Urls.genres}/${id}`, body: {name}})
 	}
 
 	async deleteGenre({id}){

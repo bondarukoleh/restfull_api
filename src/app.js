@@ -8,8 +8,12 @@ const log = require('debug')('app:startup');
 const {authentication} = require('./middleware');
 const {app_port, debug_app, name} = config;
 const {genre, multiple, home} = require('./routes');
+const {client} = require('./db');
 
 const app = express();
+
+// DB
+client.connect().then(() => log('DB connected'), (e) => log(`DB is NOT connected.\n"${e.message}"`));
 
 // Middleware
 app.use(express.json()); // for application/json

@@ -6,16 +6,18 @@ async function postGenre(genreName) {
 	const {status, body} = await genresApi.postGenre({name: genreName});
 	expect(status).to.eq(201, `Status should be ${Statuses['201']}`);
 	expect(body.name).to.eq(genreName, `Created genre should be with name ${genreName}`);
-	return body.id;
+	return body._id;
 }
 
 async function deleteGenre(id) {
 	const {status, body} = await genresApi.deleteGenre({id});
 	expect(status).to.eq(200, `Status should be 204`);
-	expect(body.id).to.eq(id, `Should return deleted genre with id ${id}, got "${body.id}"`);
+	expect(body._id).to.eq(id, `Should return deleted genre with id ${id}, got "${body.id}"`);
 }
 
 describe('Basic Genres CRUD Suite', function () {
+
+	const invalidID = '1dffde1111e11e1fa1c111b1';
 
 	describe('GET Genres', function () {
 		it('GET genres array', async function () {
@@ -36,7 +38,7 @@ describe('Basic Genres CRUD Suite', function () {
 		it('GET genre with not existing id', async function () {
 			const creationName = 'Genre to get';
 			const genreId = await postGenre(creationName);
-			const {status, body} = await genresApi.getGenre({id: -1});
+			const {status, body} = await genresApi.getGenre({id: invalidID});
 			expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
 			expect(body.error).to.include('not found', `Genre with invalid id shouldn't be found`);
 			await deleteGenre(genreId);
@@ -80,7 +82,6 @@ describe('Basic Genres CRUD Suite', function () {
 				const {status, body} = await genresApi.getGenre({id: genreId});
 				expect(status).to.eq(200, `Status should be ${Statuses['204']}`);
 				expect(body.name).to.eq(newName, `Changed genre name should be '${newName}', got '${body.name}'`);
-				expect(body.info).to.eq(info, `Changed genre should have info property '${info}', got '${body.info}'`);
 			}
 			await deleteGenre(genreId);
 		});
@@ -90,9 +91,9 @@ describe('Basic Genres CRUD Suite', function () {
 			const errorMessage = '"name" is not allowed to be empty';
 			const genreId = await postGenre(creationName);
 			{
-				const {status, body} = await genresApi.putGenre({id: -1});
+				const {status, body} = await genresApi.putGenre({id: invalidID});
 				expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
-				expect(body.error).to.include('not found', `Genre with invalid id shouldn't be found`);
+				expect(body.error).to.include('is not found', `Genre with invalid id shouldn't be found`);
 			}
 			{
 				const {status, body} = await genresApi.putGenre({id: genreId, name: ''});
@@ -118,9 +119,9 @@ describe('Basic Genres CRUD Suite', function () {
 		it('DELETE genre with not existing id', async function () {
 			const creationName = 'Genre to delete';
 			const genreId = await postGenre(creationName);
-			const {status, body} = await genresApi.deleteGenre({id: -1});
+			const {status, body} = await genresApi.deleteGenre({id: invalidID});
 			expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
-			expect(body.error).to.include('not found', `Genre with invalid id shouldn't be found`);
+			expect(body.error).to.include('is not found', `Genre with invalid id shouldn't be found`);
 			await deleteGenre(genreId);
 		});
 	});
