@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 
 const routes = require('./routes');
-const {client, models} = require('../db');
+const {models} = require('../db');
 
 router.get('/', async (req, res) => {
 	const genres = await models.genre.Model.find();
@@ -53,6 +54,6 @@ router.delete('/:id', async (req, res) => {
 
 
 function idIsValid(id){
-	return client.mongoose.Types.ObjectId.isValid(id);
+	return mongoose.Types.ObjectId.isValid(id);
 }
 module.exports = {handler: router, url: routes.genres};
