@@ -1,4 +1,4 @@
 module.exports = {
-	genre: require('./genre.schema'),
+	genres: require('./genre.schema'),
 	customer: require('./customer.schema'),
-}
+};

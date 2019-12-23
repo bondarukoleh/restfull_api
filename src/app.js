@@ -7,7 +7,7 @@ const log = require('debug')('app:startup');
 
 const {authentication} = require('./middleware');
 const {app_port, debug_app, name} = config;
-const {genre, multiple, home} = require('./routes');
+const {genres, multiple, home, customers} = require('./routes');
 const {client} = require('./db');
 
 const app = express();
@@ -31,7 +31,8 @@ log(`App name: ${name}`);
 
 // Routers
 app.use(home.url, home.handler);
-app.use(genre.url, genre.handler);
+app.use(genres.url, genres.handler);
 app.use(multiple.url, multiple.handler);
+app.use(customers.url, customers.handler);
 
 app.listen(app_port, () => console.log(`App listening on port ${app_port}.`));

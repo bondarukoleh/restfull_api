@@ -28,8 +28,7 @@ router.post('/', async (req, res) => {
 	const {error, value} = customerValidation.validate(req.body);
 	if (error) return res.status(400).send({error: error.message});
 	if (value) {
-		const newCustomer = new CustomerModel({name: value.name});
-		const createdCustomer = await newCustomer.save();
+		const createdCustomer = await (new CustomerModel({name: value.name, phone: value.phone})).save();
 		return res.status(201).send(createdCustomer);
 	}
 });

@@ -7,7 +7,7 @@ const {client, schemas} = require('../db');
 
 const postGenre = Joi.object({name: Joi.string().min(3).required()});
 const putGenre = Joi.object({name: Joi.string().min(3).required()});
-const GenreModel = client.mongoose.model('Genre', new client.mongoose.Schema(schemas.genre));
+const GenreModel = client.mongoose.model('Genre', new client.mongoose.Schema(schemas.genres));
 
 router.get('/', async (req, res) => {
 	const genres = await GenreModel.find();

@@ -1,44 +1,37 @@
 const {client} = require('../helpers/db');
 const log = require('../helpers/logger')({name: 'Pretest'});
-const {dbData: {genreFixtures, schemes}} = require('../../test/data');
-let GenreModel = null;
+const {dbData: {fixtures, schemes}} = require('../../test/data');
 
 before(async function () {
 	log.info(`Creating data for testing.`);
 	await client.connect();
-	GenreModel = getGenreModel(client);
+	const {GenreModel, CustomersModel} = getModels(client);
 	try {
 		log.info(`Trying to create data`);
-		const result = await GenreModel.insertMany(genreFixtures);
+		const result1 = await GenreModel.insertMany(fixtures.genres);
+		const result2 = await CustomersModel.insertMany(fixtures.customers);
 		log.info(`Data created:`);
-		log.info(result);
+		log.info(result1, result2);
 	}
 	catch(e){
 		if(e.message.includes('duplicate key error collection')){
-			const result = await GenreModel.updateMany(genreFixtures);
+			const result1 = await GenreModel.updateMany(fixtures.genres);
+			const result2 = await CustomersModel.updateMany(fixtures.customers);
 			log.info(`Data updated:`);
-			return log.info(result)
+			return log.info(result1, result2)
 		}
 		log.error(`Couldn't create test data`);
-		for(const field in e.errors){
-			log.error(e.errors.field)
-		}
+		log.error(e)
 	}
 	finally {
 		await client.disconnect();
 	}
 });
 
-function getGenreModel(mongoClient) {
+function getModels(mongoClient) {
 	const genresSchema = new mongoClient.mongoose.Schema(schemes.genreScheme);
-	return mongoClient.mongoose.model('Genre', genresSchema);
-}
-
-async function updateCourse(courseID, updateObject) {
-	const course = await GenreModel.findById(courseID);
-	if (!course) {
-		return 'No such course';
-	}
-	course.set(updateObject);
-	return course.save();
+	const customersSchema = new mongoClient.mongoose.Schema(schemes.customerScheme);
+	const GenreModel = mongoClient.mongoose.model('Genre', genresSchema);
+	const CustomersModel = mongoClient.mongoose.model('Customer', customersSchema);
+	return {GenreModel, CustomersModel}
 }

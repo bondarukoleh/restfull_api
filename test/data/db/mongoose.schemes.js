@@ -7,6 +7,13 @@ const genreScheme = {
 	date: {type: Date, default: Date.now}, // default - to not specify creation date explicitly
 	isPublished: Boolean,
 	price: Number
-}
+};
 
-module.exports = {genreScheme};
+const customerScheme = {
+	name: {type: String, required: true, minlength: 5, maxlength: 20},
+	isGold: Boolean,
+	phone: {type: String, required: true, minlength: 11, maxlength: 13},
+	date: {type: Date, default: Date.now}, // default - to not specify creation date explicitly
+};
+
+module.exports = {genreScheme, customerScheme};

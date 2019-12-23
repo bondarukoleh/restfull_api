@@ -72,10 +72,9 @@ describe('Basic Genres CRUD Suite', function () {
 		it('PUT genre', async function () {
 			const creationName = 'Some Genre Name';
 			const newName = 'New Genre Name';
-			const info = 'Some additional info';
 			const genreId = await postGenre(creationName);
 			{
-				const {status} = await genresApi.putGenre({id: genreId, name: newName, info});
+				const {status} = await genresApi.putGenre({id: genreId, name: newName});
 				expect(status).to.eq(204, `Status should be ${Statuses['204']}`);
 			}
 			{
