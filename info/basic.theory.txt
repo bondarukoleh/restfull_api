@@ -47,7 +47,11 @@ extra data to server.
 
 With out express.json(), or body-parser - express doesn't see JSON objects that we are sending to it.
 
-TIP: kill process on windows: netstat -ano | findstr :yourPortNumber && taskkill /PID typeyourPIDhere /F
+TIP: kill process on windows: netstat -ano | findstr :PORT_NUMBER && taskkill /PID YOUR_PID_HERE /F
+
+Note about curl
+curl --data '{"name":"Forth Course"}' --header "Content-Type: application/json" --request POST http://localhost:3000/api
+curl -d "param1=value1&param2=value2" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:3000/blahblah
 
 Middleware.
 The main idea of middleware, or middleware function that it takes a client request and return an response, or passes
@@ -218,8 +222,40 @@ const Course = new mongoose.Schema({
 We can iterate on erroneous fields in catch block. e.errors has all fields that was not correctly passed to DB.
 for(const field in e.errors){log.error(field)}
 
+References in Mongo DB
+Documents usually related to each other.
+For example Courses has author field. But Author is not just string, it's a big object with name, website, other
+courses, photos and so on. So it's deserves to have separate document or collection, but how we can "relate" courses
+and authors in no relational (no SQL) database?
 
-Note about curl
-curl --data '{"name":"Forth Course"}' --header "Content-Type: application/json" --request POST http://localhost:3000/api
-curl -d "param1=value1&param2=value2" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:3000/blahblah
+There three ways to connect documents in mongo.
+1. Using References (Normalization)
+We create a separate document for author:
+let author = {_id: 1, name: String, otherInfo: 'bla'}
+and "relate" it with course document via _id of author
+let course = {author: '1', authors: ['1', '2'], courseInfo: String}
 
+Keep in mind that we can set even invalid id, mongo doesn't have any real connection between those two documents, as it
+could be in SQL relational DBs. We using reference "ID" of object we want to add here, that's why it's called "using
+reference"
+
+The strengths of this approach is CONSISTENCY. Mean if we want to change schema of author document - we will modify
+only one place, and all objects that referenced on authors are get the last version of schema immediately, since they
+reference them via ids.
+Weakness - is that to run query to get course - we need to run extra query to the DB to get authors, and all others
+documents that course object reference to, so this can take some time.
+
+2. Using Embedded Documents (Denormalization)
+Instead of creation separate document for author we can create a document inside a document. We can store author object
+inside of course object.
+let course = {author: {_id: 1, name: String, otherInfo: 'bla'}}
+
+The strengths of this approach is QUERY PERFORMANCE. We need only one query to get full object.
+Weakness - if we need to change something - we need to change all objects in collection, and this can cause problems,
+errors which brings us to inconsistent data, when something is changed, but something is still old.
+
+3. Hybrid approach. We store object in object, but with reference to another object, to not store all properties from it
+but have ability to get them. e.g. From author object in course object we need only name. So we adding a name, but we
+want to have ability to check otherInfo if needed, so we adding a reference.
+let author = {_id: 1, name: String, otherInfo: 'bla'}
+let course = {author: {_id: 1, name: String}, courseInfo: String}
