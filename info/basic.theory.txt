@@ -259,3 +259,35 @@ but have ability to get them. e.g. From author object in course object we need o
 want to have ability to check otherInfo if needed, so we adding a reference.
 let author = {_id: 1, name: String, otherInfo: 'bla'}
 let course = {author: {_id: 1, name: String}, courseInfo: String}
+
+Implementation of those methods looks like this:
+1. Using References (Normalization)
+So we have a separate author model
+const AuthorModel = mongoose.model('Author', new mongoose.Schema({name: String, website: String}))
+const author = new AuthorModel({name: 'John'}) // {_id: 123, name: 'John', website: 'www.x.com'}).save()
+
+And have a course model
+const CourseModel = mongoose.model('Course', new mongoose.Schema({name: String, author: {
+        type: mongoose.Schema.Types.ObjectId, // to secure ourselves from adding some not valid id
+        ref: 'Author' // this is reference to Author model
+    }}))
+const course = new CourseModel({name: 'Node Course', author: '123'}).save() -> {_id: 112233, name: 'Node Course', author: 123}
+
+So now we have a course with reference to an author. But if we select courses - we'll get only ids instead of author
+objects.
+CourseModel.find().select('name author') -> {_id: 112233, name: 'Node Course', author: 123}
+
+To run this extra query - we need "populate" method.
+CourseModel.find()
+    .populate('author')
+    .select('name author') -> {_id: 112233, name: 'Node Course', author: {_id: 123, name: 'John', website: 'www.x.com'}}
+And voila, we have full course object with author object.
+
+We specify what property of course model is a reference.
+Since we explained in CourseModel that ref: 'Author' model, we don't need to pass a second argument to populate
+method, but if we didn't do that we could .populate({path: 'author', model: 'Author'(?)}) -> means what property and
+what collection we need to fetch with this id. Or three layered population
+.populate({path: 'author', populate: {path: 'friends'}}) - means get author, and get friends of author
+Or we can specify property that we want to get .populate('author', 'name'}) and we'll get only authors name in object
+Or we can exclude property that we don't want to get .populate('author', 'name -_id'}) and we'll get only authors name
+ in object without populated _id
