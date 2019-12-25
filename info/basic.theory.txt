@@ -261,10 +261,11 @@ let author = {_id: 1, name: String, otherInfo: 'bla'}
 let course = {author: {_id: 1, name: String}, courseInfo: String}
 
 Implementation of those methods looks like this:
+===================================
 1. Using References (Normalization)
 So we have a separate author model
 const AuthorModel = mongoose.model('Author', new mongoose.Schema({name: String, website: String}))
-const author = new AuthorModel({name: 'John'}) // {_id: 123, name: 'John', website: 'www.x.com'}).save()
+const author = new AuthorModel({name: 'John', website: 'www.x.com'}) // {_id: 123, name: 'John', website: 'www.x.com'}
 
 And have a course model
 const CourseModel = mongoose.model('Course', new mongoose.Schema({name: String, author: {
@@ -291,3 +292,33 @@ what collection we need to fetch with this id. Or three layered population
 Or we can specify property that we want to get .populate('author', 'name'}) and we'll get only authors name in object
 Or we can exclude property that we don't want to get .populate('author', 'name -_id'}) and we'll get only authors name
  in object without populated _id
+
+===================================
+2. Using Embedded Documents (Denormalization)
+const authorSchema = new mongoose.Schema({name: String, website: {type: String, required: true}})
+const AuthorModel = mongoose.model('Author', authorSchema)
+
+const CourseModel = mongoose.model('Course', new mongoose.Schema({name: String,
+ author: {
+ 		type: authorSchema, // this is just an example that we can use validation in embedded docs also
+ 		required: true
+	}
+}))
+const course = new CourseModel({
+	name: 'Node Course',
+	author: new AuthorModel({name: 'John', website: 'www.x.com'})
+}).save() -> {_id: 112233, name: 'Node Course', author: {_id: 123, name: 'John', website: 'www.x.com'}}
+
+So we are creating an object inside object. Problem is that we cannot change author without changing the course.
+To change something in author property we can:
+const course = await CourseModel.findById(courseId)
+course.author.name = 'New Name'
+await course.author.name.save()
+
+Or do it directly in DB
+const course = await CourseModel.update({_id: courseId}, {
+	$set: { // To remove property we can use $unset operator
+		'author.name': 'New Name'
+	}
+})
+
