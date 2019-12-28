@@ -7,6 +7,7 @@ const commonHeaders = {
 const Urls = {
 	genres: '/api/genres',
 	customers: '/api/customers',
+	movies: '/api/movies',
 };
 
 const host = `http://${HOST}:${PORT}`;

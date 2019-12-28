@@ -1,16 +1,10 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 
-const scheme = {
+const genreScheme = new mongoose.Schema({
 	name: {type: String, required: true, minlength: 5, maxlength: 20},
-	tags: {type: Array,
-		// validate: {
-		// validator(v){return Array.isArray(v) && v.length > 0},
-		// message: `Value should be not empty array`
-		// },
-		required: false},
 	date: {type: Date, default: Date.now}, // default - to not specify creation date explicitly
-};
+});
 
 const validate = function(objToValidate){
 	const validationObj = Joi.object({
@@ -19,6 +13,6 @@ const validate = function(objToValidate){
 	return validationObj.validate(objToValidate)
 };
 
-const Model = mongoose.model('Genre', new mongoose.Schema(scheme));
+const Model = mongoose.model('Genre', genreScheme);
 
-module.exports = {Model, validate};
+module.exports = {Model, validate, genreScheme};

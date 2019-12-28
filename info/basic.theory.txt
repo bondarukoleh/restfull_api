@@ -322,3 +322,23 @@ const course = await CourseModel.update({_id: courseId}, {
 	}
 })
 
+Make an array or related objects.
+const authorSchema = new mongoose.Schema({name: String, website: {type: String, required: true}})
+const AuthorModel = mongoose.model('Author', authorSchema)
+
+const CourseModel = mongoose.model('Course', new mongoose.Schema({ name: String, authors: [authorSchema] }))
+const course = new CourseModel({
+	name: 'Node Course',
+	authors: [
+		new AuthorModel({name: 'John', website: 'www.x.com'}),
+		new AuthorModel({name: 'Bob', website: 'www.y.com'}),
+	]
+}).save()
+
+To add some object to array - you can just "push" it to array and save it.
+await (await CourseModel.findById(courseID)).authors.push(new AuthorModel({name: 'John', website: 'www.x.com'})).save()
+To remove item from array - you need id of item
+const course = await CourseModel.findById(courseID)
+const author = course.authors.id(authorID)
+author.remove()
+course.save()
