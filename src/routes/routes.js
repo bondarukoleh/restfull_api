@@ -4,6 +4,7 @@ const routes = {
 	multiple: '/api/multiPrams/:id/:id2',
 	customers: '/api/customers',
 	movies: '/api/movies',
+	rental: '/api/rental',
 };
 
 module.exports = routes;
