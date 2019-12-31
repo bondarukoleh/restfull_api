@@ -342,3 +342,43 @@ const course = await CourseModel.findById(courseID)
 const author = course.authors.id(authorID)
 author.remove()
 course.save()
+
+======================================================
+======================================================
+Transactions concept.
+In relational DBs we have this concept of transaction. Means group of operations that need to be performed together,
+and only if those operations performed successfully - than resource changes applied (commit), if one of the
+operations failed, then all changes reverted (rollback) to this transaction reverted and resource isn't changed.
+In mongo - there no such thing as transaction - there is some a-like thing like two-phase commit (common protocol for
+commit changes in DB):
+ Phase 1 - Each server that needs to commit data writes its data records to the log. If a server is unsuccessful,
+  it responds with a failure message. If successful, the server replies with an OK message.
+ Phase 2 - This phase begins after all participants respond OK. Then, the coordinator sends a signal to each server
+  with commit instructions. After committing, each writes the commit as part of its log record for reference and sends
+  the coordinator a message that its commit has been successfully implemented. If a server fails, the coordinator
+  sends instructions to all servers to roll back the transaction. After the servers roll back, each sends feedback
+  that this has been completed.
+
+In package "fawn" there is ability to do "transactions" in mongodb. Ability to do that implemented above two-phase
+commit technique. Also it creates an extra collection to manage these two-phase commits stuff. Looks like a crutch to me.
+
+==================================================
+ObjectID in mongodb
+_id: 5b77fdc3215eda645bc6bdec
+12 bytes
+first 4 bytes - timestamp, so great thing that we don't need to save date of data creation - it's included in id.
+next 3 bytes - machine identifiers, individual for machine.
+next 2 bytes - process identifiers, individual for process.
+last 3 bytes - counter of creation.
+
+12 bytes of data. 96 bits (1 byte - 8 bits). 1 bit can hold 0 or 1, means 1 byte can hold 2 ^ 8 = 256 numbers.
+Counter is 3 bytes, means 2 ^ 24 = 16 millions.
+So if on same machine, on same process, on same time - we'll create more that 16 millions commits in db - ID will be
+duplicated :)
+
+ObjectID generated not by mongodb, but by mongodb driver.
+Mongoose is over mongodb driver.
+We can generate an ObjectID with mongoose.
+const id = new mongoose.Types.ObjectId()
+To get timestamp
+const timestamp = id.getTimestamp();

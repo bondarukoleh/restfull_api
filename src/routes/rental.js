@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
+// const Fawn = require('fawn');
 
 const routes = require('./routes');
 const {models: {rental: {Model, validate}, customer, movie}} = require('../db');
+
+// Fawn.init(mongoose);
 
 router.get('/', async (req, res) => {
 	const rentals = await Model.find();
@@ -37,6 +40,17 @@ router.post('/', async (req, res) => {
 		const createdRental = await newRental.save();
 		foundMovie.numberInStock--;
 		await foundMovie.save();
+
+		/*To make transaction like this action of saving rental and decrement number in stock - we could:
+		try {
+			new Fawn.Task()
+				.save('rentals', createdRental)
+				.update('movies', {_id: foundMovie._id}, {$inc: {numberInStock: -1}})
+				.run();
+		} catch (e) {
+			return res.status(500).send(e.message);
+		}*/
+
 		return res.status(201).send(createdRental);
 	}
 });

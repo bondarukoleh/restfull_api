@@ -16,7 +16,6 @@ const {dbData: {fixtures, schemes}} = require('../../test/data');
 		log.info(result1, result2, result3);
 	}
 	catch(e){
-		console.log('CATCHING ERROR')
 		if(e.message.includes('duplicate key error')){
 			const result1 = await GenreModel.updateMany(fixtures.genres);
 			const result2 = await CustomersModel.updateMany(fixtures.customers);
