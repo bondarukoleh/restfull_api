@@ -4,6 +4,7 @@ const routes = {
 	home: require('./home'),
 	customers: require('./customers'),
 	movies: require('./movies'),
+	rental: require('./rental'),
 };
 
 module.exports = routes;

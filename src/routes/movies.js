@@ -39,8 +39,8 @@ router.post('/', async (req, res) => {
 			numberInStock,
 			dailyRentalRate
 		});
-		const createdMovie = await newMovie.save();
-		return res.status(201).send(createdMovie);
+		await newMovie.save();
+		return res.status(201).send(newMovie);
 	}
 });
 

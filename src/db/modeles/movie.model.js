@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const {validIdRegex} = require("../common.db.data");
 
 const {genreScheme} = require('./genre.model');
 
@@ -17,7 +18,7 @@ const validate = function(objToValidate){
 		title: Joi.string().min(5).max(30).required(),
 		numberInStock: Joi.number().min(0).max(255).required(),
 		dailyRentalRate: Joi.number().min(0).max(255).required(),
-		genreId: Joi.string().required(),
+		genreId: Joi.string().regex(validIdRegex).required(),
 	});
 	return validationObj.validate(objToValidate)
 };

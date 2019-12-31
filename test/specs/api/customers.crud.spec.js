@@ -11,7 +11,7 @@ async function postCustomer({name, phone}) {
 
 async function deleteCustomer(id) {
 	const {status, body} = await customersApi.deleteCustomer({id});
-	expect(status).to.eq(200, `Status should be 204`);
+	expect(status).to.eq(200, `Status should be 200`);
 	expect(body._id).to.eq(id, `Should return deleted customer with id ${id}, got "${body.id}"`);
 }
 

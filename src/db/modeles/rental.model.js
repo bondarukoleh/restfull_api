@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const {validIdRegex} = require('../common.db.data');
 
 // Duplicating customer schema because we need only super needed info about them, and original customer schema
 // can be extended with additional properties that we don't want to see here. But it's not a good approach, fix latter
@@ -24,8 +25,8 @@ const rentalScheme = new mongoose.Schema({
 
 const validate = function(objToValidate){
 	const validationObj = Joi.object({
-		customerId: Joi.string().required(),
-		movieId: Joi.string().required(),
+		customerId: Joi.string().regex(validIdRegex).required(),
+		movieId: Joi.string().regex(validIdRegex).required(),
 	});
 	return validationObj.validate(objToValidate)
 };
