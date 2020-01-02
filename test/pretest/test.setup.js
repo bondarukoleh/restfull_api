@@ -19,6 +19,13 @@ const {dbData: {fixtures, schemes}} = require('../../test/data');
 	await client.disconnect();
 })();
 
+async function createTestData(dataCreationArray) {
+	log.info(`Trying to create data...`);
+	for (const {model, data} of dataCreationArray) {
+		await createOrUpdate(model, data)
+	}
+}
+
 function getModels(mongoClient) {
 	const GenreModel = mongoClient.mongoose.model('Genre', schemes.genreScheme);
 	const CustomersModel = mongoClient.mongoose.model('Customer', schemes.customerScheme);
@@ -50,12 +57,5 @@ async function createOrUpdate(model, data){
 			log.error(`Couldn't create test data.`);
 			log.error(e)
 		}
-	}
-}
-
-async function createTestData(dataCreationArray) {
-	log.info(`Trying to create data...`);
-	for (const {model, data} of dataCreationArray) {
-		await createOrUpdate(model, data)
 	}
 }

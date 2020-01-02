@@ -5,6 +5,7 @@ const routes = {
 	customers: '/api/customers',
 	movies: '/api/movies',
 	rental: '/api/rentals',
+	users: '/api/users',
 };
 
 module.exports = routes;
