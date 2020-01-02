@@ -2,15 +2,20 @@ const {client} = require('../helpers/db');
 const log = require('../helpers/logger')({name: 'Pretest'});
 const {dbData: {fixtures, schemes}} = require('../../test/data');
 
-/* TODO: refactor this piece of crap. Make data creation more extendable and flexible */
-/*TODO: IN DRAFT STATE, NOT FINISHED*/
+/* TODO: refactor this piece of crap. Make it more readable */
 
 // before(async function () {
 (async function () {
 	log.info(`Creating data for testing.`);
 	await client.connect();
 	const {GenreModel, CustomersModel, MovieModel, RentalModel} = getModels(client);
-	console.log(GenreModel)
+	const dataToCreation = [
+		{model: GenreModel, data: fixtures.genres},
+		{model: CustomersModel, data: fixtures.customers},
+		{model: MovieModel, data: fixtures.movies},
+		{model: RentalModel, data: fixtures.rentals}
+	];
+	await createTestData(dataToCreation);
 	await client.disconnect();
 })();
 
@@ -23,34 +28,34 @@ function getModels(mongoClient) {
 }
 
 async function insertData(model, dataToInsert) {
-	return model.updateMany(dataToInsert);
+	return model.insertMany(dataToInsert);
 }
 
 async function updateData(model, dataToUpdate) {
-	const {_id, ...rest} = dataToUpdate;
-	return model.updateMany({_id}, {$set: rest});
+	for(const {_id, ...rest} of dataToUpdate){
+		const result = await model.updateMany({_id}, {$set: rest});
+		log.info(`Data updated:`, result);
+	}
 }
 
-async function createTestData(model, data) {
+async function createOrUpdate(model, data){
 	try {
-		log.info(`Trying to create data`);
-		const result1 = await GenreModel.insertMany(fixtures.genres);
-		const result2 = await CustomersModel.insertMany(fixtures.customers);
-		const result3 = await MovieModel.insertMany(fixtures.movies);
-		const result4 = await RentalModel.insertMany(fixtures.rentals);
-		log.info(`Data created`);
-	}
-	catch(e){
+		const result = await insertData(model, data);
+		log.info(`Data created:`, result);
+	} catch (e) {
+		log.error(`Couldn't create test data for`, model);
 		if(e.message.includes('duplicate key error')){
-			const result1 = await GenreModel.updateMany(fixtures.genres);
-			const result2 = await CustomersModel.updateMany(fixtures.customers);
-			const result3 = await MovieModel.updateMany(fixtures.movies);
-			const result4 = await RentalModel.updateMany(fixtures.rentals);
-			// TODO: we need to rewrite update data to something like this
-			await MovieModel.updateMany({"_id": "5b77fdc3215eda645bc6bdec"}, {$set: {numberInStock: 10}});
-			log.info(`Data updated`);
+			await updateData(model, data);
+		} else {
+			log.error(`Couldn't create test data.`);
+			log.error(e)
 		}
-		log.error(`Couldn't create test data`);
-		log.error(e)
+	}
+}
+
+async function createTestData(dataCreationArray) {
+	log.info(`Trying to create data...`);
+	for (const {model, data} of dataCreationArray) {
+		await createOrUpdate(model, data)
 	}
 }
