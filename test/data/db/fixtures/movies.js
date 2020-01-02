@@ -1,42 +1,34 @@
-[
+const genres = require('./genres');
+
+const movies = [
 	{
 		"_id": "5b77fdc3215eda645bc6bdec",
 		"title": "Terminator",
-		"genre": {
-			"_id": "5a68fdd7bee8ea64649c2777",
-			"name": "Si-fi"
-		},
+		"genre": genres[0],
 		"numberInStock": 10,
 		"dailyRentalRate": 0
 	},
 	{
 		"_id": "5b77fdc9815eda645bc6bdec",
 		"title": "The Silence of the Lambs",
-		"genre": {
-			"_id": "5a6900fff467be65019a9001",
-			"name": "Thriller"
-		},
+		"genre": genres[1],
 		"numberInStock": 10,
 		"dailyRentalRate": 0
 	},
 	{
 		"_id": "5b77fdc7815eda645bc6bdec",
 		"title": "Last action hero",
-		"genre": {
-			"_id": "5a68ff090c578064a218a547",
-			"name": "Action"
-		},
+		"genre": genres[2],
 		"numberInStock": 10,
 		"dailyRentalRate": 0
 	},
 	{
 		"_id": "5b77fdc7915eda045bf6bdec",
 		"title": "Indiana Jones",
-		"genre": {
-			"_id": "5a68fdf95db93f6477053ddd",
-			"name": "Adventure"
-		},
+		"genre": genres[3],
 		"numberInStock": 10,
 		"dailyRentalRate": 0
 	}
-]
+];
+
+module.exports = movies;

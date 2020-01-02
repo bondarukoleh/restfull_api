@@ -1,4 +1,4 @@
-[
+const customers = [
 	{
 		"_id": "5a77fdc3615eda645bc6bdec",
 		"date": "2018-01-24T21:42:27.388Z",
@@ -31,4 +31,6 @@
 		"isGold": false,
 		"__v": 0
 	}
-]
+];
+
+module.exports = customers;

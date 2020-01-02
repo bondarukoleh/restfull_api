@@ -3,12 +3,35 @@ const log = require('../helpers/logger')({name: 'Pretest'});
 const {dbData: {fixtures, schemes}} = require('../../test/data');
 
 /* TODO: refactor this piece of crap. Make data creation more extendable and flexible */
+/*TODO: IN DRAFT STATE, NOT FINISHED*/
 
 // before(async function () {
 (async function () {
 	log.info(`Creating data for testing.`);
 	await client.connect();
 	const {GenreModel, CustomersModel, MovieModel, RentalModel} = getModels(client);
+	console.log(GenreModel)
+	await client.disconnect();
+})();
+
+function getModels(mongoClient) {
+	const GenreModel = mongoClient.mongoose.model('Genre', schemes.genreScheme);
+	const CustomersModel = mongoClient.mongoose.model('Customer', schemes.customerScheme);
+	const MovieModel = mongoClient.mongoose.model('Movie', schemes.movieScheme);
+	const RentalModel = mongoClient.mongoose.model('Rental', schemes.rentalScheme);
+	return {GenreModel, CustomersModel, MovieModel, RentalModel}
+}
+
+async function insertData(model, dataToInsert) {
+	return model.updateMany(dataToInsert);
+}
+
+async function updateData(model, dataToUpdate) {
+	const {_id, ...rest} = dataToUpdate;
+	return model.updateMany({_id}, {$set: rest});
+}
+
+async function createTestData(model, data) {
 	try {
 		log.info(`Trying to create data`);
 		const result1 = await GenreModel.insertMany(fixtures.genres);
@@ -30,15 +53,4 @@ const {dbData: {fixtures, schemes}} = require('../../test/data');
 		log.error(`Couldn't create test data`);
 		log.error(e)
 	}
-	finally {
-		await client.disconnect();
-	}
-})();
-
-function getModels(mongoClient) {
-	const GenreModel = mongoClient.mongoose.model('Genre', schemes.genreScheme);
-	const CustomersModel = mongoClient.mongoose.model('Customer', schemes.customerScheme);
-	const MovieModel = mongoClient.mongoose.model('Movie', schemes.movieScheme);
-	const RentalModel = mongoClient.mongoose.model('Rental', schemes.rentalScheme);
-	return {GenreModel, CustomersModel, MovieModel, RentalModel}
 }

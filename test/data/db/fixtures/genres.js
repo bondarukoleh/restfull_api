@@ -1,4 +1,4 @@
-[
+const genres = [
 	{
 		"_id": "5a68fdc3615eda645bc6bdec",
 		"name": "Horror",
@@ -34,4 +34,6 @@
 		"name": "Thriller",
 		"date": "2018-01-24T21:56:15.353Z"
 	}
-]
+];
+
+module.exports = genres;
