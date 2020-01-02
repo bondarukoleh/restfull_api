@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 
 const routes = require('./routes');
 const {models: {genre, movie: {Model, validate}}} = require('../db');
@@ -13,9 +12,8 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-	if(!idIsValid(req.params.id)) {
-		return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
-	}
+	const {error} = validate.validateId(req.params);
+	if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
 	const movie = await Model.findById(req.params.id);
 	if (movie) return res.send(movie);
 	return res.status(404).send({error: `Movie with id: "${req.params.id}" is not found.`});
@@ -45,8 +43,11 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
+	{
+		const {error} = validate.validateId(req.params);
+		if(error) return res.status(404).send({error: `Invalid Movie Id "${req.params.id}"`});
+	}
 	const {error} = validate(req.body);
-	if(!idIsValid(req.params.id)) return res.status(404).send({error: `Invalid Movie Id "${req.params.id}"`});
 
 	let genreToChange = null;
 	if(req.body.genreId){
@@ -71,16 +72,11 @@ router.put('/:id', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-	if(!idIsValid(req.params.id)) {
-		return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
-	}
+	const {error} = validate.validateId(req.params);
+	if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
 	const movie = await Model.findByIdAndRemove(req.params.id);
 	if(!movie) return res.status(404).send({error: `Movie with id: "${req.params.id}" is not found.`});
 	return res.status(200).send(movie);
 });
 
-
-function idIsValid(id){
-	return mongoose.Types.ObjectId.isValid(id);
-}
 module.exports = {handler: router, url: routes.movies};

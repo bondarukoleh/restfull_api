@@ -21,4 +21,23 @@ const movieScheme = new mongoose.Schema({
 	dailyRentalRate: {type: Number, default: 0, required: true, min: 0, max: 255}
 });
 
-module.exports = {genreScheme, customerScheme, movieScheme};
+const customerEssentialScheme = new mongoose.Schema({
+	name: {type: String, required: true, minlength: 5, maxlength: 50},
+	isGold: {type: Boolean, default: false},
+	phone: {type: String, required: true, minlength: 5, maxlength: 50},
+});
+
+const movieEssentialScheme = new mongoose.Schema({
+	title: {type: String, required: true, minlength: 5, maxlength: 255, trim: true},
+	dailyRentalRate: {type: Number, default: 0, required: true, min: 0, max: 255}
+});
+
+const rentalScheme = new mongoose.Schema({
+	customer: {type: customerEssentialScheme, required: true},
+	movie: {type: movieEssentialScheme, required: true},
+	dateOut: {type: Date, default: Date.now, required: true},
+	dateReturned: {type: Date},
+	rentFee: {type: Number, min: 0},
+});
+
+module.exports = {genreScheme, customerScheme, movieScheme, rentalScheme};

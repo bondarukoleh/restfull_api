@@ -13,13 +13,11 @@ router.post('/', async (req, res) => {
 	const {error, value} = validate(req.body);
 	if (error) return res.status(400).send({error: error.message});
 
-	if(!idIsValid(req.body.customerId)) return res.status(404).send({error: `Not valid customer Id "${req.body.customerId}"`});
 	const foundCustomer = await customer.Model.findById(req.body.customerId);
-	if (!foundCustomer) return res.status(400).send({error: `Invalid customer id.`});
+	if (!foundCustomer) return res.status(400).send({error: `Customer with id ${req.body.customerId} not found.`});
 
-	if(!idIsValid(req.body.movieId)) return res.status(404).send({error: `Not valid movie Id "${req.body.movieId}"`});
 	const foundMovie = await movie.Model.findById(req.body.movieId);
-	if (!foundMovie) return res.status(400).send({error: `Invalid movie id.`});
+	if (!foundMovie) return res.status(400).send({error: `Movie with id ${req.body.movieId} not found.`});
 
 	if(foundMovie.numberInStock === 0) return res.status(400).send({error: `Movie not in stock.`});
 
@@ -56,6 +54,22 @@ router.post('/', async (req, res) => {
 
 		return res.status(201).send(newRental);
 	}
+});
+
+router.get('/:id', async (req, res) => {
+	const {error} = validate.validateId(req.params);
+	if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
+	const rental = await Model.findById(req.params.id);
+	if (rental) return res.send(rental);
+	return res.status(404).send({error: `Rental with id: "${req.params.id}" is not found.`});
+});
+
+router.delete('/:id', async (req, res) => {
+	const {error} = validate.validateId(req.params);
+	if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
+	const rental = await Model.findByIdAndRemove(req.params.id);
+	if(!rental) return res.status(404).send({error: `Rental with id: "${req.params.id}" is not found.`});
+	return res.status(200).send(rental);
 });
 
 module.exports = {handler: router, url: routes.rental};

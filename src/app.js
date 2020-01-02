@@ -4,7 +4,10 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const config = require('config');
 const log = require('debug')('app:startup');
+const Joi = require('@hapi/joi');
 
+const {validObjectId} = require('./db/helper');
+Joi.objectId = validObjectId;
 const {authentication} = require('./middleware');
 const {app_port, debug_app, name} = config;
 const {genres, multiple, home, customers, movies, rental} = require('./routes');

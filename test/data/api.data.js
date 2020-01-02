@@ -8,6 +8,7 @@ const Urls = {
 	genres: '/api/genres',
 	customers: '/api/customers',
 	movies: '/api/movies',
+	rentals: '/api/rentals',
 };
 
 const host = `http://${HOST}:${PORT}`;

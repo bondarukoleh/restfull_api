@@ -30,7 +30,7 @@ describe('Basic Movies CRUD Suite', function () {
 		movieObj = {
 			title: 'New Movie',
 			genreId: (await getGenres())[0]._id,
-			numberInStock: 0,
+			numberInStock: 10,
 			dailyRentalRate: 0
 		};
 	});

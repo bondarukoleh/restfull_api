@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-	const {error, value} = validate.validatePost(req.body);
+	const {error, value} = validate(req.body);
 	if (error) return res.status(400).send({error: error.message});
 	if (value) {
 		const createdCustomer = await (new Model({name: value.name, phone: value.phone})).save();
@@ -33,7 +33,7 @@ router.put('/:id', async (req, res) => {
 		let {error} = validate.validateId(req.params);
 		if(error) return res.status(400).send({error: error.message});
 	}
-	let {error, value} = validate.validatePut(req.body);
+	let {error, value} = validate(req.body);
 	if(error) return res.status(400).send({error: error.message});
 	const customer = await Model.findById(req.params.id);
 	if(!customer) return res.status(404).send({error: `Course with id: "${req.params.id}" is not found.`});

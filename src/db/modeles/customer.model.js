@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
-const {validIdRegex} = require("../common.db.data");
 
 const customerScheme = new mongoose.Schema({
 	name: {type: String, required: true, minlength: 5, maxlength: 20},
@@ -15,25 +14,17 @@ const validateCommonObj = {
 	isGold: Joi.boolean(),
 };
 const validateIdObj = {
-	id: Joi.string().regex(validIdRegex).required()
+	id: Joi.objectId()
 };
 
-const validatePost = function(objToValidate){
-	const validationObj = Joi.object(validateCommonObj);
-	return validationObj.validate(objToValidate)
+function validate(objToValidate) {
+	return Joi.object(validateCommonObj).validate(objToValidate)
+}
+
+validate.validateId = function (objToValidate) {
+	return Joi.object(validateIdObj).validate(objToValidate)
 };
 
-const validatePut = function(objToValidate){
-	const validationObj = Joi.object(validateCommonObj);
-	return validationObj.validate(objToValidate)
-};
-
-const validateId = function(objToValidate){
-	const validationObj = Joi.object(validateIdObj);
-	return validationObj.validate(objToValidate)
-};
-
-const validate = {validatePost, validatePut, validateId};
 const Model = mongoose.model('Customer', customerScheme);
 
 module.exports = {Model, validate, customerScheme};

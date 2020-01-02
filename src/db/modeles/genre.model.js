@@ -6,11 +6,19 @@ const genreScheme = new mongoose.Schema({
 	date: {type: Date, default: Date.now}, // default - to not specify creation date explicitly
 });
 
-const validate = function(objToValidate){
-	const validationObj = Joi.object({
-		name: Joi.string().min(3).required(),
-	});
-	return validationObj.validate(objToValidate)
+const validateCommonObj = {
+	name: Joi.string().min(3).required()
+};
+const validateIdObj = {
+	id: Joi.objectId()
+};
+
+function validate(objToValidate) {
+	return Joi.object(validateCommonObj).validate(objToValidate)
+}
+
+validate.validateId = function (objToValidate) {
+	return Joi.object(validateIdObj).validate(objToValidate)
 };
 
 const Model = mongoose.model('Genre', genreScheme);
