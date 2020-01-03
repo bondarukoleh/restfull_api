@@ -6,6 +6,7 @@ const routes = {
 	movies: '/api/movies',
 	rental: '/api/rentals',
 	users: '/api/users',
+	auth: '/api/auth',
 };
 
 module.exports = routes;

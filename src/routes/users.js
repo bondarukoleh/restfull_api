@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const {jwt_ppk} = require('config');
 
 const routes = require('./routes');
 const {models: {user: {Model, validate}}} = require('../db');
@@ -27,9 +30,15 @@ router.post('/', async (req, res) => {
 	if(user) return res.status(404).send({error: `User with email ${req.body.email} is already exists.`});
 
 	if (value) {
-		const user = await new Model(value).save();
+		const user = new Model(value);
+		const salt = await bcrypt.genSalt(10);
+		user.password = await bcrypt.hash(user.password, salt);
+		await user.save();
 		const {password, ...rest} = user;
-		return res.status(201).send(rest);
+		/* return res.status(201).send(require('lodash').pick(user, ['_id', 'name', 'email']));
+		 - we could use lodash to send chosen vars, but for such tiny action I don't want to install whole package */
+		const token = jwt.sign({_id: user._id}, jwt_ppk);
+		return res.status(201).header('x-auth-token', {token}).send(rest);
 	}
 });
 
@@ -55,4 +64,4 @@ router.delete('/:id', async (req, res) => {
 	return res.status(200).send(user);
 });
 
-module.exports = {handler: router, url: routes.users};
+module.exports = {handler: router, url: routes.auth};

@@ -11,6 +11,16 @@ const validateCommonObj = {
 	name: Joi.string().min(5).max(50).required(),
 	email: Joi.string().min(5).max(255).required().email(),
 	password: Joi.string().min(5).max(255).required(),
+	/* we can use Joi password complexity (extra package)
+	password: Joi.string().min(5).max(255).required().passwordComplexity({
+		min: 8,
+		max: 26,
+		lowerCase: 1,
+		upperCase: 1,
+		numeric: 1,
+		symbol: 1,
+		requirementCount: 3,
+	}) */
 };
 const validateIdObj = {
 	id: Joi.objectId()

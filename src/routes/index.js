@@ -6,6 +6,7 @@ const routes = {
 	movies: require('./movies'),
 	rental: require('./rental'),
 	users: require('./users'),
+	auth: require('./auth'),
 };
 
 module.exports = routes;

@@ -382,3 +382,36 @@ We can generate an ObjectID with mongoose.
 const id = new mongoose.Types.ObjectId()
 To get timestamp
 const timestamp = id.getTimestamp();
+
+=============================
+Hash.
+To hash a password we need a salt.
+For pass 1234 -> we hash it to adfc, so if hacker will get this data - it couldn't decrypt it to 1234.
+But he can grab a hashing algorithm and list of popular passwords, hash them and compare with adfc - so he has a chance
+to understand which password is hashed. That's why we need salt - it's basically a random string that added to start or
+to the end of hashed password, so it's different each time it's hashed.
+
+JSON Web Token
+Long string that identifies a User.
+When User logged in system - server gives to this client a JWT, client should store it.
+Then client should use it in further requests to server.
+Web app clients usually store JWT in Local Storage, mobile - similar option but depend on platform.
+
+JWT - is a standard, and we can see on jwt.io what parts it's holding
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9. -> HEADER:ALGORITHM & TOKEN TYPE {"alg": "HS256", "typ": "JWT"}
+eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI65MDIyfQ. ->
+    PAYLOAD:DATA {"sub": "1234567890","name": "John Doe", "admin": true, "iat": "1516239022"}
+SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c ->
+    VERIFY SIGNATURE: HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), your-256-bit-secret)
+
+First part - is a standard headers.
+PAYLOAD - main thing, we can extract on client and on server side basic information about the user from it's token.
+So we don't need to query each time on the server side, is this user an admin or not, we can get this info from token
+that he passes to us. "iat" - token creation time, we can understand age of token, to update it.
+We can think that any user can generate a JWT with admin rights, but this third part is made to secure this door.
+SIGNATURE - is a digital signature made with PAYLOAD and secret private key that stored on the server. So if anyone
+changes the payload, and tries to generate new JWT - digital signature will be spoiled, and server will understand it,
+and decline it with "Not valid token".
+So to fake JWT - you need to have access to private key.
+
+
