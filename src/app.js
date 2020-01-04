@@ -8,7 +8,6 @@ const Joi = require('@hapi/joi');
 
 const {validObjectId} = require('./db/helper');
 Joi.objectId = validObjectId;
-const {authentication} = require('./middleware');
 const {app_port, debug_app, name} = config;
 const {genres, multiple, home, customers, movies, rental, users, auth} = require('./routes');
 const {client} = require('./db');
@@ -22,7 +21,6 @@ client.connect().then(() => log('DB connected'), (e) => log(`DB is NOT connected
 app.use(express.json()); // for application/json
 app.use(express.urlencoded({extended: true})); // for application/x-www-form-urlencoded
 app.use(express.static('./src/public')); // static serving from public folder
-app.use(authentication);
 app.use(helmet()); // increases security
 app.set('view engine', 'pug');
 app.set('views', './src/views'); // views set by default - here for example

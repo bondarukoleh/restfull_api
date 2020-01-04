@@ -3,6 +3,7 @@ const router = express.Router();
 
 const routes = require('./routes');
 const {models: {genre: {Model, validate}}} = require('../db');
+const {authentication} = require('../middleware');
 
 router.get('/', async (req, res) => {
 	const genres = await Model.find();
@@ -19,7 +20,7 @@ router.get('/:id', async (req, res) => {
 	return res.status(404).send({error: `Genre with id: "${req.params.id}" is not found.`});
 });
 
-router.post('/', async (req, res) => {
+router.post('/', authentication, async (req, res) => {
 	const {error, value} = validate(req.body);
 	if (error) return res.status(400).send({error: error.message});
 	if (value) {
@@ -29,7 +30,7 @@ router.post('/', async (req, res) => {
 	}
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authentication, async (req, res) => {
 	{
 		const {error} = validate.validateId(req.params);
 		if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
@@ -43,7 +44,7 @@ router.put('/:id', async (req, res) => {
 	return res.status(204).send();
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authentication, async (req, res) => {
 	const {error} = validate.validateId(req.params);
 	if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
 	const genre = await Model.findByIdAndRemove(req.params.id);

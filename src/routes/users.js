@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 
 const routes = require('./routes');
 const {models: {user: {Model, validate}}} = require('../db');
+const {authentication} = require('../middleware');
 
 router.get('/', async (req, res) => {
 	const users = await Model.find();
@@ -12,10 +13,10 @@ router.get('/', async (req, res) => {
 	return res.send(users);
 });
 
-router.get('/:id', async (req, res) => {
-	const {error} = validate.validateId(req.params);
-	if(error)	return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
-	const user = await Model.findById(req.params.id);
+/* We don't use /:id endpoint - because someone can brut user ids and get info about other users
+   With this /me - we always return info about current user - and criminal cannot get other users info */
+router.get('/me', authentication, async (req, res) => {
+	const user = await Model.findById(req.user._id).select('-password'); /* to remove pass property from return obj */
 	if (user) return res.send(user);
 	return res.status(404).send({error: `User with id: "${req.params.id}" is not found.`});
 });
@@ -37,28 +38,22 @@ router.post('/', async (req, res) => {
 		 - we could use lodash to send chosen vars, but for such tiny action I don't want to install whole package */
 		/* We won't send the confirmation email for now - so we log in created user here */
 		const token = user.generateToken();
-		return res.status(201).header('x-auth-token', {token}).send(rest);
+		return res.status(201).header('x-auth-token', token).send(rest);
 	}
 });
 
-router.put('/:id', async (req, res) => {
-	{
-		const {error} = validate.validateId(req.params);
-		if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
-	}
+router.put('/:id', authentication, async (req, res) => {
 	const {error, value} = validate(req.body);
 	if(error) return res.status(400).send({error: error.message});
 
-	const user = await Model.findById(req.params.id);
-	if(!user) return res.status(404).send({error: `Users with id: "${req.params.id}" is not found.`});
+	const user = await Model.findById(req.user._id);
+	if(!user) return res.status(404).send({error: `Users with id: "${req.user.id}" is not found.`});
 	await user.set(value).save();
 	return res.status(204).send();
 });
 
-router.delete('/:id', async (req, res) => {
-	const {error} = validate.validateId(req.params);
-	if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
-	const user = await Model.findByIdAndRemove(req.params.id);
+router.delete('/:id', authentication, async (req, res) => {
+	const user = await Model.findByIdAndRemove(req.user._id);
 	if(!user) return res.status(404).send({error: `Users with id: "${req.params.id}" is not found.`});
 	return res.status(200).send(user);
 });

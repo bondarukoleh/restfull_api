@@ -414,4 +414,8 @@ changes the payload, and tries to generate new JWT - digital signature will be s
 and decline it with "Not valid token".
 So to fake JWT - you need to have access to private key.
 
+Tokens must be stored on client, and we don't need to store or delete tokens from backed. So when user is logout - we
+should delete token on client side. So User will be forced to login again and get token.
+Storing tokens in plain text in DB - same as storing passwords. If you really need to save tokens in DB - hash them.
+When you sending token to client, use https - to not get criminal to own via sniffing your users tokens.
 
