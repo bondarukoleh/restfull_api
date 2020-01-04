@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const {jwt_ppk} = require('config');
 
 const routes = require('./routes');
 const {models: {user: {Model, validate}}} = require('../db');
@@ -37,7 +35,8 @@ router.post('/', async (req, res) => {
 		const {password, ...rest} = user;
 		/* return res.status(201).send(require('lodash').pick(user, ['_id', 'name', 'email']));
 		 - we could use lodash to send chosen vars, but for such tiny action I don't want to install whole package */
-		const token = jwt.sign({_id: user._id}, jwt_ppk);
+		/* We won't send the confirmation email for now - so we log in created user here */
+		const token = user.generateToken();
 		return res.status(201).header('x-auth-token', {token}).send(rest);
 	}
 });

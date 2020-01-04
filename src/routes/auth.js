@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const {jwt_ppk} = require('config');
 
 const routes = require('./routes');
 const {models: {auth: {validate}, user: {Model}}} = require('../db');
@@ -17,7 +15,7 @@ router.post('/', async (req, res) => {
 	const invalidPassword = bcrypt.compare(req.body.password, user.password);
 	if(!invalidPassword) return res.status(400).send({error: `Invalid Email or Password.`});
 
-	const token = jwt.sign({_id: user._id}, jwt_ppk);
+	const token = user.generateToken();
 	return res.status(200).send({token})
 });
 

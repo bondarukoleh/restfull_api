@@ -1,11 +1,16 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const jwt = require('jsonwebtoken');
+const {jwt_ppk} = require('config');
 
 const userScheme = new mongoose.Schema({
 	name: {type: String, required: true, minlength: 5, maxlength: 50},
 	email: {type: String, required: true, minlength: 5, maxlength: 255, unique: true},
 	password: {type: String, required: true, minlength: 5, maxlength: 1024},
 });
+userScheme.methods.generateToken = function () {
+	return jwt.sign({_id: this._id}, jwt_ppk);
+};
 
 const validateCommonObj = {
 	name: Joi.string().min(5).max(50).required(),
