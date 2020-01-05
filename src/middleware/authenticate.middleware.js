@@ -2,10 +2,10 @@ const log = require('debug')('middleware:auth');
 const jwt = require('jsonwebtoken');
 const {jwt_ppk} = require('config');
 
-function authentication(req, res, next) {
+function isUser(req, res, next) {
 	log('Check Authentication...');
 	const token = req.header('x-auth-token');
-	if(!token) return res.status(401).send('Access denied. No token.');
+	if (!token) return res.status(401).send('Access denied. No token.');
 
 	try {
 		req.user = jwt.verify(token, jwt_ppk);
@@ -15,4 +15,10 @@ function authentication(req, res, next) {
 	}
 }
 
-module.exports = authentication;
+function isAdmin(req, res, next) {
+	log('Check if User is admin...');
+	if (!req.user.isAdmin) return res.status(403).send('Forbidden. You have no rights to perform this operation.');
+	next();
+}
+
+module.exports = {isUser, isAdmin};

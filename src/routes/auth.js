@@ -19,4 +19,4 @@ router.post('/', async (req, res) => {
 	return res.status(200).send({token})
 });
 
-module.exports = {handler: router, url: routes.users};
+module.exports = {handler: router, url: routes.auth};

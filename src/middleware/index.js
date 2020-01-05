@@ -1,5 +1,5 @@
 const middleware = {
-	authentication: require('./authenticate.middleware'),
+	auth: require('./authenticate.middleware'),
 };
 
 module.exports = middleware;

@@ -3,4 +3,5 @@ module.exports = {
 	customers: require('./customers'),
 	movies: require('./movies'),
 	rentals: require('./rentals'),
+	users: require('./users'),
 };

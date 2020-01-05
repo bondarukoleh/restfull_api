@@ -7,9 +7,10 @@ const userScheme = new mongoose.Schema({
 	name: {type: String, required: true, minlength: 5, maxlength: 50},
 	email: {type: String, required: true, minlength: 5, maxlength: 255, unique: true},
 	password: {type: String, required: true, minlength: 5, maxlength: 1024},
+	isAdmin: {type: Boolean, required: true},
 });
 userScheme.methods.generateToken = function () {
-	return jwt.sign({_id: this._id}, jwt_ppk);
+	return jwt.sign({_id: this._id, isAdmin: this.isAdmin}, jwt_ppk);
 };
 
 const validateCommonObj = {
@@ -26,6 +27,12 @@ const validateCommonObj = {
 		symbol: 1,
 		requirementCount: 3,
 	}) */
+	isAdmin: Joi.boolean(),
+	/* In bigger applications we can add a roles array
+	roles: [{user: true, premium: true}, {admin: true}, {moderator: true, themesToModerate: ["Flood"]}]
+	or even array of operations that user allowed to perform, something like
+	operations: [{delete: ['users', 'courses'], update: ['movies', 'customers']}]
+	*/
 };
 const validateIdObj = {
 	id: Joi.objectId()

@@ -7,7 +7,8 @@ const testData = {
 		Urls,
 		Statuses
 	},
-	dbData: require('./db')
+	dbData: require('./db'),
+	usersData: require('./users.data'),
 };
 
 module.exports = testData;

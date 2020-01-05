@@ -4,9 +4,9 @@ const bcrypt = require('bcrypt');
 
 const routes = require('./routes');
 const {models: {user: {Model, validate}}} = require('../db');
-const {authentication} = require('../middleware');
+const {auth} = require('../middleware');
 
-router.get('/', async (req, res) => {
+router.get('/', [auth.isUser, auth.isAdmin], async (req, res) => {
 	const users = await Model.find();
 	const {query: {sortBy = null}} = req;
 	sortBy && users.sort((first, second) => Number(first[sortBy] > second[sortBy]));
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 /* We don't use /:id endpoint - because someone can brut user ids and get info about other users
    With this /me - we always return info about current user - and criminal cannot get other users info */
-router.get('/me', authentication, async (req, res) => {
+router.get('/me', auth.isUser, async (req, res) => {
 	const user = await Model.findById(req.user._id).select('-password'); /* to remove pass property from return obj */
 	if (user) return res.send(user);
 	return res.status(404).send({error: `User with id: "${req.params.id}" is not found.`});
@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
 	}
 });
 
-router.put('/:id', authentication, async (req, res) => {
+router.put('/:id', auth.isUser, async (req, res) => {
 	const {error, value} = validate(req.body);
 	if(error) return res.status(400).send({error: error.message});
 
@@ -52,10 +52,10 @@ router.put('/:id', authentication, async (req, res) => {
 	return res.status(204).send();
 });
 
-router.delete('/:id', authentication, async (req, res) => {
+router.delete('/:id', auth.isUser, async (req, res) => {
 	const user = await Model.findByIdAndRemove(req.user._id);
 	if(!user) return res.status(404).send({error: `Users with id: "${req.params.id}" is not found.`});
 	return res.status(200).send(user);
 });
 
-module.exports = {handler: router, url: routes.auth};
+module.exports = {handler: router, url: routes.users};

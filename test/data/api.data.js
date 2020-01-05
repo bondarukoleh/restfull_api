@@ -9,6 +9,8 @@ const Urls = {
 	customers: '/api/customers',
 	movies: '/api/movies',
 	rentals: '/api/rentals',
+	users: '/api/users',
+	auth: '/api/auth',
 };
 
 const host = `http://${HOST}:${PORT}`;

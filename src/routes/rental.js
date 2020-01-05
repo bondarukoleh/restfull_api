@@ -3,14 +3,14 @@ const router = express.Router();
 
 const routes = require('./routes');
 const {models: {rental: {Model, validate}, customer, movie}} = require('../db');
-const {authentication} = require('../middleware');
+const {auth} = require('../middleware');
 
 router.get('/', async (req, res) => {
 	const rentals = await Model.find();
 	return res.send(rentals);
 });
 
-router.post('/', authentication, async (req, res) => {
+router.post('/', auth.isUser, async (req, res) => {
 	const {error, value} = validate(req.body);
 	if (error) return res.status(400).send({error: error.message});
 
@@ -65,7 +65,7 @@ router.get('/:id', async (req, res) => {
 	return res.status(404).send({error: `Rental with id: "${req.params.id}" is not found.`});
 });
 
-router.delete('/:id', authentication, async (req, res) => {
+router.delete('/:id', auth.isUser, async (req, res) => {
 	const {error} = validate.validateId(req.params);
 	if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
 	const rental = await Model.findByIdAndRemove(req.params.id);

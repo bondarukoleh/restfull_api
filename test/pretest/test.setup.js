@@ -8,12 +8,13 @@ const {dbData: {fixtures, schemes}} = require('../../test/data');
 (async function () {
 	log.info(`Creating data for testing.`);
 	await client.connect();
-	const {GenreModel, CustomersModel, MovieModel, RentalModel} = getModels(client);
+	const {GenreModel, CustomersModel, MovieModel, RentalModel, UserModel} = getModels(client);
 	const dataToCreation = [
 		{model: GenreModel, data: fixtures.genres},
 		{model: CustomersModel, data: fixtures.customers},
 		{model: MovieModel, data: fixtures.movies},
-		{model: RentalModel, data: fixtures.rentals}
+		{model: RentalModel, data: fixtures.rentals},
+		{model: UserModel, data: fixtures.users},
 	];
 	await createTestData(dataToCreation);
 	await client.disconnect();
@@ -31,7 +32,8 @@ function getModels(mongoClient) {
 	const CustomersModel = mongoClient.mongoose.model('Customer', schemes.customerScheme);
 	const MovieModel = mongoClient.mongoose.model('Movie', schemes.movieScheme);
 	const RentalModel = mongoClient.mongoose.model('Rental', schemes.rentalScheme);
-	return {GenreModel, CustomersModel, MovieModel, RentalModel}
+	const UserModel = mongoClient.mongoose.model('User', schemes.userScheme);
+	return {GenreModel, CustomersModel, MovieModel, RentalModel, UserModel}
 }
 
 async function insertData(model, dataToInsert) {
