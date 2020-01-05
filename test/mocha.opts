@@ -1,4 +1,5 @@
 --recursive test/specs/**/*.js
 --timeout 60000
 -R spec
+#dot nyan tap landing list progress json json-stream min
 #--file test/pretest/test.setup.js

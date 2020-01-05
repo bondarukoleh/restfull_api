@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
 	return res.status(404).send({error: `Customer with id: "${req.params.id}" is not found.`});
 });
 
-router.post('/', auth.isUser, async (req, res) => {
+router.post('/', [auth.isUser, auth.isAdmin], async (req, res) => {
 	const {error, value} = validate(req.body);
 	if (error) return res.status(400).send({error: error.message});
 	if (value) {

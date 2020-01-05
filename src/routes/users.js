@@ -21,7 +21,7 @@ router.get('/me', auth.isUser, async (req, res) => {
 	return res.status(404).send({error: `User with id: "${req.params.id}" is not found.`});
 });
 
-router.post('/', async (req, res) => {
+router.post('/', [auth.isUser, auth.isAdmin], async (req, res) => {
 	const {error, value} = validate(req.body);
 	if (error) return res.status(400).send({error: error.message});
 
@@ -33,12 +33,12 @@ router.post('/', async (req, res) => {
 		const salt = await bcrypt.genSalt(10);
 		user.password = await bcrypt.hash(user.password, salt);
 		await user.save();
-		const {password, ...rest} = user;
+		const {_id, name, email} = user;
 		/* return res.status(201).send(require('lodash').pick(user, ['_id', 'name', 'email']));
 		 - we could use lodash to send chosen vars, but for such tiny action I don't want to install whole package */
 		/* We won't send the confirmation email for now - so we log in created user here */
 		const token = user.generateToken();
-		return res.status(201).header('x-auth-token', token).send(rest);
+		return res.status(201).header('x-auth-token', token).send({_id, name, email});
 	}
 });
 
@@ -52,8 +52,8 @@ router.put('/:id', auth.isUser, async (req, res) => {
 	return res.status(204).send();
 });
 
-router.delete('/:id', auth.isUser, async (req, res) => {
-	const user = await Model.findByIdAndRemove(req.user._id);
+router.delete('/:id', [auth.isUser, auth.isAdmin], async (req, res) => {
+	const user = await Model.findByIdAndRemove(req.params.id);
 	if(!user) return res.status(404).send({error: `Users with id: "${req.params.id}" is not found.`});
 	return res.status(200).send(user);
 });

@@ -1,10 +1,9 @@
 const {expect} = require('chai');
 const {api: {moviesApi, customersApi, rentalsApi}} = require('../../lib');
-const {apiData: {Statuses}} = require('../../data');
 
 async function postRental({movieId, customerId}) {
 	const {status, body} = await rentalsApi.postRental({movieId, customerId});
-	expect(status).to.eq(201, `Post rental status should be ${Statuses['201']}`);
+	expect(status).to.eq(201, `Post rental status should be 201`);
 	expect(body).to.include.keys(['customer', 'movie']);
 	return body._id;
 }
@@ -43,7 +42,7 @@ describe('Basic Rentals CRUD Suite', function () {
 	describe('GET Rentals', function () {
 		it('GET Rentals array', async function () {
 			const {status, body} = await rentalsApi.getRentals();
-			expect(status).to.eq(200, `Get rentals status should be ${Statuses['200']}`);
+			expect(status).to.eq(200, `Get rentals status should be 200`);
 			expect(!!body.length).to.eq(true, `Rentals array didn't returned. Return: ${JSON.stringify(body)}`);
 		});
 
@@ -51,7 +50,7 @@ describe('Basic Rentals CRUD Suite', function () {
 			const rental = {...rentalObj};
 			const rentalId = await postRental(rental);
 			const {status, body} = await rentalsApi.getRental({id: rentalId});
-			expect(status).to.eq(200, `Get rental status should be ${Statuses['200']}`);
+			expect(status).to.eq(200, `Get rental status should be 200`);
 			expect(body).to.include.keys(['customer', 'movie']);
 			await deleteRental(rentalId);
 		});
@@ -61,7 +60,7 @@ describe('Basic Rentals CRUD Suite', function () {
 			const rentalId = await postRental(rental);
 
 			const {status, body} = await rentalsApi.getRental({id: invalidID});
-			expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
+			expect(status).to.eq(404, `Status should be 404`);
 			expect(body.error).to.include('not found', `Rental with invalid id shouldn't be found`);
 			await deleteRental(rentalId);
 		});
@@ -79,7 +78,7 @@ describe('Basic Rentals CRUD Suite', function () {
 			const rental = {...rentalObj};
 			rental.customerId = invalidID;
 			const {status, body} = await rentalsApi.postRental(rental);
-			expect(status).to.eq(400, `Status should be ${Statuses['400']}`);
+			expect(status).to.eq(400, `Status should be 400`);
 			expect(body.error).to.include(errorMessage, `Error should include "${errorMessage}"`);
 		});
 	});
@@ -100,7 +99,7 @@ describe('Basic Rentals CRUD Suite', function () {
 			const rental = {...rentalObj};
 			const rentalId = await postRental(rental);
 			const {status, body} = await rentalsApi.deleteRental({id: invalidID});
-			expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
+			expect(status).to.eq(404, `Status should be 404`);
 			expect(body.error).to.include('is not found', `Rental with invalid id shouldn't be found`);
 			await deleteRental(rentalId);
 		});

@@ -1,10 +1,8 @@
 const fetch = require('node-fetch');
 const URL = require('url');
 const querystring = require('querystring');
-const {apiData: {commonHeaders}} = require('../data');
 
-
-async function sendRequest(host, method, {path, headers = commonHeaders, token, body, queries}) {
+async function sendRequest(host, method, {path, headers = {'Content-Type': 'application/json'}, token, body, queries} = {}) {
 	const url = formReqUrl(host, path, queries);
 	body = headers["Content-Type"] === 'application/json' ? JSON.stringify(body) : body;
 	if (token) headers['x-auth-token'] = token;
@@ -36,7 +34,7 @@ class BuildRequest {
 		this.host = host;
 	}
 
-	async _get({path, headers, body, queries, token}){
+	async _get({path, headers, body, queries, token} = {}){
 		return sendRequest(this.host, 'GET', {path, headers, body, queries, token})
 	}
 	async post({path, headers, body, queries, token}){

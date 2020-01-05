@@ -16,16 +16,11 @@ const {dbData: {fixtures, schemes}} = require('../../test/data');
 		{model: RentalModel, data: fixtures.rentals},
 		{model: UserModel, data: fixtures.users},
 	];
-	await createTestData(dataToCreation);
-	await client.disconnect();
-})();
-
-async function createTestData(dataCreationArray) {
-	log.info(`Trying to create data...`);
-	for (const {model, data} of dataCreationArray) {
+	for (const {model, data} of dataToCreation) {
 		await createOrUpdate(model, data)
 	}
-}
+	await client.disconnect();
+})();
 
 function getModels(mongoClient) {
 	const GenreModel = mongoClient.mongoose.model('Genre', schemes.genreScheme);
@@ -37,7 +32,17 @@ function getModels(mongoClient) {
 }
 
 async function insertData(model, dataToInsert) {
-	return model.insertMany(dataToInsert);
+	let withoutError = true;
+	dataToInsert = Array.isArray(dataToInsert) ? dataToInsert : [dataToInsert];
+	for (const data of dataToInsert) {
+		try {
+			await model.insertMany(data);
+		} catch (e) {
+			log.error(`Couldn't create data ${e.message}`);
+			withoutError = false;
+		}
+	}
+	return withoutError;
 }
 
 async function updateData(model, dataToUpdate) {
@@ -48,16 +53,8 @@ async function updateData(model, dataToUpdate) {
 }
 
 async function createOrUpdate(model, data){
-	try {
-		const result = await insertData(model, data);
-		log.info(`Data created:`, result);
-	} catch (e) {
-		log.error(`Couldn't create test data for`, model);
-		if(e.message.includes('duplicate key error')){
-			await updateData(model, data);
-		} else {
-			log.error(`Couldn't create test data.`);
-			log.error(e)
-		}
+	const insertionWithoutErrors = await insertData(model, data);
+	if(!insertionWithoutErrors) {
+		await updateData(model, data);
 	}
 }

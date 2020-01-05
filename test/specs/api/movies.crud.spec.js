@@ -1,10 +1,9 @@
 const {expect} = require('chai');
 const {api: {moviesApi, genresApi}} = require('../../lib');
-const {apiData: {Statuses}} = require('../../data');
 
 async function postMovie({title, genreId, numberInStock, dailyRentalRate}) {
 	const {status, body} = await moviesApi.postMovie({title, genreId, numberInStock, dailyRentalRate});
-	expect(status).to.eq(201, `Status should be ${Statuses['201']}`);
+	expect(status).to.eq(201, `Status should be 201`);
 	expect(body.title).to.eq(title, `Created movie should be with title ${title}`);
 	return body._id;
 }
@@ -38,7 +37,7 @@ describe('Basic Movies CRUD Suite', function () {
 	describe('GET Movies', function () {
 		it('GET movies array', async function () {
 			const {status, body} = await moviesApi.getMovies();
-			expect(status).to.eq(200, `Status should be ${Statuses['200']}`);
+			expect(status).to.eq(200, `Status should be 200`);
 			expect(!!body.length).to.eq(true, `Movies array didn't returned. Return: ${JSON.stringify(body)}`);
 		});
 
@@ -46,7 +45,7 @@ describe('Basic Movies CRUD Suite', function () {
 			const movie = {...movieObj};
 			const movieId = await postMovie(movie);
 			const {status, body} = await moviesApi.getMovie({id: movieId});
-			expect(status).to.eq(200, `Status should be ${Statuses['200']}`);
+			expect(status).to.eq(200, `Status should be 200`);
 			expect(body.title).to.eq(movie.title, `Movie with id "${movieId}" title should be "${movie.title}"`);
 			await deleteMovie(movieId);
 		});
@@ -56,7 +55,7 @@ describe('Basic Movies CRUD Suite', function () {
 			const movieId = await postMovie(movie);
 
 			const {status, body} = await moviesApi.getMovie({id: invalidID});
-			expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
+			expect(status).to.eq(404, `Status should be 404`);
 			expect(body.error).to.include('not found', `Movie with invalid id shouldn't be found`);
 			await deleteMovie(movieId);
 		});
@@ -74,7 +73,7 @@ describe('Basic Movies CRUD Suite', function () {
 			const movie = {...movieObj};
 			movie.title = 'ab';
 			const {status, body} = await moviesApi.postMovie(movie);
-			expect(status).to.eq(400, `Status should be ${Statuses['400']}`);
+			expect(status).to.eq(400, `Status should be 400`);
 			expect(body.error).to.include(errorMessage, `Error should include "${errorMessage}"`);
 		});
 
@@ -83,7 +82,7 @@ describe('Basic Movies CRUD Suite', function () {
 			const movie = {...movieObj};
 			movie.title = undefined;
 			const {status, body} = await moviesApi.postMovie(movie);
-			expect(status).to.eq(400, `Status should be ${Statuses['400']}`);
+			expect(status).to.eq(400, `Status should be 400`);
 			expect(body.error).to.include(errorMessage, `Error should include ${errorMessage}`);
 		});
 	});
@@ -97,11 +96,11 @@ describe('Basic Movies CRUD Suite', function () {
 			{
 				movie.title = movieChangedName;
 				const {status} = await moviesApi.putMovie({id: movieId, ...movie});
-				expect(status).to.eq(204, `Status should be ${Statuses['204']}`);
+				expect(status).to.eq(204, `Status should be 204`);
 			}
 			{
 				const {status, body} = await moviesApi.getMovie({id: movieId});
-				expect(status).to.eq(200, `Status should be ${Statuses['204']}`);
+				expect(status).to.eq(200, `Status should be 204`);
 				expect(body.title).to.eq(movieChangedName,
 					`Changed movie title should be '${movieChangedName}', got '${body.title}'`);
 			}
@@ -114,13 +113,13 @@ describe('Basic Movies CRUD Suite', function () {
 			const movieId = await postMovie(movie);
 			{
 				const {status, body} = await moviesApi.putMovie({id: invalidID, ...movie});
-				expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
+				expect(status).to.eq(404, `Status should be 404`);
 				expect(body.error).to.include('is not found', `Movie with invalid id shouldn't be found`);
 			}
 			{
 				movie.title = '';
 				const {status, body} = await moviesApi.putMovie({id: movieId, ...movie});
-				expect(status).to.eq(400, `Status should be ${Statuses['400']}`);
+				expect(status).to.eq(400, `Status should be 400`);
 				expect(body.error).to.eq(errorMessage, `Message should be ${errorMessage}, got ${body.error}`);
 			}
 			await deleteMovie(movieId);
@@ -143,7 +142,7 @@ describe('Basic Movies CRUD Suite', function () {
 			const movie = {...movieObj};
 			const movieId = await postMovie(movie);
 			const {status, body} = await moviesApi.deleteMovie({id: invalidID});
-			expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
+			expect(status).to.eq(404, `Status should be 404`);
 			expect(body.error).to.include('is not found', `Movie with invalid id shouldn't be found`);
 			await deleteMovie(movieId);
 		});
