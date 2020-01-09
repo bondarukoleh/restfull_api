@@ -1,19 +1,6 @@
 const {expect} = require('chai');
 const {api: {genresApi}} = require('../../lib');
-const {apiData: {Statuses}} = require('../../data');
-
-async function postGenre(genreName) {
-	const {status, body} = await genresApi.postGenre({name: genreName});
-	expect(status).to.eq(201, `Status should be 201`);
-	expect(body.name).to.eq(genreName, `Created genre should be with name ${genreName}`);
-	return body._id;
-}
-
-async function deleteGenre(id) {
-	const {status, body} = await genresApi.deleteGenre({id});
-	expect(status).to.eq(200, `Status should be 204`);
-	expect(body._id).to.eq(id, `Should return deleted genre with id ${id}, got "${body.id}"`);
-}
+const {common: {postGenre, deleteGenre}} = require('../../helpers/api');
 
 describe('Basic Genres CRUD Suite', function () {
 

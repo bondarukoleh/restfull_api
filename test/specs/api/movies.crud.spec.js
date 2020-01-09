@@ -1,18 +1,6 @@
 const {expect} = require('chai');
 const {api: {moviesApi, genresApi}} = require('../../lib');
-
-async function postMovie({title, genreId, numberInStock, dailyRentalRate}) {
-	const {status, body} = await moviesApi.postMovie({title, genreId, numberInStock, dailyRentalRate});
-	expect(status).to.eq(201, `Status should be 201`);
-	expect(body.title).to.eq(title, `Created movie should be with title ${title}`);
-	return body._id;
-}
-
-async function deleteMovie(id) {
-	const {status, body} = await moviesApi.deleteMovie({id});
-	expect(status).to.eq(200, `Status should be 200`);
-	expect(body._id).to.eq(id, `Should return deleted movie with id ${id}, got "${body.id}"`);
-}
+const {common: {postMovie, deleteMovie}} = require('../../helpers/api');
 
 async function getGenres() {
 	const {status, body} = await genresApi.getGenres();

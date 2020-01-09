@@ -1,19 +1,6 @@
 const {expect} = require('chai');
 const {api: {customersApi}} = require('../../lib');
-const {apiData: {Statuses}} = require('../../data');
-
-async function postCustomer({name, phone}) {
-	const {status, body} = await customersApi.postCustomer({name, phone});
-	expect(status).to.eq(201, `Status should be ${Statuses['201']}`);
-	expect(body.name).to.eq(name, `Created customer should be with name ${name}`);
-	return body._id;
-}
-
-async function deleteCustomer(id) {
-	const {status, body} = await customersApi.deleteCustomer({id});
-	expect(status).to.eq(200, `Status should be 200`);
-	expect(body._id).to.eq(id, `Should return deleted customer with id ${id}, got "${body.id}"`);
-}
+const {common: {deleteCustomer, postCustomer}} = require('../../helpers/api');
 
 describe('Basic Customers CRUD Suite', function () {
 
@@ -22,7 +9,7 @@ describe('Basic Customers CRUD Suite', function () {
 	describe('GET Customers', function () {
 		it('GET Customers array', async function () {
 			const {status, body} = await customersApi.getCustomers();
-			expect(status).to.eq(200, `Status should be ${Statuses['200']}`);
+			expect(status).to.eq(200, `Status should be 200`);
 			expect(!!body.length).to.eq(true, `Customers array didn't returned. Return: ${JSON.stringify(body)}`);
 		});
 
@@ -30,7 +17,7 @@ describe('Basic Customers CRUD Suite', function () {
 			const customer = {name: 'Customer to check', phone: '+380981111111'};
 			const customerId = await postCustomer(customer);
 			const {status, body} = await customersApi.getCustomer({id: customerId});
-			expect(status).to.eq(200, `Status should be ${Statuses['200']}`);
+			expect(status).to.eq(200, `Status should be 200`);
 			expect(body.name).to.eq(customer.name, `Customer with id "${customerId}" name should be "${customer.name}"`);
 			await deleteCustomer(customerId);
 		});
@@ -39,7 +26,7 @@ describe('Basic Customers CRUD Suite', function () {
 			const customer = {name: 'Customer to check', phone: '+380981111111'};
 			const customerId = await postCustomer(customer);
 			const {status, body} = await customersApi.getCustomer({id: invalidID});
-			expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
+			expect(status).to.eq(404, `Status should be 404`);
 			expect(body.error).to.include('not found', `Customer with invalid id shouldn't be found`);
 			await deleteCustomer(customerId);
 		});
@@ -57,7 +44,7 @@ describe('Basic Customers CRUD Suite', function () {
 			const customer = {name: 'aa', phone: '+380981111111'};
 
 			const {status, body} = await customersApi.postCustomer(customer);
-			expect(status).to.eq(400, `Status should be ${Statuses['400']}`);
+			expect(status).to.eq(400, `Status should be 400`);
 			expect(body.error).to.include(errorMessage, `Error should include "${errorMessage}"`);
 		});
 
@@ -66,7 +53,7 @@ describe('Basic Customers CRUD Suite', function () {
 			const customer = {name: undefined, phone: '+380981111111'};
 
 			const {status, body} = await customersApi.postCustomer(customer);
-			expect(status).to.eq(400, `Status should be ${Statuses['400']}`);
+			expect(status).to.eq(400, `Status should be 400`);
 			expect(body.error).to.include(errorMessage, `Error should include ${errorMessage}`);
 		});
 	});
@@ -79,11 +66,11 @@ describe('Basic Customers CRUD Suite', function () {
 			const customerId = await postCustomer({name: creationName, phone});
 			{
 				const {status} = await customersApi.putCustomer({id: customerId, name: newName, phone});
-				expect(status).to.eq(204, `Status should be ${Statuses['204']}`);
+				expect(status).to.eq(204, `Status should be 204`);
 			}
 			{
 				const {status, body} = await customersApi.getCustomer({id: customerId});
-				expect(status).to.eq(200, `Status should be ${Statuses['204']}`);
+				expect(status).to.eq(200, `Status should be 204`);
 				expect(body.name).to.eq(newName, `Changed customer name should be '${newName}', got '${body.name}'`);
 			}
 			await deleteCustomer(customerId);
@@ -96,12 +83,12 @@ describe('Basic Customers CRUD Suite', function () {
 			const customerId = await postCustomer({name: creationName, phone});
 			{
 				const {status, body} = await customersApi.putCustomer({id: invalidID, name: 'new name', phone});
-				expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
+				expect(status).to.eq(404, `Status should be 404`);
 				expect(body.error).to.include('is not found', `Customer with invalid id shouldn't be found`);
 			}
 			{
 				const {status, body} = await customersApi.putCustomer({id: customerId, name: '', phone});
-				expect(status).to.eq(400, `Status should be ${Statuses['400']}`);
+				expect(status).to.eq(400, `Status should be 400`);
 				expect(body.error).to.eq(errorMessage, `Message should be ${errorMessage}, got ${body}`);
 			}
 			await deleteCustomer(customerId);
@@ -124,7 +111,7 @@ describe('Basic Customers CRUD Suite', function () {
 			const customer = {name: 'Customer to delete', phone: '+380981111111'};
 			const customerId = await postCustomer(customer);
 			const {status, body} = await customersApi.deleteCustomer({id: invalidID});
-			expect(status).to.eq(404, `Status should be ${Statuses['404']}`);
+			expect(status).to.eq(404, `Status should be 404`);
 			expect(body.error).to.include('is not found', `Customer with invalid id shouldn't be found`);
 			await deleteCustomer(customerId);
 		});

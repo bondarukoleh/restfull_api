@@ -1,32 +1,6 @@
 const {expect} = require('chai');
-const {api: {moviesApi, customersApi, rentalsApi}} = require('../../lib');
-
-async function postRental({movieId, customerId}) {
-	const {status, body} = await rentalsApi.postRental({movieId, customerId});
-	expect(status).to.eq(201, `Post rental status should be 201`);
-	expect(body).to.include.keys(['customer', 'movie']);
-	return body._id;
-}
-
-async function deleteRental(id) {
-	const {status, body} = await rentalsApi.deleteRental({id});
-	expect(status).to.eq(200, `Delete rental status should be 200`);
-	expect(body._id).to.eq(id, `Should return deleted movie with id ${id}, got "${body.id}"`);
-}
-
-async function getCustomers() {
-	const {status, body} = await customersApi.getCustomers();
-	expect(status).to.eq(200, `Get customers status should be 200`);
-	expect(!!body.length).to.eq(true, `Customers array didn't returned. Return: ${JSON.stringify(body)}`);
-	return body;
-}
-
-async function getMovies() {
-	const {status, body} = await moviesApi.getMovies();
-	expect(status).to.eq(200, `Get movies status should be 200`);
-	expect(!!body.length).to.eq(true, `Movies array didn't returned. Return: ${JSON.stringify(body)}`);
-	return body;
-}
+const {api: {rentalsApi}} = require('../../lib');
+const {common: {postRental, deleteRental}} = require('../../helpers/api');
 
 describe('Basic Rentals CRUD Suite', function () {
 

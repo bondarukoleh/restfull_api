@@ -2,24 +2,10 @@ const {expect} = require('chai');
 const {api: {usersApi}} = require('../../lib');
 const {api: {common: {loginUser}}} = require('../../helpers');
 const {usersData} = require('../../data');
+const {common: {postUser, deleteUser}} = require('../../helpers/api');
 
 const {admin} = usersData.users;
 const invalidToken = '1dffde1111e11e1fa1c111b1';
-
-async function postUser({email, name, password}) {
-	const token = await loginUser(admin);
-	const {status, body, headers} = await usersApi.createUser(token, {email, name, password});
-	expect(status).to.eq(201, `Status should be 201`);
-	expect(body.name).to.eq(name, `Created user should be with name ${name}`);
-	return {userId: body._id, token: headers['x-auth-token']};
-}
-
-async function deleteUser(userToDeleteId) {
-	const adminToken = await loginUser(admin);
-	const {status, body} = await usersApi.deleteUser(adminToken, {id: userToDeleteId});
-	expect(status).to.eq(200, `Status should be 200`);
-	expect(body._id).to.eq(userToDeleteId, `Should return deleted user with id ${userToDeleteId}, got "${body.id}"`);
-}
 
 describe('Basic Customers CRUD Suite', function () {
 

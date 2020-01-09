@@ -1,10 +1,9 @@
-const {host, Urls, Statuses} = require('./api.data');
+const {host, Urls} = require('./api.data');
 
 const testData = {
 	apiData: {
 		host,
-		Urls,
-		Statuses
+		Urls
 	},
 	dbData: require('./db'),
 	usersData: require('./users.data'),
