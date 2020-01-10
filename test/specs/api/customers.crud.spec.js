@@ -1,6 +1,7 @@
 const {expect} = require('chai');
 const {api: {customersApi}} = require('../../lib');
-const {common: {deleteCustomer, postCustomer}} = require('../../helpers/api');
+const {common: {deleteCustomer, postCustomer, loginUser}} = require('../../helpers/api');
+const {usersData} = require('../../data');
 
 describe('Basic Customers CRUD Suite', function () {
 
@@ -42,8 +43,8 @@ describe('Basic Customers CRUD Suite', function () {
 		it('POST Customers name less that 3 characters', async function () {
 			const errorMessage = `"name" length must be at least 5 characters long`;
 			const customer = {name: 'aa', phone: '+380981111111'};
-
-			const {status, body} = await customersApi.postCustomer(customer);
+			const token = await loginUser(usersData.users.admin);
+			const {status, body} = await customersApi.postCustomer({...customer, token});
 			expect(status).to.eq(400, `Status should be 400`);
 			expect(body.error).to.include(errorMessage, `Error should include "${errorMessage}"`);
 		});
@@ -52,7 +53,8 @@ describe('Basic Customers CRUD Suite', function () {
 			const errorMessage = `"name" is required`;
 			const customer = {name: undefined, phone: '+380981111111'};
 
-			const {status, body} = await customersApi.postCustomer(customer);
+			const token = await loginUser(usersData.users.admin);
+			const {status, body} = await customersApi.postCustomer({...customer, token});
 			expect(status).to.eq(400, `Status should be 400`);
 			expect(body.error).to.include(errorMessage, `Error should include ${errorMessage}`);
 		});

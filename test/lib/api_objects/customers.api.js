@@ -14,16 +14,16 @@ class CustomersApi {
 		return this._apiClient._get({path: `${Urls.customers}/${id}`})
 	}
 
-	async postCustomer({name, phone, isGold}){
-		return this._apiClient.post({path: Urls.customers, body: {name, phone, isGold}})
+	async postCustomer({name, phone, isGold, token}){
+		return this._apiClient.post({path: Urls.customers, body: {name, phone, isGold}, token})
 	}
 
-	async putCustomer({name, id, phone, isGold}){
-		return this._apiClient.put({path: `${Urls.customers}/${id}`, body: {name, phone, isGold}})
+	async putCustomer({name, id, phone, isGold, token}){
+		return this._apiClient.put({path: `${Urls.customers}/${id}`, body: {name, phone, isGold}, token})
 	}
 
-	async deleteCustomer({id}){
-		return this._apiClient.delete({path: `${Urls.customers}/${id}`})
+	async deleteCustomer({id, token}){
+		return this._apiClient.delete({path: `${Urls.customers}/${id}`, token})
 	}
 }
 
