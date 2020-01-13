@@ -38,7 +38,11 @@ router.put('/:id', auth.isUser, async (req, res) => {
 	if(error) return res.status(400).send({error: error.message});
 	const customer = await Model.findById(req.params.id);
 	if(!customer) return res.status(404).send({error: `Customer with id: "${req.params.id}" is not found.`});
-	await customer.set(value).save();
+	try {
+		await customer.set(value).save();
+	} catch (e) {
+		return res.status(500).send({error: e});
+	}
 	return res.status(204).send();
 });
 

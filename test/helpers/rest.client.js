@@ -14,6 +14,11 @@ async function sendRequest(host, method, {path, headers = {'Content-Type': 'appl
 	} else {
 		responseObject.body = await response.text();
 	}
+	// if(responseObject.body.error){ /* TODO: add a logger with levels please, no more console.log */
+	// 	console.error(`######### ERROR DURING API REQUEST: #########`);
+	// 	console.error(responseObject.body.error);
+	// 	console.error(`#############################################\n`);
+	// }
 	return responseObject;
 }
 

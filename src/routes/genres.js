@@ -40,7 +40,11 @@ router.put('/:id', auth.isUser, async (req, res) => {
 
 	const genre = await Model.findById(req.params.id);
 	if(!genre) return res.status(404).send({error: `Genre with id: "${req.params.id}" is not found.`});
-	await genre.set(value).save();
+	try {
+		await genre.set(value).save();
+	} catch (e) {
+		return res.status(500).send({error: e});
+	}
 	return res.status(204).send();
 });
 

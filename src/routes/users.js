@@ -43,12 +43,20 @@ router.post('/', [auth.isUser, auth.isAdmin], async (req, res) => {
 });
 
 router.put('/:id', auth.isUser, async (req, res) => {
+	{
+		const {error} = validate.validateId(req.params);
+		if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
+	}
 	const {error, value} = validate(req.body);
 	if(error) return res.status(400).send({error: error.message});
 
-	const user = await Model.findById(req.user._id);
+	const user = await Model.findById(req.params.id);
 	if(!user) return res.status(404).send({error: `Users with id: "${req.user.id}" is not found.`});
-	await user.set(value).save();
+	try {
+		await user.set(value).save();
+	} catch (e) {
+		return res.status(500).send({error: e});
+	}
 	return res.status(204).send();
 });
 

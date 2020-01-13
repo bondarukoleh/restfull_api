@@ -14,16 +14,16 @@ class GenresApi {
 		return this._apiClient._get({path: `${Urls.genres}/${id}`})
 	}
 
-	async postGenre({name}){
-		return this._apiClient.post({path: Urls.genres, body: {name}})
+	async postGenre(actor, {name}){
+		return this._apiClient.post({path: Urls.genres, body: {name}, token: actor.token})
 	}
 
-	async putGenre({name, id}){
-		return this._apiClient.put({path: `${Urls.genres}/${id}`, body: {name}})
+	async putGenre(actor, {name, id}){
+		return this._apiClient.put({path: `${Urls.genres}/${id}`, body: {name}, token: actor.token})
 	}
 
-	async deleteGenre({id}){
-		return this._apiClient.delete({path: `${Urls.genres}/${id}`})
+	async deleteGenre(actor, {id}){
+		return this._apiClient.delete({path: `${Urls.genres}/${id}`, token: actor.token})
 	}
 }
 

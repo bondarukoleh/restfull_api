@@ -14,13 +14,12 @@ class RentalsApi {
 		return this._apiClient._get({path: `${Urls.rentals}/${id}`})
 	}
 
-	async postRental({customerId, movieId}){
-		return this._apiClient.post({path: Urls.rentals, body: {customerId, movieId}})
+	async postRental(actor, {customerId, movieId}){
+		return this._apiClient.post({path: Urls.rentals, body: {customerId, movieId}, token: actor.token})
 	}
 
-
-	async deleteRental({id}){
-		return this._apiClient.delete({path: `${Urls.rentals}/${id}`})
+	async deleteRental(actor, {id}){
+		return this._apiClient.delete({path: `${Urls.rentals}/${id}`, token: actor.token})
 	}
 }
 

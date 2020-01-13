@@ -19,7 +19,7 @@ describe('Auth suite', function () {
 		expect(!!body.token).to.eq(true, `User should have token`);
 		const token = body.token;
 		{
-			const {body, status} = await usersApi.getCurrentUser(token);
+			const {body, status} = await usersApi.getCurrentUser({token});
 			expect(status).to.eq(200, `User should get user data with status 200`);
 			expect(body.name).to.eq(user1.name, `Got user name "${body.name}" but name should be "${user1.name}"`);
 		}
@@ -36,7 +36,7 @@ describe('Auth suite', function () {
 	it('GET data with invalid token', async function () {
 		const errorMessage = 'Invalid token.';
 
-		const {body, status} = await usersApi.getCurrentUser(invalidToken);
+		const {body, status} = await usersApi.getCurrentUser({token: invalidToken});
 		expect(status).to.eq(400, `User get 400 with invalid token`);
 		expect(body.error).to.eq(errorMessage);
 	});
@@ -49,7 +49,7 @@ describe('Auth suite', function () {
 		expect(!!body.token).to.eq(true, `User should have token`);
 		const token = body.token;
 		{
-			const {body, status} = await usersApi.deleteUser(token);
+			const {body, status} = await usersApi.deleteUser({token});
 			expect(status).to.eq(403, `Not admin User should get 403`);
 			expect(body.error).to.eq(errorMessage);
 		}

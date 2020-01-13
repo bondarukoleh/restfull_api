@@ -68,7 +68,11 @@ router.put('/:id', auth.isUser, async (req, res) => {
 	};
 	if(genreToChange) movieToSave.genre = {_id: genreToChange._id, name: genreToChange.name};
 
-	await movie.set(movieToSave).save();
+	try {
+		await movie.set(movieToSave).save();
+	} catch (e) {
+		return res.status(500).send({error: e});
+	}
 	return res.status(204).send();
 });
 
