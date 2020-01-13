@@ -3,7 +3,7 @@ const {api: {usersApi}} = require('../../lib');
 const {api: {common: {postUser, deleteUser, loginUser}}, dataHelper: {getAnyUser}} = require('../../helpers/');
 const {usersData: {users: {admin}}} = require('../../data');
 
-describe.only('Basic Users CRUD Suite', function () {
+describe('Basic Users CRUD Suite', function () {
 
 	const invalidID = '1dffde1111e11e1fa1c111b1';
 	let adminUser = null;
