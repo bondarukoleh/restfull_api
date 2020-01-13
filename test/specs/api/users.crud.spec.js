@@ -3,7 +3,7 @@ const {api: {usersApi}} = require('../../lib');
 const {api: {common: {postUser, deleteUser, loginUser}}, dataHelper: {getAnyUser}} = require('../../helpers/');
 const {usersData: {users: {admin}}} = require('../../data');
 
-describe('Basic Users CRUD Suite', function () {
+describe.only('Basic Users CRUD Suite', function () {
 
 	const invalidID = '1dffde1111e11e1fa1c111b1';
 	let adminUser = null;
@@ -54,12 +54,14 @@ describe('Basic Users CRUD Suite', function () {
 	});
 
 	describe('PUT Users', function () {
+		let anyUser = null;
+		beforeEach(() => anyUser = getAnyUser());
+
 		it('PUT Users', async function () {
 			const newName = 'New User Name';
-			const user = getAnyUser();
-			const {userId, token: createdUserToken} = await postUser(adminUser, user);
+			const {userId, token: createdUserToken} = await postUser(adminUser, anyUser);
 			{
-				const {status} = await usersApi.putUser(adminUser, {...user, id: userId, name: newName});
+				const {status} = await usersApi.putUser(adminUser, {...anyUser, id: userId, name: newName});
 				expect(status).to.eq(204, `Status should be 204`);
 			}
 			{
@@ -72,15 +74,14 @@ describe('Basic Users CRUD Suite', function () {
 
 		it('PUT Users with invalid id and data', async function () {
 			const errorMessage = '"name" is not allowed to be empty';
-			const user = getAnyUser();
-			const {userId} = await postUser(adminUser, user);
+			const {userId} = await postUser(adminUser, anyUser);
 			{
-				const {status, body} = await usersApi.putUser(adminUser, {...user, id: invalidID});
+				const {status, body} = await usersApi.putUser(adminUser, {...anyUser, id: invalidID});
 				expect(status).to.eq(404, `Status should be 404`);
 				expect(body.error).to.include('is not found', `User with invalid id shouldn't be found`);
 			}
 			{
-				const {status, body} = await usersApi.putUser(adminUser, {...user, id: userId, name: ''});
+				const {status, body} = await usersApi.putUser(adminUser, {...anyUser, id: userId, name: ''});
 				expect(status).to.eq(400, `Status should be 400`);
 				expect(body.error).to.eq(errorMessage, `Message should be ${errorMessage}, got ${body}`);
 			}
@@ -89,9 +90,11 @@ describe('Basic Users CRUD Suite', function () {
 	});
 
 	describe('DELETE Users', function () {
+		let anyUser = null;
+		beforeEach(() => anyUser = getAnyUser());
+
 		it('DELETE User', async function () {
-			const user = getAnyUser();
-			const {userId} = await postUser(adminUser, user);
+			const {userId} = await postUser(adminUser, anyUser);
 			await deleteUser(adminUser, userId);
 			const {status, body} = await usersApi.getUsers(adminUser);
 
@@ -101,8 +104,7 @@ describe('Basic Users CRUD Suite', function () {
 		});
 
 		it('DELETE Users with not existing id', async function () {
-			const user = getAnyUser();
-			const {userId} = await postUser(adminUser, user);
+			const {userId} = await postUser(adminUser, anyUser);
 			const {status, body} = await usersApi.deleteUser(adminUser, {id: invalidID});
 			expect(status).to.eq(404, `Status should be 404`);
 			expect(body.error).to.include('is not found', `User with invalid id shouldn't be found`);
