@@ -5,15 +5,24 @@ const routes = require('./routes');
 const {models: {genre: {Model, validate}}} = require('../db');
 const {auth} = require('../middleware');
 
-router.get('/', async (req, res, next) => {
-	try {
-		const genres = await Model.find();
-		const {query: {sortBy = null}} = req;
-		sortBy && genres.sort((first, second) => Number(first[sortBy] > second[sortBy]));
-		return res.send(genres);
-	} catch (e) {
-		next(e);
-	}
+// function asyncCatchWrapper(asyncFuncToWrap) {
+// 	return async function (req, res, next) {
+// 		try {
+// 			await asyncFuncToWrap(req, res, next);
+// 		} catch (e) {
+// 			next(e);
+// 		}
+// 	}
+// }
+
+/* one way to do global error handling - is to add your own error handle middleware
+We will use package in app.js */
+// router.get('/', asyncCatchWrapper(async (req, res) => {
+router.get('/', async (req, res) => {
+	const genres = await Model.find();
+	const {sortBy = null} = req.query;
+	sortBy && genres.sort((first, second) => first['name'] > second['name'] ? 1 : first['name'] < second['name'] ? -1 : 0);
+	return res.send(genres);
 });
 
 router.get('/:id', async (req, res) => {

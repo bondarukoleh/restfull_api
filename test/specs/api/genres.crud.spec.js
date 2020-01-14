@@ -12,7 +12,7 @@ describe('Basic Genres CRUD Suite', function () {
 
 	describe('GET Genres', function () {
 		it('GET genres array', async function () {
-			const {status, body} = await genresApi.getGenres();
+			const {status, body} = await genresApi.getGenres({queries: {sortBy: 'name'}});
 			expect(status).to.eq(200, `Status should be 200`);
 			expect(!!body.length).to.eq(true, `Genres array didn't returned. Return: ${JSON.stringify(body)}`);
 		});
