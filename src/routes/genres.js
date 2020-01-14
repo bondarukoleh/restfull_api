@@ -5,11 +5,15 @@ const routes = require('./routes');
 const {models: {genre: {Model, validate}}} = require('../db');
 const {auth} = require('../middleware');
 
-router.get('/', async (req, res) => {
-	const genres = await Model.find();
-	const {query: {sortBy = null}} = req;
-	sortBy && genres.sort((first, second) => Number(first[sortBy] > second[sortBy]));
-	return res.send(genres);
+router.get('/', async (req, res, next) => {
+	try {
+		const genres = await Model.find();
+		const {query: {sortBy = null}} = req;
+		sortBy && genres.sort((first, second) => Number(first[sortBy] > second[sortBy]));
+		return res.send(genres);
+	} catch (e) {
+		next(e);
+	}
 });
 
 router.get('/:id', async (req, res) => {

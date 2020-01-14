@@ -20,7 +20,7 @@ class Mongoose {
 			log(`BD connected: ${this.dbUrl}`);
 		} catch (e) {
 			log(`Fail to connect to DB: ${e.message}`);
-			return new Error(`Error while connecting to DB: "${e.message}"`)
+			throw new Error(`Error while connecting to DB: "${e.message}"`)
 		}
 		return this.connection;
 	}

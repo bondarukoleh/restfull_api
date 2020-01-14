@@ -11,6 +11,7 @@ Joi.objectId = validObjectId;
 const {app_port, debug_app, name} = config;
 const {genres, multiple, home, customers, movies, rental, users, auth} = require('./routes');
 const {client} = require('./db');
+const {errorHandle: {commonErrorHandler}} = require('./middleware');
 
 const app = express();
 
@@ -39,5 +40,8 @@ app.use(movies.url, movies.handler);
 app.use(rental.url, rental.handler);
 app.use(users.url, users.handler);
 app.use(auth.url, auth.handler);
+
+// error handler
+app.use(commonErrorHandler);
 
 app.listen(app_port, () => console.log(`App listening on port ${app_port}.`));
