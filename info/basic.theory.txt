@@ -419,3 +419,8 @@ should delete token on client side. So User will be forced to login again and ge
 Storing tokens in plain text in DB - same as storing passwords. If you really need to save tokens in DB - hash them.
 When you sending token to client, use https - to not get criminal to own via sniffing your users tokens.
 
+=========================================
+Winston logger - has ability to log message in console, file, or http endpoint, these things called transport, a place
+to log message. Winston can be integrated with mongodb, couchdb, redis, loggly (also a logging service)
+So we can create a few instances of winston, and set them different ways to log stuff, or from one logger log to many
+things like console, some db, or external web service which is pretty cool.

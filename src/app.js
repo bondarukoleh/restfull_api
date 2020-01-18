@@ -4,8 +4,9 @@ const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const config = require('config');
-const log = require('debug')('app:startup');
+const log = require('debug')('app:startup'); // default express logger
 const Joi = require('@hapi/joi');
+const winston = require('winston');
 
 const {validObjectId} = require('./db/helper');
 Joi.objectId = validObjectId;
@@ -17,7 +18,7 @@ const {errorHandle: {commonErrorHandler}} = require('./middleware');
 const app = express();
 
 // DB
-client.connect().then(() => log('DB connected'), (e) => log(`DB is NOT connected.\n"${e.message}"`));
+client.connect().then(() => log('DB connected'), (e) => log(`DB is not connected!!!\n"${e.message}"`));
 
 // Middleware
 app.use(express.json()); // for application/json
@@ -28,6 +29,7 @@ app.set('view engine', 'pug');
 app.set('views', './src/views'); // views set by default - here for example
 
 // Logging
+winston.add(new winston.transports.File({filename: 'logs/appLog.log', format: winston.format.json()}));
 debug_app && app.use(morgan(`Got ":method" to ":url". Returning ":status"  in ":response-time ms"`)); // logger, writes to terminal but could be setup to file
 log(`app is in: ${app.get('env')}`); //if NODE_ENV isn't set - development, otherwise - it's value. Needs to be set before app
 log(`App name: ${name}`);
