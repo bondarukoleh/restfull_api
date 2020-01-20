@@ -424,3 +424,4 @@ Winston logger - has ability to log message in console, file, or http endpoint, 
 to log message. Winston can be integrated with mongodb, couchdb, redis, loggly (also a logging service)
 So we can create a few instances of winston, and set them different ways to log stuff, or from one logger log to many
 things like console, some db, or external web service which is pretty cool.
+Winston has levels error warn info verbose debug silly

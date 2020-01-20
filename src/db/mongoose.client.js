@@ -10,13 +10,14 @@ class Mongoose {
 		this.dbUrl = dbUrl;
 		this.options = options;
 		this.connection = null;
+		this.connectionUrl = null;
 	}
 
 	async connect(database = name) {
 		try {
-			const urlToConnect = `${this.dbUrl}/${database}?authSource=${database}`;
-			log(`Connecting to: ${urlToConnect}, with options: %j`, this.options);
-			this.connection = await this.mongoose.connect(urlToConnect, this.options);
+			this.connectionUrl = `${this.dbUrl}/${database}?authSource=${database}`;
+			log(`Connecting to: ${this.connectionUrl}, with options: %j`, this.options);
+			this.connection = await this.mongoose.connect(this.connectionUrl, this.options);
 			log(`BD connected: ${this.dbUrl}`);
 		} catch (e) {
 			log(`Fail to connect to DB: ${e.message}`);

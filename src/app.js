@@ -7,6 +7,7 @@ const config = require('config');
 const log = require('debug')('app:startup'); // default express logger
 const Joi = require('@hapi/joi');
 const winston = require('winston');
+require('winston-mongodb');
 
 const {validObjectId} = require('./db/helper');
 Joi.objectId = validObjectId;
@@ -30,6 +31,7 @@ app.set('views', './src/views'); // views set by default - here for example
 
 // Logging
 winston.add(new winston.transports.File({filename: 'logs/appLog.log', format: winston.format.json()}));
+winston.add(new winston.transports.MongoDB({db: client.connectionUrl, level: 'error'}));
 debug_app && app.use(morgan(`Got ":method" to ":url". Returning ":status"  in ":response-time ms"`)); // logger, writes to terminal but could be setup to file
 log(`app is in: ${app.get('env')}`); //if NODE_ENV isn't set - development, otherwise - it's value. Needs to be set before app
 log(`App name: ${name}`);
