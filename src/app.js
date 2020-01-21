@@ -1,13 +1,20 @@
 require('./helpers').common.setEnvironmentVariables();
 require('express-async-errors');
 const express = require('express');
-const helmet = require('helmet');
 const morgan = require('morgan');
 const config = require('config');
 const log = require('debug')('app:startup'); // default express logger
 const Joi = require('@hapi/joi');
 const winston = require('winston');
 require('winston-mongodb');
+
+const {validObjectId} = require('./db/helper');
+Joi.objectId = validObjectId;
+const {app_port, debug_app, name} = config;
+const {pluginRoutes, pluginMiddlewares} = require('./startup');
+const {client} = require('./db');
+
+const app = express();
 
 /* This only helps when sync code has error. It won't catch rejected Promise */
 process.on('uncaughtException', (err) => {
@@ -23,25 +30,11 @@ process.on('unhandledRejection', (err) => {
 	throw err;
 });
 
-const {validObjectId} = require('./db/helper');
-Joi.objectId = validObjectId;
-const {app_port, debug_app, name} = config;
-const {genres, multiple, home, customers, movies, rental, users, auth} = require('./routes');
-const {client} = require('./db');
-const {errorHandle: {commonErrorHandler}} = require('./middleware');
-
-const app = express();
-
 // DB
 client.connect().then(() => log('DB connected'), (e) => log(`DB is not connected!!!\n"${e.message}"`));
 
 // Middleware
-app.use(express.json()); // for application/json
-app.use(express.urlencoded({extended: true})); // for application/x-www-form-urlencoded
-app.use(express.static('./src/public')); // static serving from public folder
-app.use(helmet()); // increases security
-app.set('view engine', 'pug');
-app.set('views', './src/views'); // views set by default - here for example
+pluginMiddlewares(app);
 
 // Logging
 winston.add(new winston.transports.File({filename: 'logs/appLog.log', format: winston.format.json()}));
@@ -56,17 +49,9 @@ log(`app is in: ${app.get('env')}`); //if NODE_ENV isn't set - development, othe
 log(`App name: ${name}`);
 
 // Routers
-app.use(home.url, home.handler);
-app.use(genres.url, genres.handler);
-app.use(multiple.url, multiple.handler);
-app.use(customers.url, customers.handler);
-app.use(movies.url, movies.handler);
-app.use(rental.url, rental.handler);
-app.use(users.url, users.handler);
-app.use(auth.url, auth.handler);
+pluginRoutes(app);
 
 // error handler for request processing pipeline in context express.
 // if something happens outside express - it won't help us
-app.use(commonErrorHandler);
 
 app.listen(app_port, () => console.log(`App listening on port ${app_port}.`));
