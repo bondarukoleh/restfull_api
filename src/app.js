@@ -9,6 +9,11 @@ const Joi = require('@hapi/joi');
 const winston = require('winston');
 require('winston-mongodb');
 
+process.on('uncaughtException', (err) => {
+	console.log(`Got uncaught Exception. ${err.message}`);
+	winston.error(`Got uncaughtException ${err.message}`, )
+});
+
 const {validObjectId} = require('./db/helper');
 Joi.objectId = validObjectId;
 const {app_port, debug_app, name} = config;
@@ -46,7 +51,8 @@ app.use(rental.url, rental.handler);
 app.use(users.url, users.handler);
 app.use(auth.url, auth.handler);
 
-// error handler
+// error handler for request processing pipeline in context express.
+// if something happens outside express - it won't help us
 app.use(commonErrorHandler);
 
 app.listen(app_port, () => console.log(`App listening on port ${app_port}.`));
