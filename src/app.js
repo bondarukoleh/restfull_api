@@ -9,9 +9,18 @@ const Joi = require('@hapi/joi');
 const winston = require('winston');
 require('winston-mongodb');
 
+/* This only helps when sync code has error. It won't catch rejected Promise */
 process.on('uncaughtException', (err) => {
-	console.log(`Got uncaught Exception. ${err.message}`);
-	winston.error(`Got uncaughtException ${err.message}`, )
+	log(`Got Uncaught Exception: ${err.message}`);
+	winston.error(`Got Uncaught Exception: ${err.message}`)
+	/* Better to exit in those cases, to not left app in not clear state */
+	// process.exit(1)
+});
+
+process.on('unhandledRejection', (err) => {
+	/* Here we catching the async error, and we'll make a sync error from it */
+	log(`Got Unhandled Rejection: ${err.message}`);
+	throw err;
 });
 
 const {validObjectId} = require('./db/helper');
@@ -37,6 +46,11 @@ app.set('views', './src/views'); // views set by default - here for example
 // Logging
 winston.add(new winston.transports.File({filename: 'logs/appLog.log', format: winston.format.json()}));
 winston.add(new winston.transports.MongoDB({db: client.connectionUrl, level: 'error'}));
+/* will log all uncaughtException */
+winston.exceptions.handle(new winston.transports.File({filename: 'logs/exceptions.log',
+	format: winston.format.json()}));
+
+
 debug_app && app.use(morgan(`Got ":method" to ":url". Returning ":status"  in ":response-time ms"`)); // logger, writes to terminal but could be setup to file
 log(`app is in: ${app.get('env')}`); //if NODE_ENV isn't set - development, otherwise - it's value. Needs to be set before app
 log(`App name: ${name}`);
