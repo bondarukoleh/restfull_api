@@ -10,5 +10,8 @@ module.exports = function(app) {
 	app.use(rental.url, rental.handler);
 	app.use(users.url, users.handler);
 	app.use(auth.url, auth.handler);
+
+	// error handler for request processing pipeline in context express.
+	// if something happens outside express - it won't help us
 	app.use(commonErrorHandler);
 };

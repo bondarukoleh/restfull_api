@@ -1,4 +1,16 @@
 const path = require('path');
+const winston = require('winston');
+
+function createStartErrorLog() {
+	winston.add(new winston.transports.File({filename: 'logs/startup.error.log', format: winston.format.json(), timestamp:true}));
+}
+
+function throwSetupErrorCausedBy(variableName) {
+	/* Need to investigate why winston cannot create file if I'm terminating process or throwing error immediately */
+	setTimeout(() => {
+		throw new Error(`"${variableName}" is missing. Please check .env.dist file! Your action REQUIRED!`)
+	}, 2000)
+}
 
 function setEnvironmentVariables() {
 	try {
@@ -8,15 +20,12 @@ function setEnvironmentVariables() {
 	}
 
 	const {DB_USER_NAME, DB_USER_PASS, NODE_CONFIG_DIR, JWT_PPK} = process.env;
-	if(!NODE_CONFIG_DIR){
-		console.log('ATTENTION! NODE_CONFIG_DIR should be set. Please check out .env.dist file!')
-	}
-	if(!DB_USER_NAME || !DB_USER_PASS) {
-		console.warn('ATTENTION! DB USER or PASSWORD not set. Please check out .env.dist file!');
-		console.warn('ATTENTION! You are not able to use DB!');
-	}
-	if(!JWT_PPK) {
-		console.error('ATTENTION! JSON Web Token Private key is absent. Please check out .env.dist file!');
+	for(const [key, value] of Object.entries({DB_USER_NAME, DB_USER_PASS, NODE_CONFIG_DIR, JWT_PPK})){
+		if(!value){
+			createStartErrorLog();
+			winston.error(`ATTENTION! ${key} should be set. Please check out .env.dist file!`)
+			throwSetupErrorCausedBy(key)
+		}
 	}
 }
 

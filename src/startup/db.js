@@ -1,4 +1,4 @@
-const log = require('debug')('app:startup:db'); // default express logger
+const log = require('debug')('app:startup'); // default express logger
 
 module.exports = function(client) {
 	client.connect().then(() => log('DB connected'),
