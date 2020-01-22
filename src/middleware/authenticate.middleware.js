@@ -1,9 +1,7 @@
-const log = require('debug')('middleware:auth');
 const jwt = require('jsonwebtoken');
 const {jwt_ppk} = require('config');
 
 function isUser(req, res, next) {
-	log('Check Authentication...');
 	const token = req.header('x-auth-token');
 	if (!token) return res.status(401).send({error: 'Unauthorized. No token.'});
 
@@ -16,7 +14,6 @@ function isUser(req, res, next) {
 }
 
 function isAdmin(req, res, next) {
-	log('Check if User is admin...');
 	if (!req.user.isAdmin) return res.status(403).send({error: 'Forbidden. You have no rights to perform this operation.'});
 	next();
 }
