@@ -11,10 +11,17 @@ require('winston-mongodb');
 const {validObjectId} = require('./db/helper');
 Joi.objectId = validObjectId;
 const {app_port, debug_app, name} = config;
-const {pluginRoutes, pluginMiddlewares} = require('./startup');
+const {pluginRoutes, pluginMiddleware, connectDB} = require('./startup');
 const {client} = require('./db');
 
 const app = express();
+
+// Logging
+winston.add(new winston.transports.File({filename: 'logs/appLog.log', format: winston.format.json()}));
+/* will log errors to db winston.add(new winston.transports.MongoDB({db: client.connectionUrl, level: 'error'})); */
+/* will log all uncaughtException */
+winston.exceptions.handle(new winston.transports.File({filename: 'logs/exceptions.log',
+	format: winston.format.json()}));
 
 /* This only helps when sync code has error. It won't catch rejected Promise */
 process.on('uncaughtException', (err) => {
@@ -31,17 +38,12 @@ process.on('unhandledRejection', (err) => {
 });
 
 // DB
-client.connect().then(() => log('DB connected'), (e) => log(`DB is not connected!!!\n"${e.message}"`));
+connectDB(client);
 
 // Middleware
-pluginMiddlewares(app);
+pluginMiddleware(app);
 
-// Logging
-winston.add(new winston.transports.File({filename: 'logs/appLog.log', format: winston.format.json()}));
-winston.add(new winston.transports.MongoDB({db: client.connectionUrl, level: 'error'}));
-/* will log all uncaughtException */
-winston.exceptions.handle(new winston.transports.File({filename: 'logs/exceptions.log',
-	format: winston.format.json()}));
+
 
 
 debug_app && app.use(morgan(`Got ":method" to ":url". Returning ":status"  in ":response-time ms"`)); // logger, writes to terminal but could be setup to file

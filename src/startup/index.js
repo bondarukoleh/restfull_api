@@ -1,4 +1,5 @@
 module.exports = {
 	pluginRoutes: require('./routes'),
-	pluginMiddlewares: require('./middlewares'),
+	pluginMiddleware: require('./middleware'),
+	connectDB: require('./db'),
 };
