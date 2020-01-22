@@ -1,8 +1,11 @@
 const path = require('path');
 const winston = require('winston');
 
+/* TODO: refactor require('winston') to getLogger */
+
 function createStartErrorLog() {
 	winston.add(new winston.transports.File({filename: 'logs/startup.error.log', format: winston.format.json(), timestamp:true}));
+	winston.add(new winston.transports.Console({colorize: true, prettyPrint: true}));
 }
 
 function throwSetupErrorCausedBy(variableName) {

@@ -3,6 +3,7 @@ require('express-async-errors');
 const express = require('express');
 const config = require('config');
 const morgan = require('morgan');
+const winston = require('winston');
 
 require('./startup/validation.api.data')();
 const {app_port, debug_app} = config;
@@ -13,6 +14,7 @@ const app = express();
 
 // Logging
 addLogging();
+// morgan writes to terminal but could be setup to file
 debug_app && app.use(morgan(`Got ":method" to ":url". Returning ":status"  in ":response-time ms"`));
 
 // exceptions
@@ -26,5 +28,4 @@ pluginMiddleware(app);
 
 // Routers
 pluginRoutes(app);
-
-app.listen(app_port, () => console.log(`App listening on port ${app_port}.`));
+app.listen(app_port, () => winston.info(`App listening on port ${app_port}.`));
