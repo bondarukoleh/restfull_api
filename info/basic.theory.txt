@@ -261,7 +261,7 @@ let author = {_id: 1, name: String, otherInfo: 'bla'}
 let course = {author: {_id: 1, name: String}, courseInfo: String}
 
 Implementation of those methods looks like this:
-===================================
+==================================================
 1. Using References (Normalization)
 So we have a separate author model
 const AuthorModel = mongoose.model('Author', new mongoose.Schema({name: String, website: String}))
@@ -293,7 +293,7 @@ Or we can specify property that we want to get .populate('author', 'name'}) and 
 Or we can exclude property that we don't want to get .populate('author', 'name -_id'}) and we'll get only authors name
  in object without populated _id
 
-===================================
+==================================================
 2. Using Embedded Documents (Denormalization)
 const authorSchema = new mongoose.Schema({name: String, website: {type: String, required: true}})
 const AuthorModel = mongoose.model('Author', authorSchema)
@@ -343,8 +343,8 @@ const author = course.authors.id(authorID)
 author.remove()
 course.save()
 
-======================================================
-======================================================
+==================================================
+==================================================
 Transactions concept.
 In relational DBs we have this concept of transaction. Means group of operations that need to be performed together,
 and only if those operations performed successfully - than resource changes applied (commit), if one of the
@@ -383,7 +383,7 @@ const id = new mongoose.Types.ObjectId()
 To get timestamp
 const timestamp = id.getTimestamp();
 
-=============================
+==================================================
 Hash.
 To hash a password we need a salt.
 For pass 1234 -> we hash it to adfc, so if hacker will get this data - it couldn't decrypt it to 1234.
@@ -419,9 +419,27 @@ should delete token on client side. So User will be forced to login again and ge
 Storing tokens in plain text in DB - same as storing passwords. If you really need to save tokens in DB - hash them.
 When you sending token to client, use https - to not get criminal to own via sniffing your users tokens.
 
-=========================================
+==================================================
 Winston logger - has ability to log message in console, file, or http endpoint, these things called transport, a place
 to log message. Winston can be integrated with mongodb, couchdb, redis, loggly (also a logging service)
 So we can create a few instances of winston, and set them different ways to log stuff, or from one logger log to many
 things like console, some db, or external web service which is pretty cool.
 Winston has levels error warn info verbose debug silly
+
+==================================================
+==================================================
+Automation testing
+We write code that tests pur code in automation fashion.
+Application consist of production code and test code.
+Automation saves time and finds bugs before deployment, and gives you ability to refactor with more quality.
+Types of tests:
+Unit, Integration, System, e2e.
+Unit - tests an app unit, or a few classes without its external dependencies. Test a unit of work.
+Cheap to write, and running fast. Don't give you a lot of confidence (уверенность).
+Integration - test parts of app with external dependencies. Means working a few units as a whole, or work with DB.
+Longer to execute, more confident.
+e2e - (in this course) tests that drives app via UI. Slow and not-stable but most confident.
+
+Test runner - is a library that can run tests, and gives you report about results.
+Jasmine, mocha, jest. Jest same as Jasmine doesn't have external dependencies to be full-featured test runner.
+

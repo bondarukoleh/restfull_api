@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon",
     "test": "mocha --opts test/mocha.opts",
+    "test_jest": "jest --config src/test/jest.config.js",
     "lint": "./node_modules/.bin/eslint \"**/*.js\""
   },
   "repository": {
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "chai": "4.2.0",
+    "jest": "25.1.0",
     "mocha": "6.2.2",
     "node-fetch": "2.6.0",
     "nodemon": "2.0.1"

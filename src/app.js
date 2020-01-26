@@ -28,4 +28,5 @@ pluginMiddleware(app);
 
 // Routers
 pluginRoutes(app);
+
 app.listen(app_port, () => winston.info(`App listening on port ${app_port}.`));
