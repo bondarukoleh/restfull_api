@@ -46,6 +46,7 @@
     "mocha": "6.2.2",
     "node-fetch": "2.6.0",
     "nodemon": "2.0.1",
+    "precommit-hook": "3.0.0",
     "supertest": "4.0.2"
   },
   "nodemonConfig": {
@@ -54,5 +55,8 @@
       "node_modules"
     ],
     "exec": "node ./src/app.js"
-  }
+  },
+  "pre-commit": [
+    "lint"
+  ]
 }

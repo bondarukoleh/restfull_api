@@ -36,15 +36,6 @@ class Mongoose {
 			throw new Error(`Error while connecting to DB: "${e.message}"`)
 		}
 	}
-
-	async update({model, objectID, updateObject}){
-		const foundObj = await models[model].findById(objectID);
-		if (!foundObj) {
-			return 'No such Object in DB';
-		}
-		foundObj.set(updateObject);
-		return foundObj.save();
-	}
 }
 
 module.exports = Mongoose;

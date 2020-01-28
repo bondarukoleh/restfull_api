@@ -16,3 +16,7 @@ node_modules/
 start.test.sh
 docker-compose.yml
 init-mongo.js
+
+# configs
+.jshintignore
+.jshintrc
