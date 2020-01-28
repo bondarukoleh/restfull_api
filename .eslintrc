@@ -13,6 +13,11 @@
 	"parserOptions": {
 		"ecmaVersion": 2018
 	},
+	"overrides": [
+		{
+			"files": ["src/", "test/"]
+		}
+	],
 	"rules": {
 		"no-undef": 1
 	}
