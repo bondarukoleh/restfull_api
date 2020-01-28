@@ -8,7 +8,7 @@
     "start_prod": "node ./src/app.js",
     "test": "mocha --opts test/mocha.opts",
     "test_jest": "jest --config src/test/jest.config.js",
-    "code_check": "eslint"
+    "lint": "eslint"
   },
   "repository": {
     "type": "git",
