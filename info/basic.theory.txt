@@ -443,3 +443,5 @@ e2e - (in this course) tests that drives app via UI. Slow and not-stable but mos
 Test runner - is a library that can run tests, and gives you report about results.
 Jasmine, mocha, jest. Jest same as Jasmine doesn't have external dependencies to be full-featured test runner.
 
+If function that you want to cover with unit test need a lot of mocking, that it's maybe worth to write an integration
+test for it. Unit test good for functions with not a lot of dependencies.

@@ -9,6 +9,7 @@ const userScheme = new mongoose.Schema({
 	password: {type: String, required: true, minlength: 5, maxlength: 1024},
 	isAdmin: {type: Boolean},
 });
+
 userScheme.methods.generateToken = function () {
 	return jwt.sign({_id: this._id, isAdmin: this.isAdmin}, jwt_ppk);
 };

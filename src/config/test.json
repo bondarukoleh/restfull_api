@@ -1,0 +1,11 @@
+{
+	"name": "Development of videos application",
+	"db": {
+		"host": "mongodb://127.0.0.1",
+		"port": 27017,
+		"name": "playground"
+	},
+	"app_port": 3000,
+	"debug_app": true,
+	"jwt_ppk": "1234"
+}
