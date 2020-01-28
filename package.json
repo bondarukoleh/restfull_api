@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon",
+    "start_prod": "node ./src/app.js",
     "test": "mocha --opts test/mocha.opts",
     "test_jest": "jest --config src/test/jest.config.js",
     "lint": "./node_modules/.bin/eslint \"**/*.js\""
@@ -44,7 +45,8 @@
     "jest": "25.1.0",
     "mocha": "6.2.2",
     "node-fetch": "2.6.0",
-    "nodemon": "2.0.1"
+    "nodemon": "2.0.1",
+    "supertest": "4.0.2"
   },
   "nodemonConfig": {
     "ignore": [

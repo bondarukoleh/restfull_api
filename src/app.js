@@ -7,7 +7,7 @@ const winston = require('winston');
 
 require('./startup/validation.api.data')();
 const {app_port, debug_app} = config;
-const {pluginRoutes, pluginMiddleware, connectDB, addLogging, handleExceptions} = require('./startup');
+const {pluginRoutes, pluginMiddleware, connectDB, addLogging, handleExceptions, appListeners} = require('./startup');
 const {client} = require('./db');
 
 const app = express();
@@ -29,4 +29,8 @@ pluginMiddleware(app);
 // Routers
 pluginRoutes(app);
 
-app.listen(app_port, () => winston.info(`App listening on port ${app_port}.`));
+const server = app.listen(app_port, () => winston.info(`App listening on port ${app_port}.`));
+
+appListeners(server, client);
+
+module.exports = server;

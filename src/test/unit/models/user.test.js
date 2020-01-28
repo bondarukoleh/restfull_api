@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 describe('Unit tests', () => {
 	describe('', () => {
-		beforeAll(() => require('../../../startup/validation.api.data')())
+		beforeAll(() => require('../../../startup/validation.api.data')());
 
 		it('should generate a valid token', () => {
 			const {Model: UserModel} = require('../../../db/modeles/user.model');

@@ -33,7 +33,7 @@ class Mongoose {
 			log(`BD disconnected: ${this.dbUrl}`);
 		} catch (e) {
 			log(`Fail to disconnect to DB: ${e.message}`);
-			return new Error(`Error while connecting to DB: "${e.message}"`)
+			throw new Error(`Error while connecting to DB: "${e.message}"`)
 		}
 	}
 

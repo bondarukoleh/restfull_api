@@ -1,3 +1,5 @@
+/* To login to db - $>mongo admin -u ADMIN_NAME -p PASSWORD
+ To use db - $>use DATABASE_NAME */
 db.auth('YOUR_ROOT_USER', 'YOUR_ROOT_PASS');
 sibling_db = db.getSiblingDB('YOUR_DB');
 sibling_db.createUser({user:"YOUR_DB_USER",pwd:"YOUR_DB_PASS",roles:[{role:"readWrite",db:"YOUR_DB"}]});

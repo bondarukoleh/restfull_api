@@ -4,4 +4,5 @@ module.exports = {
 	connectDB: require('./db'),
 	addLogging: require('./logging'),
 	handleExceptions: require('./handle.exceptions'),
+	appListeners: require('./app.listeners'),
 };
