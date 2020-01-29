@@ -3,7 +3,7 @@ const router = express.Router();
 
 const routes = require('./routes');
 const {models: {genre: {Model, validate}}} = require('../db');
-const {auth} = require('../middleware');
+const {auth, errorHandle: {mongoIdCheck}} = require('../middleware');
 
 // function asyncCatchWrapper(asyncFuncToWrap) {
 // 	return async function (req, res, next) {
@@ -61,9 +61,7 @@ router.put('/:id', auth.isUser, async (req, res) => {
 	return res.status(204).send();
 });
 
-router.delete('/:id', [auth.isUser, auth.isAdmin], async (req, res) => {
-	const {error} = validate.validateId(req.params);
-	if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
+router.delete('/:id', [auth.isUser, auth.isAdmin, mongoIdCheck], async (req, res) => {
 	const genre = await Model.findByIdAndRemove(req.params.id);
 	if(!genre) return res.status(404).send({error: `Genre with id: "${req.params.id}" is not found.`});
 	return res.status(200).send(genre);

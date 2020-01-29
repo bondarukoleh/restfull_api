@@ -6,6 +6,7 @@ describe(routes.genres, () => {
 	let app = null;
 	let req = null;
 	let GenreModel = null;
+	let removeQuery = null;
 
 	beforeAll( () => {
 		app = require('../../app');
@@ -13,7 +14,6 @@ describe(routes.genres, () => {
 		GenreModel = require('../../db/modeles/genre.model').Model;
 	});
 	afterAll(() => app.close());
-	let removeQuery = null;
 	afterEach(async () => {
 		if(removeQuery) {
 			await GenreModel.remove(removeQuery)

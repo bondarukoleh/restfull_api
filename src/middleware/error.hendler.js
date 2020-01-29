@@ -6,4 +6,10 @@ function commonErrorHandler(err, req, res, next) {
 	next();
 }
 
-module.exports = {commonErrorHandler};
+function mongoIdCheck(req, res, next) {
+	const {error} = validate.validateId(req.params);
+	if(error) res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
+	next();
+}
+
+module.exports = {commonErrorHandler, mongoIdCheck};
