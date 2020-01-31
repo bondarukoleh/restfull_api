@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 
 const {genreScheme} = require('./genre.model');
+const {validObjectId} = require('../helper');
 
 // db data validation
 const movieScheme = new mongoose.Schema({
@@ -15,20 +16,13 @@ const validateCommonObj = {
 	title: Joi.string().min(5).max(30).required(),
 	numberInStock: Joi.number().min(0).max(255).required(),
 	dailyRentalRate: Joi.number().min(0).max(255).required(),
-	genreId: Joi.objectId(),
-};
-const validateIdObj = {
-	id: Joi.objectId()
+	genreId: validObjectId(),
 };
 
 // client data validation
 function validate(objToValidate) {
 	return Joi.object(validateCommonObj).validate(objToValidate)
 }
-
-validate.validateId = function (objToValidate) {
-	return Joi.object(validateIdObj).validate(objToValidate)
-};
 
 const Model = mongoose.model('Movie', movieScheme);
 

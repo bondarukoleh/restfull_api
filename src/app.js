@@ -5,7 +5,6 @@ const config = require('config');
 const morgan = require('morgan');
 const winston = require('winston');
 
-require('./startup/validation.api.data')();
 const {app_port, debug_app} = config;
 const {pluginRoutes, pluginMiddleware, connectDB, addLogging, handleExceptions, appListeners} = require('./startup');
 const {client} = require('./db');

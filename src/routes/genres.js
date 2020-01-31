@@ -3,7 +3,7 @@ const router = express.Router();
 
 const routes = require('./routes');
 const {models: {genre: {Model, validate}}} = require('../db');
-const {auth, errorHandle: {mongoIdCheck}} = require('../middleware');
+const {auth, errorHandle: {mongoIdIsValid}} = require('../middleware');
 
 // function asyncCatchWrapper(asyncFuncToWrap) {
 // 	return async function (req, res, next) {
@@ -25,9 +25,7 @@ router.get('/', async (req, res) => {
 	return res.send(genres);
 });
 
-router.get('/:id', async (req, res) => {
-	const {error} = validate.validateId(req.params);
-	if(error)	return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
+router.get('/:id', mongoIdIsValid, async (req, res) => {
 	const genre = await Model.findById(req.params.id);
 	if (genre) return res.send(genre);
 	return res.status(404).send({error: `Genre with id: "${req.params.id}" is not found.`});
@@ -43,11 +41,7 @@ router.post('/', auth.isUser, async (req, res) => {
 	}
 });
 
-router.put('/:id', auth.isUser, async (req, res) => {
-	{
-		const {error} = validate.validateId(req.params);
-		if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
-	}
+router.put('/:id', [auth.isUser, mongoIdIsValid] , async (req, res) => {
 	const {error, value} = validate(req.body);
 	if(error) return res.status(400).send({error: error.message});
 
@@ -61,7 +55,7 @@ router.put('/:id', auth.isUser, async (req, res) => {
 	return res.status(204).send();
 });
 
-router.delete('/:id', [auth.isUser, auth.isAdmin, mongoIdCheck], async (req, res) => {
+router.delete('/:id', [auth.isUser, auth.isAdmin, mongoIdIsValid], async (req, res) => {
 	const genre = await Model.findByIdAndRemove(req.params.id);
 	if(!genre) return res.status(404).send({error: `Genre with id: "${req.params.id}" is not found.`});
 	return res.status(200).send(genre);

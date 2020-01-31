@@ -9,17 +9,10 @@ const genreScheme = new mongoose.Schema({
 const validateCommonObj = {
 	name: Joi.string().min(3).required()
 };
-const validateIdObj = {
-	id: Joi.objectId()
-};
 
 function validate(objToValidate) {
 	return Joi.object(validateCommonObj).validate(objToValidate)
 }
-
-validate.validateId = function (objToValidate) {
-	return Joi.object(validateIdObj).validate(objToValidate)
-};
 
 const Model = mongoose.model('Genre', genreScheme);
 

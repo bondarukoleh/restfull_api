@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 const routes = require('./routes');
 const {models: {user: {Model, validate}}} = require('../db');
-const {auth} = require('../middleware');
+const {auth, errorHandle: {mongoIdIsValid}} = require('../middleware');
 
 router.get('/', [auth.isUser, auth.isAdmin], async (req, res) => {
 	const users = await Model.find();
@@ -42,11 +42,7 @@ router.post('/', [auth.isUser, auth.isAdmin], async (req, res) => {
 	}
 });
 
-router.put('/:id', auth.isUser, async (req, res) => {
-	{
-		const {error} = validate.validateId(req.params);
-		if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
-	}
+router.put('/:id', [auth.isUser, mongoIdIsValid], async (req, res) => {
 	const {error, value} = validate(req.body);
 	if(error) return res.status(400).send({error: error.message});
 
@@ -60,7 +56,7 @@ router.put('/:id', auth.isUser, async (req, res) => {
 	return res.status(204).send();
 });
 
-router.delete('/:id', [auth.isUser, auth.isAdmin], async (req, res) => {
+router.delete('/:id', [auth.isUser, auth.isAdmin, mongoIdIsValid], async (req, res) => {
 	const user = await Model.findByIdAndRemove(req.params.id);
 	if(!user) return res.status(404).send({error: `Users with id: "${req.params.id}" is not found.`});
 	return res.status(200).send(user);

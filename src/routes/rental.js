@@ -3,7 +3,7 @@ const router = express.Router();
 
 const routes = require('./routes');
 const {models: {rental: {Model, validate}, customer, movie}} = require('../db');
-const {auth} = require('../middleware');
+const {auth, errorHandle: {mongoIdIsValid}} = require('../middleware');
 
 router.get('/', async (req, res) => {
 	const rentals = await Model.find();
@@ -57,17 +57,13 @@ router.post('/', auth.isUser, async (req, res) => {
 	}
 });
 
-router.get('/:id', async (req, res) => {
-	const {error} = validate.validateId(req.params);
-	if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
+router.get('/:id', mongoIdIsValid, async (req, res) => {
 	const rental = await Model.findById(req.params.id);
 	if (rental) return res.send(rental);
 	return res.status(404).send({error: `Rental with id: "${req.params.id}" is not found.`});
 });
 
-router.delete('/:id', auth.isUser, async (req, res) => {
-	const {error} = validate.validateId(req.params);
-	if(error) return res.status(404).send({error: `Id "${req.params.id}" is not valid.`});
+router.delete('/:id', [auth.isUser, mongoIdIsValid], async (req, res) => {
 	const rental = await Model.findByIdAndRemove(req.params.id);
 	if(!rental) return res.status(404).send({error: `Rental with id: "${req.params.id}" is not found.`});
 	return res.status(200).send(rental);

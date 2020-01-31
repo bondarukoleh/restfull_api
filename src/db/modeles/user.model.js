@@ -35,17 +35,10 @@ const validateCommonObj = {
 	operations: [{delete: ['users', 'courses'], update: ['movies', 'customers']}]
 	*/
 };
-const validateIdObj = {
-	id: Joi.objectId()
-};
 
 function validate(objToValidate) {
 	return Joi.object(validateCommonObj).validate(objToValidate)
 }
-
-validate.validateId = function (objToValidate) {
-	return Joi.object(validateIdObj).validate(objToValidate)
-};
 
 const Model = mongoose.model('User', userScheme);
 

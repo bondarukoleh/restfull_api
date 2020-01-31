@@ -13,17 +13,10 @@ const validateCommonObj = {
 	phone: Joi.string().required(),
 	isGold: Joi.boolean(),
 };
-const validateIdObj = {
-	id: Joi.objectId()
-};
 
 function validate(objToValidate) {
 	return Joi.object(validateCommonObj).validate(objToValidate)
 }
-
-validate.validateId = function (objToValidate) {
-	return Joi.object(validateIdObj).validate(objToValidate)
-};
 
 const Model = mongoose.model('Customer', customerScheme);
 
