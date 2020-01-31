@@ -35,8 +35,7 @@ router.post('/', auth.isUser, async (req, res) => {
 	const {error, value} = validate(req.body);
 	if (error) return res.status(400).send({error: error.message});
 	if (value) {
-		const newGenre = new Model({name: value.name});
-		const createdGenre = await newGenre.save();
+		const createdGenre = await new Model({name: value.name}).save();
 		return res.status(201).send(createdGenre);
 	}
 });

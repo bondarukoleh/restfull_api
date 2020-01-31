@@ -5,7 +5,7 @@
 		"port": 27017,
 		"name": "playground_test"
 	},
-	"app_port": 3000,
+	"app_port": 3001,
 	"debug_app": true,
 	"jwt_ppk": "1234"
 }

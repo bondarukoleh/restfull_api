@@ -445,3 +445,18 @@ Jasmine, mocha, jest. Jest same as Jasmine doesn't have external dependencies to
 
 If function that you want to cover with unit test need a lot of mocking, that it's maybe worth to write an integration
 test for it. Unit test good for functions with not a lot of dependencies.
+We need to cover all (in common sense) execution paths of the function with tests.
+For example route:
+// first execution path - user is not authorized.
+router.post('/', auth.isUser, async (req, res) => {
+	// second execution path - we've sent not valid data.
+	const {error, value} = validate(req.body);
+	if (error) return res.status(400).send({error: error.message});
+	if (value) {
+		// third execution path - data is stored in DB.
+		const createdGenre = await new Model({name: value.name}).save();
+		// forth execution path - created data sent to user.
+		return res.status(201).send(createdGenre);
+	}
+});
+We need to create at least 4 tests for this route. Unauthorized user, not valid data, data is in DB, data is sent.

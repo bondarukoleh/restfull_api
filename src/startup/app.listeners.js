@@ -1,7 +1,7 @@
 const debug = require('debug');
 
 module.exports = function (server, dbClient) {
-	server.on('close', (err) => {
+	server.on('close', async (err) => {
 		const log = debug('app:closing');
 		if(err) {
 			log(`Closing app with error ${err}`);
