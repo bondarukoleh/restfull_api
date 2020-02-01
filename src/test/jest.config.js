@@ -15,7 +15,7 @@ module.exports = {
   clearMocks: true,
 
   // Indicates whether the coverage information should be collected while executing the test
-  // collectCoverage: true,
+  collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   // collectCoverageFrom: undefined,
@@ -50,7 +50,7 @@ module.exports = {
   // forceCoverageMatch: [],
 
   // A path to a module which exports an async function that is triggered once before all test suites
-  globalSetup: './pretest.js',
+  globalSetup: './test/pretest.js',
 
   // A path to a module which exports an async function that is triggered once after all test suites
   // globalTeardown: undefined,
@@ -110,15 +110,15 @@ module.exports = {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  rootDir: '../test',
+  rootDir: '../',
 
   // A list of paths to directories that Jest should use to search for files in
   roots: [
 		// '../../info/some_code/jest',
-		'../test/integration/routes',
-		'../test/integration/middleware',
-		'../test/unit/middleware',
-    '../test/unit/models',
+		'./test/integration/routes',
+		'./test/integration/middleware',
+		'./test/unit/middleware',
+    './test/unit/models',
   ],
 
   // Allows you to use a custom runner instead of Jest's default test runner
