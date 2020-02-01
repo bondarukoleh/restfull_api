@@ -442,6 +442,7 @@ e2e - (in this course) tests that drives app via UI. Slow and not-stable but mos
 
 Test runner - is a library that can run tests, and gives you report about results.
 Jasmine, mocha, jest. Jest same as Jasmine doesn't have external dependencies to be full-featured test runner.
+Don't forget that if you start app.js from jest tests - NODE_ENV - will set to test.
 
 If function that you want to cover with unit test need a lot of mocking, that it's maybe worth to write an integration
 test for it. Unit test good for functions with not a lot of dependencies.
@@ -460,3 +461,5 @@ router.post('/', auth.isUser, async (req, res) => {
 	}
 });
 We need to create at least 4 tests for this route. Unauthorized user, not valid data, data is in DB, data is sent.
+
+Clean tests. Always check the duplication of code and try to write DRY.

@@ -13,9 +13,8 @@ const app = express();
 
 // Logging
 addLogging();
-// morgan writes to terminal but could be setup to file
-debug_app && app.use(morgan(`Got ":method" to ":url". Returning ":status"  in ":response-time ms"`));
-
+// morgan writes to terminal but could be setup to file. Condition is screwed up, but config - returns string not bool
+debug_app !== 'false' && app.use(morgan(`Got ":method" to ":url". Returning ":status"  in ":response-time ms"`));
 // exceptions
 handleExceptions();
 
@@ -28,8 +27,10 @@ pluginMiddleware(app);
 // Routers
 pluginRoutes(app);
 
-const server = app.listen(app_port, () => winston.info(`App listening on port ${app_port}.`));
+function getServer(port = app_port){
+	const server = app.listen(port, () => winston.info(`App listening on port ${app_port}.`));
+	appListeners(server, client);
+	return server;
+}
 
-appListeners(server, client);
-
-module.exports = server;
+module.exports = process.env.NODE_ENV === 'test' ? getServer : getServer();

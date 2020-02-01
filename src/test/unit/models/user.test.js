@@ -1,13 +1,11 @@
 const jwt = require('jsonwebtoken');
 const {jwt_ppk} = require('config');
 const mongoose = require('mongoose');
+const {Model: UserModel} = require('../../../db/modeles/user.model');
 
 describe('Unit tests', () => {
 	describe('', () => {
-		beforeAll(() => require('../../../startup/validation.api.data')());
-
 		it('should generate a valid token', () => {
-			const {Model: UserModel} = require('../../../db/modeles/user.model');
 			/* toHexString - because it will return ObjectId object. But jwt.verify will return a string */
 			const userObj = {_id: new mongoose.Types.ObjectId().toHexString(), isAdmin: true};
 			const token = new UserModel(userObj).generateToken();
