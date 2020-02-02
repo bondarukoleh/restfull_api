@@ -20,7 +20,7 @@ router.post('/', auth.isUser, async (req, res) => {
 	const foundMovie = await movie.Model.findById(req.body.movieId);
 	if (!foundMovie) return res.status(400).send({error: `Movie with id ${req.body.movieId} not found.`});
 
-	if(foundMovie.numberInStock === 0) return res.status(400).send({error: `Movie not in stock.`});
+	if (foundMovie.numberInStock === 0) return res.status(400).send({error: `Movie not in stock.`});
 
 	if (value) {
 		const newRental = new Model({
@@ -60,16 +60,19 @@ router.post('/', auth.isUser, async (req, res) => {
 router.post('/return', auth.isUser, async (req, res) => {
 	const {error, value} = validate(req.body);
 	if (error) return res.status(400).send({error: error.message});
+	const foundRental = await Model
+		/* Funny way to get inner property of object in mongoose - via dot notation */
+		.findOne({'customer._id': req.body.customerId, 'movie._id': req.body.movieId});
+	if (!foundRental) return res.status(404)
+		.send({error: `No rental for customer with id ${req.body.customerId} or movie with id ${req.body.movieId}`});
 
-	const foundCustomer = await customer.Model.findById(req.body.customerId);
-	if (!foundCustomer) return res.status(400).send({error: `Customer with id ${req.body.customerId} not found.`});
+	if (foundRental.dateReturned) return res.status(400)
+		.send({error: `Rental with id ${foundRental._id.toHexString()} is already processed`});
 
-	const foundMovie = await movie.Model.findById(req.body.movieId);
-	if (!foundMovie) return res.status(400).send({error: `Movie with id ${req.body.movieId} not found.`});
-
-	if(foundMovie.numberInStock === 0) return res.status(400).send({error: `Movie not in stock.`});
-		foundMovie.numberInStock++;
-		return res.status(201).send({});
+	foundRental.movie.numberInStock++;
+	foundRental.dateReturned = new Date();
+	await foundRental.save();
+	return res.status(200).send(foundRental);
 });
 
 router.get('/:id', mongoIdIsValid, async (req, res) => {
@@ -80,7 +83,7 @@ router.get('/:id', mongoIdIsValid, async (req, res) => {
 
 router.delete('/:id', [auth.isUser, mongoIdIsValid], async (req, res) => {
 	const rental = await Model.findByIdAndRemove(req.params.id);
-	if(!rental) return res.status(404).send({error: `Rental with id: "${req.params.id}" is not found.`});
+	if (!rental) return res.status(404).send({error: `Rental with id: "${req.params.id}" is not found.`});
 	return res.status(200).send(rental);
 });
 

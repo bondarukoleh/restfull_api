@@ -14,66 +14,86 @@ describe(routes.rental, () => {
 		app = require('../../../app')(3004);
 		req = request(app);
 	});
-
-	afterEach(async () => RentalModel.remove(rentalObj));
+	// afterEach(async () => RentalModel.remove({_id: rentalObj._id}));
 	afterAll(() => app.close());
 
 	describe('POST /return', () => {
-		let customerId = null;
-		let movieId = null;
+		const payload = {customerId: null, movieId: null};
 
 		async function postRentalReturn() {
 			const token = new UserModel().generateToken();
-			return req.post(`${routes.rental}/return`).set('x-auth-token', token).send(rentalObj)
+			return req.post(`${routes.rental}/return`).set('x-auth-token', token).send(payload)
 		}
 
 		beforeEach(async () => {
-			customerId = mongoose.Types.ObjectId();
-			movieId = mongoose.Types.ObjectId();
+			payload.customerId = mongoose.Types.ObjectId();
+			payload.movieId = mongoose.Types.ObjectId();
 
 			rentalObj = new RentalModel({
 				customer: {
 					name: 'Test Customer',
 					phone: '+380981111111',
-					_id: customerId
+					_id: payload.customerId
 				},
 				movie: {
 					title: 'Test Movie',
 					dailyRentalRate: 1,
-					_id: movieId
+					_id: payload.movieId
 				},
 				dateOut: faker.date.past(),
-				dateReturned: faker.date.future(),
+				dateReturned: null,
 				rentFee: 2,
 			});
+			await rentalObj.save();
 		});
 
 		it('should return 400 with customerId is not provided', async () => {
-		 	customerId = null;
+		 	delete payload.customerId;
 			const {status, body} = await postRentalReturn();
 			expect(status).toEqual(400);
 			expect(body.error).toContain(`is required`)
 		});
 
 		it('should return 400 with movieId is not provided', async () => {
-			movieId = null;
+			delete payload.movieId;
 			const {status, body} = await postRentalReturn();
 			expect(status).toEqual(400);
 			expect(body.error).toContain(`is required`)
 		});
 
 		it('should return 404 if no rental found for customerId', async () => {
+			await RentalModel.remove({_id: rentalObj._id});
 			const {status, body} = await postRentalReturn();
-			expect(status).toEqual(400);
-			expect(body.error).toContain(`is required`)
+			expect(status).toEqual(404);
+			expect(body.error).toContain(`No rental for customer with id`);
 		});
 
-		// it('should return 400 if rental is already processed', async () => {});
-		//
-		// it('should return 200 if valid request', async () => {});
-		//
-		// it('should set return date if valid request', async () => {});
-		//
+		it('should return 400 if rental is already processed', async () => {
+			rentalObj.dateReturned = new Date();
+			await rentalObj.save();
+
+			const {status, body} = await postRentalReturn();
+			expect(status).toEqual(400);
+			expect(body.error).toContain(`is already processed`);
+		});
+
+		it('should return 200 if valid request', async () => {
+			const {status, body} = await postRentalReturn();
+			expect(status).toEqual(200);
+			expect(body).toHaveProperty('_id', rentalObj._id.toHexString());
+		});
+
+		it('should set return date if valid request', async () => {
+			const {status} = await postRentalReturn();
+			expect(status).toEqual(200);
+
+			const createdRental = await RentalModel.findById(rentalObj._id);
+			expect(createdRental).toBeDefined();
+
+			const returnDifference = new Date() - createdRental.dateReturned;
+			expect(returnDifference).toBeLessThan(10 * 1000);
+		});
+
 		// it('should calculate rental fee if valid request', async () => {});
 		//
 		// it('should increases the movie in stock', async () => {});
