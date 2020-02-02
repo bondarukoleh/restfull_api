@@ -15,7 +15,7 @@ module.exports = {
   clearMocks: true,
 
   // Indicates whether the coverage information should be collected while executing the test
-  collectCoverage: true,
+  // collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   // collectCoverageFrom: undefined,
@@ -116,9 +116,9 @@ module.exports = {
   roots: [
 		// '../../info/some_code/jest',
 		'./test/integration/routes',
-		'./test/integration/middleware',
-		'./test/unit/middleware',
-    './test/unit/models',
+		// './test/integration/middleware',
+		// './test/unit/middleware',
+    // './test/unit/models',
   ],
 
   // Allows you to use a custom runner instead of Jest's default test runner

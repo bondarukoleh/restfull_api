@@ -57,6 +57,21 @@ router.post('/', auth.isUser, async (req, res) => {
 	}
 });
 
+router.post('/return', auth.isUser, async (req, res) => {
+	const {error, value} = validate(req.body);
+	if (error) return res.status(400).send({error: error.message});
+
+	const foundCustomer = await customer.Model.findById(req.body.customerId);
+	if (!foundCustomer) return res.status(400).send({error: `Customer with id ${req.body.customerId} not found.`});
+
+	const foundMovie = await movie.Model.findById(req.body.movieId);
+	if (!foundMovie) return res.status(400).send({error: `Movie with id ${req.body.movieId} not found.`});
+
+	if(foundMovie.numberInStock === 0) return res.status(400).send({error: `Movie not in stock.`});
+		foundMovie.numberInStock++;
+		return res.status(201).send({});
+});
+
 router.get('/:id', mongoIdIsValid, async (req, res) => {
 	const rental = await Model.findById(req.params.id);
 	if (rental) return res.send(rental);

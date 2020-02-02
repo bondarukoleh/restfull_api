@@ -465,3 +465,10 @@ router.post('/', auth.isUser, async (req, res) => {
 We need to create at least 4 tests for this route. Unauthorized user, not valid data, data is in DB, data is sent.
 
 Clean tests. Always check the duplication of code and try to write DRY.
+
+TDD - write failing test, write simplest implementation, test it, refactor cne if need, test it.
+Benefits:
+ 1. you write testable code
+ 2. all code covered with tests
+ 3. simpler implementation in most cases
+Code first in TDD - is when you fist write a code, and then tests.

@@ -29,7 +29,6 @@
     "eslint": "6.7.2",
     "express": "4.17.1",
     "express-async-errors": "3.1.1",
-    "faker": "4.1.0",
     "helmet": "3.21.2",
     "jsonwebtoken": "8.5.1",
     "log4js": "6.1.0",
@@ -47,8 +46,9 @@
     "node-fetch": "2.6.0",
     "nodemon": "2.0.1",
     "precommit-hook": "3.0.0",
-    "supertest": "4.0.2"
-  },
+    "supertest": "4.0.2",
+		"faker": "4.1.0"
+	},
   "nodemonConfig": {
     "ignore": [
       ".git",
