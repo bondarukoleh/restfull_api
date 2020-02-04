@@ -3,7 +3,8 @@ const router = express.Router();
 
 const routes = require('./routes');
 const {models: {customer: {validate, Model}}} = require('../db');
-const {auth, errorHandle: {mongoIdIsValid}} = require('../middleware');
+const {auth, errorHandle: {mongoIdIsValid}, getValidateReqObj} = require('../middleware');
+const validateReqObj = getValidateReqObj(validate);
 
 router.get('/', async (req, res) => {
 	const customers = await Model.find();
@@ -18,22 +19,16 @@ router.get('/:id', mongoIdIsValid, async (req, res) => {
 	return res.status(404).send({error: `Customer with id: "${req.params.id}" is not found.`});
 });
 
-router.post('/', [auth.isUser, auth.isAdmin], async (req, res) => {
-	const {error, value} = validate(req.body);
-	if (error) return res.status(400).send({error: error.message});
-	if (value) {
-		const createdCustomer = await (new Model({name: value.name, phone: value.phone})).save();
-		return res.status(201).send(createdCustomer);
-	}
+router.post('/', [auth.isUser, auth.isAdmin, validateReqObj], async (req, res) => {
+	const createdCustomer = await (new Model({name: req.body.name, phone: req.body.phone})).save();
+	return res.status(201).send(createdCustomer);
 });
 
-router.put('/:id', [auth.isUser, mongoIdIsValid], async (req, res) => {
-	let {error, value} = validate(req.body);
-	if(error) return res.status(400).send({error: error.message});
+router.put('/:id', [auth.isUser, mongoIdIsValid, validateReqObj], async (req, res) => {
 	const customer = await Model.findById(req.params.id);
 	if(!customer) return res.status(404).send({error: `Customer with id: "${req.params.id}" is not found.`});
 	try {
-		await customer.set(value).save();
+		await customer.set(req.body).save();
 	} catch (e) {
 		return res.status(500).send({error: e});
 	}

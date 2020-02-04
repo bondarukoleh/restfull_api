@@ -3,7 +3,8 @@ const router = express.Router();
 
 const routes = require('./routes');
 const {models: {genre, movie: {Model, validate}}} = require('../db');
-const {auth, errorHandle: {mongoIdIsValid}} = require('../middleware');
+const {auth, errorHandle: {mongoIdIsValid}, getValidateReqObj} = require('../middleware');
+const validateReqObj = getValidateReqObj(validate);
 
 router.get('/', async (req, res) => {
 	const movies = await Model.find();
@@ -18,38 +19,30 @@ router.get('/:id', mongoIdIsValid, async (req, res) => {
 	return res.status(404).send({error: `Movie with id: "${req.params.id}" is not found.`});
 });
 
-router.post('/', auth.isUser, async (req, res) => {
-	const {error, value} = validate(req.body);
-	if (error) return res.status(400).send({error: error.message});
-
+router.post('/', [auth.isUser, validateReqObj], async (req, res) => {
 	const foundGenre = await genre.Model.findById(req.body.genreId);
 	if (!foundGenre) return res.status(400).send({error: `Invalid genre id.`});
 
-	if (value) {
-		const {title, numberInStock, dailyRentalRate} = req.body;
-		const newMovie = new Model({
-			title,
-			genre: {
-				_id: foundGenre._id,
-				name: foundGenre.name
-			},
-			numberInStock,
-			dailyRentalRate
-		});
-		await newMovie.save();
-		return res.status(201).send(newMovie);
-	}
+	const {title, numberInStock, dailyRentalRate} = req.body;
+	const newMovie = new Model({
+		title,
+		genre: {
+			_id: foundGenre._id,
+			name: foundGenre.name
+		},
+		numberInStock,
+		dailyRentalRate
+	});
+	await newMovie.save();
+	return res.status(201).send(newMovie);
 });
 
-router.put('/:id', [auth.isUser, mongoIdIsValid], async (req, res) => {
-	const {error} = validate(req.body);
-
+router.put('/:id', [auth.isUser, mongoIdIsValid, validateReqObj], async (req, res) => {
 	let genreToChange = null;
 	if(req.body.genreId){
 		genreToChange = await genre.Model.findById(req.body.genreId);
 		if (!genreToChange) return res.status(404).send({error: `Invalid genre id "${req.body.genreId}"`});
 	}
-	if(error) return res.status(400).send({error: error.message});
 
 	const movie = await Model.findById(req.params.id);
 	if(!movie) return res.status(404).send({error: `Movie with id: "${req.params.id}" is not found.`});

@@ -115,10 +115,11 @@ module.exports = {
   // A list of paths to directories that Jest should use to search for files in
   roots: [
 		// '../../info/some_code/jest',
+		'./test/unit',
 		'./test/integration/routes',
-		// './test/integration/middleware',
-		// './test/unit/middleware',
-    // './test/unit/models',
+		'./test/integration/middleware',
+		'./test/unit/middleware',
+    './test/unit/models',
   ],
 
   // Allows you to use a custom runner instead of Jest's default test runner

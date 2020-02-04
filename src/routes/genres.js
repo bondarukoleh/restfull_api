@@ -3,7 +3,8 @@ const router = express.Router();
 
 const routes = require('./routes');
 const {models: {genre: {Model, validate}}} = require('../db');
-const {auth, errorHandle: {mongoIdIsValid}} = require('../middleware');
+const {auth, errorHandle: {mongoIdIsValid}, getValidateReqObj} = require('../middleware');
+const validateReqObj = getValidateReqObj(validate);
 
 // function asyncCatchWrapper(asyncFuncToWrap) {
 // 	return async function (req, res, next) {
@@ -31,23 +32,16 @@ router.get('/:id', mongoIdIsValid, async (req, res) => {
 	return res.status(404).send({error: `Genre with id: "${req.params.id}" is not found.`});
 });
 
-router.post('/', auth.isUser, async (req, res) => {
-	const {error, value} = validate(req.body);
-	if (error) return res.status(400).send({error: error.message});
-	if (value) {
-		const createdGenre = await new Model({name: value.name}).save();
-		return res.status(201).send(createdGenre);
-	}
+router.post('/', [auth.isUser, validateReqObj], async (req, res) => {
+	const createdGenre = await new Model({name: req.body.name}).save();
+	return res.status(201).send(createdGenre);
 });
 
-router.put('/:id', [auth.isUser, mongoIdIsValid] , async (req, res) => {
-	const {error, value} = validate(req.body);
-	if(error) return res.status(400).send({error: error.message});
-
+router.put('/:id', [auth.isUser, mongoIdIsValid, validateReqObj] , async (req, res) => {
 	const genre = await Model.findById(req.params.id);
 	if(!genre) return res.status(404).send({error: `Genre with id: "${req.params.id}" is not found.`});
 	try {
-		await genre.set(value).save();
+		await genre.set(req.body).save();
 	} catch (e) {
 		return res.status(500).send({error: e});
 	}

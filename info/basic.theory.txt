@@ -472,3 +472,5 @@ Benefits:
  2. all code covered with tests
  3. simpler implementation in most cases
 Code first in TDD - is when you fist write a code, and then tests.
+When you've covered some code block with tests - you can start refactor your code without fear to break something,
+because it's easily to check if something goes wrong - just run the tests.

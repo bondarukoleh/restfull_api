@@ -44,7 +44,7 @@ describe('Basic Genres CRUD Suite', function () {
 		});
 
 		it('POST genre name less that 3 characters', async function () {
-			const errorMessage = `"name" length must be at least 3 characters long`;
+			const errorMessage = `"name" length must be at least 5 characters long`;
 			const genreName = 'AB';
 			const {status, body} = await genresApi.postGenre(adminUser, {name: genreName});
 			expect(status).to.eq(400, `Status should be 400`);

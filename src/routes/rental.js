@@ -1,19 +1,18 @@
 const express = require('express');
+const moment = require('moment');
 const router = express.Router();
 
 const routes = require('./routes');
 const {models: {rental: {Model, validate}, customer, movie}} = require('../db');
-const {auth, errorHandle: {mongoIdIsValid}} = require('../middleware');
+const {auth, errorHandle: {mongoIdIsValid}, getValidateReqObj} = require('../middleware');
+const validateReqObj = getValidateReqObj(validate);
 
 router.get('/', async (req, res) => {
 	const rentals = await Model.find();
 	return res.send(rentals);
 });
 
-router.post('/', auth.isUser, async (req, res) => {
-	const {error, value} = validate(req.body);
-	if (error) return res.status(400).send({error: error.message});
-
+router.post('/', [auth.isUser, validateReqObj], async (req, res) => {
 	const foundCustomer = await customer.Model.findById(req.body.customerId);
 	if (!foundCustomer) return res.status(400).send({error: `Customer with id ${req.body.customerId} not found.`});
 
@@ -22,44 +21,40 @@ router.post('/', auth.isUser, async (req, res) => {
 
 	if (foundMovie.numberInStock === 0) return res.status(400).send({error: `Movie not in stock.`});
 
-	if (value) {
-		const newRental = new Model({
-			customer: {
-				_id: foundCustomer._id,
-				name: foundCustomer.name,
-				phone: foundCustomer.phone,
-			},
-			movie: {
-				_id: foundMovie._id,
-				title: foundMovie.title,
-				dailyRentalRate: foundMovie.dailyRentalRate,
-			}
-		});
-		// const createdRental = await newRental.save(); // not necessary to save it in some variable
-		await newRental.save();
-		foundMovie.numberInStock--;
+	const newRental = new Model({
+		customer: {
+			_id: foundCustomer._id,
+			name: foundCustomer.name,
+			phone: foundCustomer.phone,
+		},
+		movie: {
+			_id: foundMovie._id,
+			title: foundMovie.title,
+			dailyRentalRate: foundMovie.dailyRentalRate,
+		}
+	});
+	// const createdRental = await newRental.save(); // not necessary to save it in some variable
+	await newRental.save();
+	foundMovie.numberInStock--;
 
-		await foundMovie.save();
+	await foundMovie.save();
 
-		/* To make transaction like this action of saving rental and decrement number in stock - we could:
-		const Fawn = require('fawn');
-		Fawn.init(mongoose);
-		try {
-			new Fawn.Task()
-				.save('rentals', createdRental)
-				.update('movies', {_id: foundMovie._id}, {$inc: {numberInStock: -1}})
-				.run();
-		} catch (e) {
-			return res.status(500).send(e.message);
-		} But I don't like it a lot, so will keep it as a note */
+	/* To make transaction like this action of saving rental and decrement number in stock - we could:
+	const Fawn = require('fawn');
+	Fawn.init(mongoose);
+	try {
+		new Fawn.Task()
+			.save('rentals', createdRental)
+			.update('movies', {_id: foundMovie._id}, {$inc: {numberInStock: -1}})
+			.run();
+	} catch (e) {
+		return res.status(500).send(e.message);
+	} But I don't like it a lot, so will keep it as a note */
 
-		return res.status(201).send(newRental);
-	}
+	return res.status(201).send(newRental);
 });
 
-router.post('/return', auth.isUser, async (req, res) => {
-	const {error, value} = validate(req.body);
-	if (error) return res.status(400).send({error: error.message});
+router.post('/return', [auth.isUser, validateReqObj], async (req, res) => {
 	const foundRental = await Model
 		/* Funny way to get inner property of object in mongoose - via dot notation */
 		.findOne({'customer._id': req.body.customerId, 'movie._id': req.body.movieId});
@@ -69,8 +64,14 @@ router.post('/return', auth.isUser, async (req, res) => {
 	if (foundRental.dateReturned) return res.status(400)
 		.send({error: `Rental with id ${foundRental._id.toHexString()} is already processed`});
 
-	foundRental.movie.numberInStock++;
+	const movieInDB = await movie.Model.findById(foundRental.movie._id);
+	if (!movieInDB._id) return res.status(404)
+		.send({error: `Movie with id ${foundRental.movie._id.toHexString()} not found`});
+
+	await movie.Model.updateOne({_id: foundRental.movie._id}, {$inc: {numberInStock: 1}});
 	foundRental.dateReturned = new Date();
+	const daysInRent = moment().diff(foundRental.dateOut, 'days');
+	foundRental.rentFee = daysInRent * foundRental.movie.dailyRentalRate;
 	await foundRental.save();
 	return res.status(200).send(foundRental);
 });

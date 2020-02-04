@@ -1,20 +1,25 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 const routes = require('../../../routes/routes');
-const faker = require('faker');
+const moment = require('moment');
 const RentalModel = require('../../../db/modeles/rental.model').Model;
 const UserModel = require('../../../db/modeles/user.model').Model;
+const MovieModel = require('../../../db/modeles/movie.model').Model;
 
 describe(routes.rental, () => {
 	let app = null;
 	let req = null;
 	let rentalObj = null;
+	let movieObj = null;
 
 	beforeAll(() => {
 		app = require('../../../app')(3004);
 		req = request(app);
 	});
-	// afterEach(async () => RentalModel.remove({_id: rentalObj._id}));
+	afterEach(async () => {
+		await RentalModel.remove({_id: rentalObj._id});
+		await MovieModel.remove({_id: movieObj._id});
+	});
 	afterAll(() => app.close());
 
 	describe('POST /return', () => {
@@ -29,6 +34,15 @@ describe(routes.rental, () => {
 			payload.customerId = mongoose.Types.ObjectId();
 			payload.movieId = mongoose.Types.ObjectId();
 
+			movieObj = new MovieModel({
+				title: 'Test Movie',
+				dailyRentalRate: 2,
+				numberInStock: 1,
+				_id: payload.movieId,
+				genre: {name: 'Test Genre'},
+			});
+			await movieObj.save();
+
 			rentalObj = new RentalModel({
 				customer: {
 					name: 'Test Customer',
@@ -37,12 +51,12 @@ describe(routes.rental, () => {
 				},
 				movie: {
 					title: 'Test Movie',
-					dailyRentalRate: 1,
+					dailyRentalRate: 2,
 					_id: payload.movieId
 				},
-				dateOut: faker.date.past(),
+				dateOut: moment().add(-7, 'days').toDate(),
 				dateReturned: null,
-				rentFee: 2,
+				rentFee: 0,
 			});
 			await rentalObj.save();
 		});
@@ -94,10 +108,27 @@ describe(routes.rental, () => {
 			expect(returnDifference).toBeLessThan(10 * 1000);
 		});
 
-		// it('should calculate rental fee if valid request', async () => {});
-		//
-		// it('should increases the movie in stock', async () => {});
-		//
-		// it('should return the rental', async () => {});
+		it('should calculate rental fee if valid request', async () => {
+			const {status, body} = await postRentalReturn();
+			expect(status).toEqual(200);
+			expect(body.rentFee).toEqual(14);
+		});
+
+		it('should increases the movie in stock', async () => {
+			const {status} = await postRentalReturn();
+			expect(status).toEqual(200);
+
+			const returnedMovie = await MovieModel.findById(movieObj._id);
+			let numberInStockBeforeReturn = movieObj.numberInStock;
+			expect(returnedMovie.numberInStock).toEqual(++numberInStockBeforeReturn);
+		});
+
+		it('should return the rental', async () => {
+			const expectedPropsArr = ['customer',	'movie', 'dateOut', 'dateReturned', 'rentFee']
+			const {status, body} = await postRentalReturn();
+			expect(status).toEqual(200);
+
+			expect(Object.keys(body)).toEqual(expect.arrayContaining(expectedPropsArr))
+		});
 	});
 });
