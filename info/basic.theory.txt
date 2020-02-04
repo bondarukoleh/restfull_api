@@ -487,3 +487,30 @@ $>heroku login
 If you are behind firewall
 $>export HTTP_PROXY=http://your_proxy_server.com:1234
 and then login.
+
+$>heroku create olehbondaruk-movies-api
+Creating ⬢ olehbondaruk-movies-api... done
+https://olehbondaruk-movies-api.herokuapp.com/ | https://git.heroku.com/olehbondaruk-movies-api.git
+
+$>git remote -v
+heroku  https://git.heroku.com/olehbondaruk-movies-api.git (push)
+origin  git@github.com:bondarukoleh/restfull_api.git (push)
+
+means push our code to heroku repo
+$>git push heroku develop
+
+To set the environment variables of heroku app
+$>heroku config:set DEBUG_APP=false NODE_ENV=production etc.
+
+To see the logs of application:
+$>heroku logs
+Or at the heroku site - in app - we can check "more" -> and choose logs.
+
+To connect to server where your app is spinning (dyno) - use ssh to heroku server, or dyno as they call it.
+Or use a console option from "more", where you type "bash" -> and it will connect you to your server machine.
+
+By default - you have 1 dyno, if you need more - you need to scale it. Heroku config shared between dynos, so you don't
+need to worry about it.
+
+To add a mongodb to heroku app - you should use "mLab MongoDB" add-on. But it ask you to add credit card.
+so we can setup free mongoDB storage at https://mlab.com/ and then connect that instance with heroku.

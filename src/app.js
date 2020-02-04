@@ -5,7 +5,7 @@ const config = require('config');
 const morgan = require('morgan');
 const winston = require('winston');
 
-const {app_port, debug_app} = config;
+const {app_port, debug_app, name} = config;
 const {pluginRoutes, pluginMiddleware, connectDB, addLogging, handleExceptions, appListeners} = require('./startup');
 const {client} = require('./db');
 
@@ -28,7 +28,8 @@ pluginMiddleware(app);
 pluginRoutes(app);
 
 function getServer(port = app_port){
-	const server = app.listen(port, () => winston.info(`App listening on port ${app_port}.`));
+	const server = app.listen(port,
+		() => winston.info(`App ${name} is listening on port ${app_port}.`));
 	appListeners(server, client);
 	return server;
 }
