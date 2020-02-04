@@ -38,7 +38,7 @@ router.put('/:id', [auth.isUser, mongoIdIsValid, validateReqObj], async (req, re
 router.delete('/:id', auth.isUser, async (req, res) => {
 	const customer = await Model.findByIdAndRemove(req.params.id);
 	if(!customer) return res.status(404).send({error: `Customer with id: "${req.params.id}" is not found.`});
-	return res.status(200).send(customer);
+	return res.send(customer);
 });
 
 module.exports = {handler: router, url: routes.customers};

@@ -55,7 +55,7 @@ router.put('/:id', [auth.isUser, mongoIdIsValid, validateReqObj], async (req, re
 router.delete('/:id', [auth.isUser, auth.isAdmin, mongoIdIsValid], async (req, res) => {
 	const user = await Model.findByIdAndRemove(req.params.id);
 	if(!user) return res.status(404).send({error: `Users with id: "${req.params.id}" is not found.`});
-	return res.status(200).send(user);
+	return res.send(user);
 });
 
 module.exports = {handler: router, url: routes.users};

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const moment = require('moment');
 const {validObjectId} = require('../helper');
 
 // Duplicating customer schema because we need only super needed info about them, and original customer schema
@@ -22,6 +23,19 @@ const rentalScheme = new mongoose.Schema({
 	dateReturned: {type: Date},
 	rentFee: {type: Number, min: 0},
 });
+
+/* Pay attention to add static method to class - .statics */
+rentalScheme.statics.lookup = function (customerId, movieId) {
+	/* Funny way to get inner property of object in mongoose - via dot notation */
+	return this.findOne({'customer._id': customerId, 'movie._id': movieId})
+};
+
+/* Pay attention to add instance methods to object - .methods */
+rentalScheme.methods.makeReturned = function () {
+	this.dateReturned = new Date();
+	const daysInRent = moment().diff(this.dateOut, 'days');
+	this.rentFee = daysInRent * this.movie.dailyRentalRate;
+};
 
 const validateCommonObj = {
 	customerId: validObjectId(),

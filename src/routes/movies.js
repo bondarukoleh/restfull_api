@@ -66,7 +66,7 @@ router.put('/:id', [auth.isUser, mongoIdIsValid, validateReqObj], async (req, re
 router.delete('/:id', [auth.isUser, mongoIdIsValid], async (req, res) => {
 	const movie = await Model.findByIdAndRemove(req.params.id);
 	if(!movie) return res.status(404).send({error: `Movie with id: "${req.params.id}" is not found.`});
-	return res.status(200).send(movie);
+	return res.send(movie);
 });
 
 module.exports = {handler: router, url: routes.movies};

@@ -1,5 +1,4 @@
 const express = require('express');
-const moment = require('moment');
 const router = express.Router();
 
 const routes = require('./routes');
@@ -55,9 +54,7 @@ router.post('/', [auth.isUser, validateReqObj], async (req, res) => {
 });
 
 router.post('/return', [auth.isUser, validateReqObj], async (req, res) => {
-	const foundRental = await Model
-		/* Funny way to get inner property of object in mongoose - via dot notation */
-		.findOne({'customer._id': req.body.customerId, 'movie._id': req.body.movieId});
+	const foundRental = await Model.lookup(req.body.customerId, req.body.movieId);
 	if (!foundRental) return res.status(404)
 		.send({error: `No rental for customer with id ${req.body.customerId} or movie with id ${req.body.movieId}`});
 
@@ -69,11 +66,9 @@ router.post('/return', [auth.isUser, validateReqObj], async (req, res) => {
 		.send({error: `Movie with id ${foundRental.movie._id.toHexString()} not found`});
 
 	await movie.Model.updateOne({_id: foundRental.movie._id}, {$inc: {numberInStock: 1}});
-	foundRental.dateReturned = new Date();
-	const daysInRent = moment().diff(foundRental.dateOut, 'days');
-	foundRental.rentFee = daysInRent * foundRental.movie.dailyRentalRate;
+	foundRental.makeReturned();
 	await foundRental.save();
-	return res.status(200).send(foundRental);
+	return res.send(foundRental);
 });
 
 router.get('/:id', mongoIdIsValid, async (req, res) => {
@@ -85,7 +80,7 @@ router.get('/:id', mongoIdIsValid, async (req, res) => {
 router.delete('/:id', [auth.isUser, mongoIdIsValid], async (req, res) => {
 	const rental = await Model.findByIdAndRemove(req.params.id);
 	if (!rental) return res.status(404).send({error: `Rental with id: "${req.params.id}" is not found.`});
-	return res.status(200).send(rental);
+	return res.send(rental);
 });
 
 module.exports = {handler: router, url: routes.rental};

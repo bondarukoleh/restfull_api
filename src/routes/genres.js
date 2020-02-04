@@ -51,7 +51,7 @@ router.put('/:id', [auth.isUser, mongoIdIsValid, validateReqObj] , async (req, r
 router.delete('/:id', [auth.isUser, auth.isAdmin, mongoIdIsValid], async (req, res) => {
 	const genre = await Model.findByIdAndRemove(req.params.id);
 	if(!genre) return res.status(404).send({error: `Genre with id: "${req.params.id}" is not found.`});
-	return res.status(200).send(genre);
+	return res.send(genre);
 });
 
 module.exports = {handler: router, url: routes.genres};

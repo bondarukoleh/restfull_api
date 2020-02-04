@@ -15,7 +15,8 @@ router.post('/', validateReqObj, async (req, res) => {
 	if(!invalidPassword) return res.status(400).send({error: `Invalid Email or Password.`});
 
 	const token = user.generateToken();
-	return res.status(200).send({token})
+	/* express will set status code 200 by default */
+	return res.send({token})
 });
 
 module.exports = {handler: router, url: routes.auth};
