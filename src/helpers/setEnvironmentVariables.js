@@ -17,7 +17,9 @@ function throwSetupErrorCausedBy(variableName) {
 
 function setEnvironmentVariables() {
 	try {
-		require('dotenv-safe').config({allowEmptyValues: true, example: path.resolve(process.cwd(), '.env')});
+		if(process.env.NODE_ENV !== 'production') {
+			require('dotenv-safe').config({allowEmptyValues: true, example: path.resolve(process.cwd(), '.env')});
+		}
 	} catch (e) {
 		throw new Error('ERROR! Please check .env.dist file! Your action REQUIRED!');
 	}
