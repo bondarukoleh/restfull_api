@@ -8,5 +8,6 @@
 		"fullUrl": "DB_FULL_URL"
 	},
 	"jwt_ppk": "JWT_PPK",
-	"debug_app": "DEBUG_APP"
+	"debug_app": "DEBUG_APP",
+	"app_port": "APP_PORT"
 }

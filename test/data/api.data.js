@@ -1,4 +1,4 @@
-const {HOST='localhost', PORT=3000} = process.env;
+const {HOST='localhost', APP_PORT=3000} = process.env;
 
 const Urls = {
 	genres: '/api/genres',
@@ -9,6 +9,6 @@ const Urls = {
 	auth: '/api/auth',
 };
 
-const host = `http://${HOST}:${PORT}`;
+const host = `http://${HOST}:${APP_PORT}`;
 
 module.exports = {Urls, host};
