@@ -27,6 +27,7 @@ pluginMiddleware(app);
 // Routers
 pluginRoutes(app);
 
+// TODO: rewrite to make more clear and pretty
 function getServer(port = process.env.PORT || app_port){
 	const server = app.listen(port,
 		() => winston.info(`App ${name} is listening on port ${app_port}.`));

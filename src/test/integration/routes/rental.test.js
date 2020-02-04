@@ -13,6 +13,7 @@ describe(routes.rental, () => {
 	let movieObj = null;
 
 	beforeAll(() => {
+		// TODO: rewrite without hardcoded port, won't work on prod
 		app = require('../../../app')(3004);
 		req = request(app);
 	});

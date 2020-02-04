@@ -13,7 +13,7 @@ describe(`Authorization`, () => {
 	}
 
 	beforeAll(() => {
-		// TODO: rewrite without hardcoded port
+		// TODO: rewrite without hardcoded port, won't work on prod
 		app = require('../../../app')(3003);
 		req = request(app);
 	});

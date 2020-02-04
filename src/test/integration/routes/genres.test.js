@@ -17,7 +17,7 @@ describe(routes.genres, () => {
 
 	beforeAll(() => {
 		// reason why in the before all - if failed - we can see faster what's goes wrong
-		// TODO: rewrite without hardcoded port
+		// TODO: rewrite without hardcoded port, won't work on prod
 		app = require('../../../app')(3002);
 		req = request(app);
 	});

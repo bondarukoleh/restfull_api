@@ -1,4 +1,4 @@
-const {HOST='localhost', APP_PORT=3000} = process.env;
+const {HOST='localhost', APP_PORT=3000, NODE_ENV} = process.env;
 
 const Urls = {
 	genres: '/api/genres',
@@ -9,6 +9,8 @@ const Urls = {
 	auth: '/api/auth',
 };
 
-const host = `http://${HOST}:${APP_PORT}`;
+const local = `http://${HOST}:${APP_PORT}`;
+const production = `https://olehbondaruk-movies-api.herokuapp.com`;
+const host = NODE_ENV === 'production' ? local : production;
 
 module.exports = {Urls, host};
