@@ -4,7 +4,8 @@
 		"password": "DB_USER_PASS",
 		"host": "DB_HOST",
 		"port": "DB_PORT",
-		"name": "DB_NAME"
+		"name": "DB_NAME",
+		"fullUrl": "DB_FULL_URL"
 	},
 	"jwt_ppk": "JWT_PPK",
 	"debug_app": "DEBUG_APP"

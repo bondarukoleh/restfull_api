@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 const getLogger = require('../logger');
 
-const {DB_HOST, DB_PORT, DB_USER_NAME, DB_USER_PASS, DB_NAME} = process.env;
+const {DB_HOST, DB_PORT, DB_USER_NAME, DB_USER_PASS, DB_NAME, DB_FULL_URL} = process.env;
 const log = getLogger({name: 'DBClient'});
-const defaultOptions = {useNewUrlParser: true, useUnifiedTopology: true};
+const defaultOptions = {retryWrites: true, w: 'majority', useNewUrlParser: true, useUnifiedTopology: true};
 const defaultDBUrl = `mongodb://${DB_USER_NAME}:${DB_USER_PASS}@${DB_HOST}:${DB_PORT}`;
-
 class DBClient {
     constructor({dbUrl = defaultDBUrl, options = defaultOptions} = {}) {
         this.mongoose = mongoose;
@@ -15,7 +14,7 @@ class DBClient {
     }
 
     async connect(database = DB_NAME) {
-        const urlToConnect = `${this.dbUrl}/${database}?authSource=${database}`;
+        const urlToConnect = DB_FULL_URL ? `${DB_FULL_URL}/${database}` : `${this.dbUrl}/${database}?authSource=${database}`;
         try {
             log.info(`Connecting to: ${urlToConnect}, with options: %j`, this.options);
             this.connection = await mongoose.connect(urlToConnect, this.options);
