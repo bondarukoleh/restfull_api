@@ -1,4 +1,6 @@
-# To start testing make a copy of this file without .dist extension and set environment variables properly
+### !!! To start testing make a copy of this file without .dist extension and set environment variables properly
+### !!! Make start.test.sh executable $>chmod +x start.test.sh;
+### !!! and run it from terminal $>./start.test.sh
 
 ### To set where you local app is spinning. If NODE_ENV=production - ignored
 # Application host

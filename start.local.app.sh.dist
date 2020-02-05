@@ -1,4 +1,6 @@
-### !!! Make a copy of this file without .dist extension, and setup env vars !!!
+### !!! Make a copy of this file without .dist extension, and setup env vars.
+### !!! Make start.local.app.sh executable $>chmod +x start.local.app.sh;
+### !!! and run it from terminal $>./start.local.app.sh
 
 ### To set where you will start app locally.
 export HOST=127.0.0.1
