@@ -12,7 +12,7 @@ coverage
 node_modules/
 
 # sencitive data
-.env
+start.local.app.sh
 start.test.sh
 docker-compose.yml
 init-mongo.js

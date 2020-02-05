@@ -1,15 +1,29 @@
-# To start testing create start.test.sh file and set environment variables properly
+# To start testing make a copy of this file without .dist extension and set environment variables properly
 
+### To set where you local app is spinning. If NODE_ENV=production - ignored
 # Application host
 export HOST=127.0.0.1
 # Application port
 export PORT=3000
 
-export DB_HOST=127.0.0.1
-export DB_PORT=27017
-export DB_USER_NAME=YOUR_USER
-export DB_USER_PASS=YOUR_PASS
-export DB_NAME=YOUR_TEST_DB_NAME
+### test Local spinning app with local DB. If you want to test prod - comment this block and go to next one.
+export DB_HOST=YOUR_LOCAL_DB_HOST something like 192.168.1.1
+export DB_PORT=YOUR_LOCAL_DB_PORT something like 27017
+export DB_USER_NAME=YOUR_LOCAL_DB_USER
+export DB_USER_PASS=YOUR_LOCAL_DB_USER_PASS
+export DB_NAME=YOUR_LOCAL_DB_NAME
+export NODE_ENV=test
 
-echo Starting tests...;
+### test app on Prod with prod DB
+export DB_HOST=olehbondarukmoviesapi-k13do.mongodb.net
+export DB_USER_NAME=YOUR_PROD_DB_USER
+export DB_USER_PASS=YOUR_PROD_DB_USER_PASS
+export DB_NAME=YOUR_LOCAL_DB_NAME
+export NODE_ENV=production
+
+### Other needed variables
+export NODE_CONFIG_DIR=./src/config
+export JWT_PPK=aleihfjeiwhp8q4ur9q834hroiqub34ofq7uh49fgq34fbg34qhfbqap
+
+echo Testing...
 npm t;

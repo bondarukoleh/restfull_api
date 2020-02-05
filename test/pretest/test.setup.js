@@ -3,9 +3,9 @@ const log = require('../helpers/logger')({name: 'Pretest'});
 const {dbData: {fixtures, schemes}} = require('../../test/data');
 
 /* TODO: refactor this piece of crap. Make it more readable */
+let createError = null;
 
-// before(async function () {
-(async function () {
+before(async function () {
 	log.info(`Creating data for testing.`);
 	await client.connect();
 	const {GenreModel, CustomersModel, MovieModel, RentalModel, UserModel} = getModels(client);
@@ -19,8 +19,9 @@ const {dbData: {fixtures, schemes}} = require('../../test/data');
 	for (const {model, data} of dataToCreation) {
 		await createOrUpdate(model, data)
 	}
+	log.info(`Attempt to create a data pass with error ${createError}. After that - we've tried to update it.`);
 	await client.disconnect();
-})();
+});
 
 function getModels(mongoClient) {
 	const GenreModel = mongoClient.mongoose.model('Genre', schemes.genreScheme);
@@ -38,7 +39,7 @@ async function insertData(model, dataToInsert) {
 		try {
 			await model.insertMany(data);
 		} catch (e) {
-			log.error(`Couldn't create data ${e.message}`);
+			createError = e.message;
 			withoutError = false;
 		}
 	}
@@ -47,8 +48,7 @@ async function insertData(model, dataToInsert) {
 
 async function updateData(model, dataToUpdate) {
 	for(const {_id, ...rest} of dataToUpdate){
-		const result = await model.updateMany({_id}, {$set: rest});
-		log.info(`Data updated:`, result);
+		await model.updateMany({_id}, {$set: rest});
 	}
 }
 

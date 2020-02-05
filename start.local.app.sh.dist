@@ -1,0 +1,25 @@
+### !!! Make a copy of this file without .dist extension, and setup env vars !!!
+
+### To set where you will start app locally.
+export HOST=127.0.0.1
+export APP_PORT=3000
+
+### Start app with local DB.
+export DB_HOST=YOUR_LOCAL_DB_HOST something like 192.168.1.1
+export DB_PORT=YOUR_LOCAL_DB_PORT
+export DB_USER_NAME=YOUR_LOCAL_DB_USER
+export DB_USER_PASS=YOUR_LOCAL_DB_USER_PASS
+export DB_NAME=YOUR_LOCAL_DB_NAME
+export NODE_ENV=test (or development)
+
+### Other needed variables
+export NODE_CONFIG_DIR=./src/config
+export JWT_PPK=YOUR_JWT_PPK
+export DEBUG_APP=true|false if you don't want logs
+export DEBUG=app:*,middleware:*,db:*
+
+#echo Starting unit/integration tests...
+#npm run test_jest;
+
+echo Starting app...
+npm start;

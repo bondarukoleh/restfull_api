@@ -9,5 +9,6 @@
 	},
 	"jwt_ppk": "JWT_PPK",
 	"debug_app": "DEBUG_APP",
-	"app_port": "APP_PORT"
+	"app_port": "APP_PORT",
+	"env": "NODE_ENV"
 }

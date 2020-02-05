@@ -11,6 +11,6 @@ const Urls = {
 
 const local = `http://${HOST}:${APP_PORT}`;
 const production = `https://olehbondaruk-movies-api.herokuapp.com`;
-const host = NODE_ENV === 'production' ? local : production;
+const host = NODE_ENV === 'production' ? production: local ;
 
 module.exports = {Urls, host};

@@ -1,12 +1,21 @@
 const mongooseClient = require('mongoose');
 const config = require('config');
-const {host, port, user, password, name, fullUrl} = config.db;
+const {db: {host, port, user, password, name, protocol}, env} = config;
 const log = require('debug')('db:client');
-const defaultDBUrl = fullUrl ? fullUrl : `mongodb://${user}:${password}@${host}:${port}`;
 const defaultOption = {retryWrites: true, w: 'majority', useNewUrlParser: true, useUnifiedTopology: true};
 
+const getDbUrl = () => {
+	const basicDbUrl =  `${protocol}://${user}:${password}@${host}`;
+	return env === 'production' ? basicDbUrl : `${basicDbUrl}:${port}`;
+};
+
+const getDbConnectionUrl = function (dbUrl, databaseName) {
+	const basicDbUrl = `${dbUrl}/${databaseName}`;
+	return env === 'production' ? basicDbUrl : `${basicDbUrl}?authSource=${databaseName}`;
+};
+
 class Mongoose {
-	constructor({dbUrl = defaultDBUrl, options = defaultOption} = {}){
+	constructor({dbUrl = getDbUrl(), options = defaultOption} = {}){
 		this.mongoose = mongooseClient;
 		this.dbUrl = dbUrl;
 		this.options = options;
@@ -16,7 +25,7 @@ class Mongoose {
 
 	async connect(database = name) {
 		try {
-			this.connectionUrl = fullUrl ? `${fullUrl}/${database}` : `${this.dbUrl}/${database}?authSource=${database}`;
+			this.connectionUrl = getDbConnectionUrl(this.dbUrl, database);
 			log(`Connecting to: ${this.connectionUrl}, with options: %j`, this.options);
 			this.connection = await this.mongoose.connect(this.connectionUrl, this.options);
 			log(`BD connected: ${this.dbUrl}`);
