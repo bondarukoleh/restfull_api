@@ -496,6 +496,9 @@ $>git remote -v
 heroku  https://git.heroku.com/olehbondaruk-movies-api.git (push)
 origin  git@github.com:bondarukoleh/restfull_api.git (push)
 
+If no heroku remote, we can add it:
+$>git remote add heroku https://git.heroku.com/olehbondaruk-movies-api.git
+
 means push our code to heroku repo
 $>git push heroku develop
 
