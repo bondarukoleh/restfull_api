@@ -505,9 +505,12 @@ $>git push heroku develop
 To set the environment variables of heroku app
 $>heroku config:set DEBUG_APP=false NODE_ENV=production etc.
 
-To see the logs of application:
+To see the logs of application, to see the error:
 $>heroku logs
 Or at the heroku site - in app - we can check "more" -> and choose logs.
+
+To navigate to deployed app:
+$>heroku open
 
 To connect to server where your app is spinning (dyno) - use ssh to heroku server, or dyno as they call it.
 Or use a console option from "more", where you type "bash" -> and it will connect you to your server machine.
