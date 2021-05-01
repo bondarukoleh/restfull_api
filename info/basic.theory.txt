@@ -433,6 +433,29 @@ a cookie instead of inside the Authorization header. It’s essential to set Htt
 prevent attackers from stealing tokens using XSS attacks.
 - Don't forget about Refresh tokens, so your JWT tokens couldn't live for long time.
 
+So it should work like this:
+1. Client /logins with name and pass
+2. Server generate the access token (should die in 10 min) and refresh token (should die in a day/week depends)
+	 Server sends back the access token to client, but refresh token server associate with Client and keeps somewhere
+	 in DB or in backend.
+3. After 10 min client realize that access token died, and sends request with token to /refresh_token to get a new
+	 access token
+4. Server checks that access token generated with server's salt, gets the refresh token that associated with that
+	 Client and checks that refresh token is valid and still alive. If it's cool - server generated new access token for
+	 Client. If refresh token is dead - that means Client should /login once again, so the new access and refresh token
+	 will be generated.
+
+So if hacker will steal the access token - he can use it till refresh token is dead.
+How that different from set the access token life time same as refresh token, and throw out the refresh token?
+
+Two main reasons for refresh token:
+1. Do not annoy the user to authenticate each time. If access is expired - user should get a new one, and the only way
+	 to do that without the refresh - is to /login, that's annoying.
+2. Security. If access is stolen - we cannot tell the resource servers not to return data to some access token of the
+   user, because server doesn't store the access tokens. If the refresh token is stolen - we can easily say server not
+   to return the access token via this refresh token, or somehow remove the refresh token from the DB - and that's how
+   stolen refresh got useless. So refresh token gives you more power to control access.
+
 ==================================================
 Winston logger - has ability to log message in console, file, or http endpoint, these things called transport, a place
 to log message. Winston can be integrated with mongodb, couchdb, redis, loggly (also a logging service)
