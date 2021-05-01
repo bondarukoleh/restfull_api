@@ -420,6 +420,19 @@ should delete token on client side. So User will be forced to login again and ge
 Storing tokens in plain text in DB - same as storing passwords. If you really need to save tokens in DB - hash them.
 When you sending token to client, use https - to not get criminal to own via sniffing your users tokens.
 
+What is useful in JWT?
+JWT is statelessness. There is no need to maintain any record of the token in the server,
+like store the token in a database as we do with sessions. This gives us benefit that comes with JWT: The server
+that issues the JWT and the server that validates it does not have to be the same. One server can issue JWTs and carry
+out authentication tasks.
+
+Some security tips:
+- Better send JWT with HTTPS header (with HTTP header Man-In-The-Middle can steal it).
+- Token is usually stored in the local storage, this is vulnerable ащк XSS) attacks, so you can send the token inside
+a cookie instead of inside the Authorization header. It’s essential to set HttpOnly and secure flags of the cookie to
+prevent attackers from stealing tokens using XSS attacks.
+- Don't forget about Refresh tokens, so your JWT tokens couldn't live for long time.
+
 ==================================================
 Winston logger - has ability to log message in console, file, or http endpoint, these things called transport, a place
 to log message. Winston can be integrated with mongodb, couchdb, redis, loggly (also a logging service)
