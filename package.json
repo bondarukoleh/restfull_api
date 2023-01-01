@@ -24,7 +24,7 @@
     "@hapi/joi": "16.1.8",
     "bcrypt": "5.0.0",
     "compression": "1.7.4",
-    "config": "3.2.4",
+    "config": "3.3.8",
     "debug": "4.1.1",
     "eslint": "6.7.2",
     "express": "4.17.1",
